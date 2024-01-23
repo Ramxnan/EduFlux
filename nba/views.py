@@ -29,22 +29,23 @@ def register(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user_base_directory = os.path.join(settings.MEDIA_ROOT, 'storage', user.username)
+            user = form.save(commit=False)
+            # Extract username part from the email
+            display_name = user.username.split('@')[0]
+            user.save()
+            user_base_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
 
             try:
                 os.makedirs(user_base_directory, exist_ok=True)
                 empty_templates_dir = os.path.join(user_base_directory, 'empty_templates')
                 os.makedirs(empty_templates_dir, exist_ok=True)
-                
+
             except Exception as e:
                 # Handle exceptions, such as permission issues
                 # messages.error(request, "Error during registration: " + str(e))
                 pass
 
             return redirect('login')  # Redirect to login after successful registration
-
-
 
     context = {'registerform': form}
     return render(request, 'nba/register.html', context=context)
@@ -57,24 +58,27 @@ def login(request):
         form = LoginForm(request, data=request.POST)
 
         if form.is_valid():
-            username = request.POST.get('username')
-            password = request.POST.get('password')
+            email = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
 
-            user = authenticate(request, username = username, password = password)
+            user = authenticate(request, username=email, password=password)
 
             if user is not None:
                 auth.login(request, user)
                 return redirect("dashboard")
-    context = {'loginform':form}
+            else:
+                form.add_error(None, "Invalid email or password")
+    context = {'loginform': form}
 
     return render(request, 'nba/login.html', context=context)
 
 
+
 @login_required(login_url = "login")
 def dashboard(request):
-    user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username)
-
-    empty_templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'empty_templates')
+    display_name = request.user.username.split('@')[0]
+    user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
+    empty_templates_dir = os.path.join(user_directory, 'empty_templates')
 
     # List all files in the user directory
     empty_templates_files = os.listdir(empty_templates_dir)

@@ -3,26 +3,16 @@ from django.contrib.auth.models import User
 from django import forms
 from django.forms.widgets import PasswordInput, TextInput
 from .models import File
-from django.core.exceptions import ValidationError
-
 
 class CreateUserForm(UserCreationForm):
-    college_code = forms.CharField(max_length=6, required=True)
-
     class Meta:
         model = User
         fields = ['email', 'password1', 'password2']
 
-    def clean_college_code(self):
-        college_code = self.cleaned_data.get('college_code')
-        if college_code != '560035':
-            raise forms.ValidationError("College code didn't match.")
-        return college_code
-
     def save(self, commit=True):
         user = super(CreateUserForm, self).save(commit=False)
         email = self.cleaned_data["email"]
-        username = email.split('@')[0]
+        username = email.split('@')[0]  # Extract username from email
         user.username = username
         if commit:
             user.save()
@@ -32,9 +22,10 @@ class CreateUserForm(UserCreationForm):
 class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=TextInput())
     password = forms.CharField(widget=PasswordInput())
+
     def clean(self):
         cleaned_data = super(LoginForm, self).clean()
-        email = cleaned_data.get('email')
+        email = cleaned_data.get('username')
         if email and '@' in email:
             username = email.split('@')[0]  # Extract username from email
             cleaned_data['username'] = username

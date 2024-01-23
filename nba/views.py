@@ -36,15 +36,13 @@ def register(request):
                 os.makedirs(user_base_directory, exist_ok=True)
                 empty_templates_dir = os.path.join(user_base_directory, 'empty_templates')
                 os.makedirs(empty_templates_dir, exist_ok=True)
-               
-                os.makedirs(os.path.join(user_base_directory, 'POCalculations'), exist_ok=True)
-                os.makedirs(os.path.join(user_base_directory, 'SubjectCalculations'), exist_ok=True)
-                return redirect('login')
+                
             except Exception as e:
+                # Handle exceptions, such as permission issues
+                # messages.error(request, "Error during registration: " + str(e))
                 pass
-        else:
-            context = {'registerform': form}
-            return render(request, 'nba/register.html', context=context)
+
+            return redirect('login')  # Redirect to login after successful registration
 
 
 
@@ -59,18 +57,17 @@ def login(request):
         form = LoginForm(request, data=request.POST)
 
         if form.is_valid():
-            email = request.POST.get('email')
+            username = request.POST.get('username')
             password = request.POST.get('password')
 
-            user = authenticate(request, email = email, password = password)
+            user = authenticate(request, username = username, password = password)
 
             if user is not None:
                 auth.login(request, user)
                 return redirect("dashboard")
-           
-        else:
-            return redirect("login")
     context = {'loginform':form}
+
+    return render(request, 'nba/login.html', context=context)
 
 
 @login_required(login_url = "login")
@@ -88,7 +85,6 @@ def dashboard(request):
 
 def logout(request):
     auth.logout(request)
-
     return render(request, 'nba/index.html')
 
 @csrf_exempt  # Note: Use this decorator if you want to allow POST requests without CSRF token validation

@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-#ueahxb^vuel)x=1lnl3nzrzcqa2)+5yw8sp$v2(41qn^amh*%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.30.25.98','flux.blr.amrita.edu','web-blr.amrita.edu','172.30.25.98/flux']
 
 
 # Application definition
@@ -121,11 +121,16 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'nba','static','assets')
 
-STATIC_URL = '/static/'
+STATIC_URL = '/flux/static/'
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://*.amrita.edu",
+]

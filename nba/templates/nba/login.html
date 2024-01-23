@@ -5,10 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login - Flux.ai</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+        {% load static %}
         <style>
             body {
         font-family: 'Roboto', sans-serif;
-        background-image: url('/static/assets/img/Amritaa.jpg'); /* Update this path */
+        background-image: url("{% static 'assets/img/Amritaa.jpg' %}"); /* Update this path */
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;

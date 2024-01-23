@@ -51,7 +51,6 @@ def register(request):
     return render(request, 'nba/register.html', context=context)
 
 
-
 def login(request):
     form = LoginForm()
     if request.method == 'POST':

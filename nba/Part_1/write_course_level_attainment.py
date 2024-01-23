@@ -177,7 +177,7 @@ def write_course_level_attainment(data,Component_Details,aw):
         formula = f'={calculation}'
         aw.cell(row=start, column=8).value = formula
 
-        aw.cell(row=start, column=9).value=f'=IF(Input_Details!E{10+rowindex}>0,Input_Details!E{10+rowindex},"0")'
+        aw.cell(row=start, column=9).value=f'=IF(Input_Details!E{2+data["Number_of_COs"]+4+rowindex}>0,Input_Details!E{2+data["Number_of_COs"]+4+rowindex},"0")'
 
         aw.cell(row=start, column=10).value=f'=IF(AND({get_column_letter(9)}{start}>=0,{get_column_letter(9)}{start}<40),1,IF(AND({get_column_letter(9)}{start}>=40,{get_column_letter(9)}{start}<60),2,IF(AND({get_column_letter(9)}{start}>=60,{get_column_letter(9)}{start}<=100),3,"0")))'
 

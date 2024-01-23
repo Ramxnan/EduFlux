@@ -9,6 +9,7 @@ from openpyxl.formatting.rule import CellIsRule
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.styles import Protection 
 from openpyxl.worksheet.datavalidation import DataValidation
+from .utils import adjust_width
 
 def studentmarks(data,key, Component_details,aw):
     aw.merge_cells(f'B9:{get_column_letter(Component_details+2)}9')
@@ -101,6 +102,10 @@ def studentmarks(data,key, Component_details,aw):
                                 top=Side(border_style='thin', color='000000'),
                                 bottom=Side(border_style='thin', color='000000'))
             
+    adjust_width(aw)
+    aw.column_dimensions['A'].width = 20
+    aw.column_dimensions['B'].width = 30
+
 
     table_range = f"C10:{get_column_letter(Component_details + 2)}{data['Number_of_Students'] + 10}"
     tab = Table(displayName=f"studentmarks_{key}", ref=table_range)

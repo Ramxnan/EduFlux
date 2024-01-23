@@ -92,6 +92,13 @@ def colour_table_Input_Details(aw):
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
+    aw[f'A23']="Red fill"
+    aw[f'A23'].fill = PatternFill(start_color='FF5E5E', end_color='FF5E5E', fill_type='solid')
+    aw[f'A23'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+    
 
     aw[f'B21']="Meaning"
     aw[f'B21'].font = Font(bold=True)
@@ -105,13 +112,19 @@ def colour_table_Input_Details(aw):
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
+    aw[f'B23']="Cell value greater than expected"
+    aw[f'B23'].fill = PatternFill(start_color='FF5E5E', end_color='FF5E5E', fill_type='solid')
+    aw[f'B23'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
 
 
 
 
-def adjust_width(ws):
+def adjust_width(aw):
     #adjust width of the columns in the worksheet including the merged cells
-    for col in ws.columns:
+    for col in aw.columns:
         max_length = 0
         column = col[0].column
         for cell in col:
@@ -122,4 +135,4 @@ def adjust_width(ws):
                 pass
             cell.alignment = Alignment(horizontal='center', vertical='center')
         adjusted_width = (max_length + 2) * 1
-        ws.column_dimensions[get_column_letter(column)].width = adjusted_width
+        aw.column_dimensions[get_column_letter(column)].width = adjusted_width

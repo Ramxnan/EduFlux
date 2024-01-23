@@ -108,6 +108,20 @@ def input_detail(data,aw):  #function to input details
                 FormulaRule(formula=[f'ISBLANK(B{i})'], stopIfTrue=False, fill=pink_fill)
             )
 
+    # Create a data validation object for numbers between 0 and 100
+    number_validation = DataValidation(type="decimal", operator="between", formula1=0, formula2=100)
+    number_validation.error = 'You must enter a number between 0 and 100'
+    number_validation.errorTitle = 'Invalid Entry'
+    number_validation.showErrorMessage = True
+
+    for row in range(14,20):
+        if row!=16 and row!=18:
+            cell_coordinate = f'B{row}'
+            aw.add_data_validation(number_validation)
+            number_validation.add(aw[cell_coordinate])
+
+
+
     colour_table_Input_Details(aw)
     
     return aw  

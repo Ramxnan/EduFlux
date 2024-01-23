@@ -38,7 +38,6 @@ def main1(data,Component_Details, file_path):
         ws.title = key
         ws = qn_co_mm_btl(data, key, Component_Details[key], ws)
         ws = studentmarks(data, key, Component_Details[key], ws)
-        adjust_width(ws)
 
         ws = cummulative_co_mm_btl(data, key, Component_Details[key], ws)   
         ws = cummulative_studentmarks(data, key, Component_Details[key], ws)
@@ -101,6 +100,18 @@ if __name__ == "__main__":
         "Number_of_Students":47,
         "Number_of_COs":4}
     
+    data={
+        "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
+        "Academic_year":"2022-2023",  
+        "Batch":2019,
+        "Branch":"CSE",                                                                          #set branch
+        "Subject_Name":"PCE",
+        "Subject_Code":"19MEE444",
+        "Section":"A",
+        "Semester":"Even",
+        "Number_of_Students":10,
+        "Number_of_COs":4}
+    
     # Component_Details={"P1_I":{"Number_of_questions":3},
     #                     "P2_I":{"Number_of_questions":6},
     #                     "CA_I":{"Number_of_questions":6},
@@ -112,7 +123,6 @@ if __name__ == "__main__":
     #                     "EndSem_E":9}
     
     Component_Details={"P1_I":7,
-                       "CA_I":4,
                        "EndSem_E":13}
     # Component_Details={"P1_I":3,
     #                     "CA_I":6,

@@ -18,8 +18,8 @@ from django.contrib.auth.models import User
 
 sys.path.append('/path/to/copilot')
 
-from Part_1.driver import main1
-from Part_3.driver import driver_part3
+from .Part_1.driver import main1
+from .Part_3.driver import driver_part3
 
 def homepage(request):
     return render(request, 'nba/index.html')
@@ -82,7 +82,6 @@ def dashboard(request):
 
     # List all files in the user directory
     empty_templates_files = os.listdir(empty_templates_dir)
-    print(empty_templates_files)
     
     return render(request, 'nba/dashboard.html', {'empty_templates_files': empty_templates_files})
 
@@ -124,14 +123,15 @@ def submit(request):
 
         print(Component_Details)
         # Directory for empty templates
-        empty_templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'empty_templates')
+        display_name = request.user.username.split('@')[0]
+        empty_templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
 
         # Generate file name for the Excel file
         excel_file_path = os.path.join(empty_templates_dir)
 
         # Call main1 function with the necessary data and file path
         generated_file_name = main1(data, Component_Details, excel_file_path)
-        file_path = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'empty_templates', generated_file_name)
+        file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates', generated_file_name)
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=generated_file_name)
             return response
@@ -201,7 +201,8 @@ from django.conf import settings
 
 def download_file(request, file_name):
     # Paths to the different folders
-    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'empty_templates')
+    display_name = request.user.username.split('@')[0]
+    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
     # Check which folder contains the file
     if os.path.isfile(os.path.join(empty_templates_path, file_name)):
         file_path = os.path.join(empty_templates_path, file_name)
@@ -220,7 +221,8 @@ def download_file(request, file_name):
 
 def delete_file(request, file_name):
     # Paths to the different folders
-    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'empty_templates')
+    display_name = request.user.username.split('@')[0]
+    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
 
     # Check which folder contains the file
     if os.path.isfile(os.path.join(empty_templates_path, file_name)):

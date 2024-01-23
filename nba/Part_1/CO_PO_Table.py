@@ -31,27 +31,8 @@ def CO_PO_Table(data,aw):
         aw[f"{get_column_letter(12+4+pso)}2"].font = Font(bold=True)
         aw[f"{get_column_letter(12+4+pso)}2"].alignment = Alignment(horizontal='center', vertical='center')
     
-    # Create a data validation object for numbers between 0 and 100
-    number_validation = DataValidation(type="whole", operator="between", formula1=0, formula2=100)
-    number_validation.error = 'You must enter a number between 0 and 100'
-    number_validation.errorTitle = 'Invalid Entry'
-    number_validation.showErrorMessage = True
-
-
-
-    for popso in range(1,18):
-        for co in range(1,data["Number_of_COs"]+1):
-            aw[f"{get_column_letter(popso+4)}{co+2}"].protection = Protection(locked=False)
-            cell_coordinate = f"{get_column_letter(popso+4)}{co+2}"
-            aw.add_data_validation(number_validation)
-            number_validation.add(aw[cell_coordinate])
-            #set cell width
-            aw.column_dimensions[f"{get_column_letter(popso+4)}"].width = 8.43
-            #center align
-            aw[f"{get_column_letter(popso+4)}{co+2}"].alignment = Alignment(horizontal='center', vertical='center')
-
-    #for columns 4 to 4+12+5 set width to 13
     
+    #for columns 4 to 4+12+5 set width to 13
     for col in range(4,4+12+5):
         aw.column_dimensions[f"{get_column_letter(col)}"].width = 13
 
@@ -61,7 +42,11 @@ def CO_PO_Table(data,aw):
     tab.tableStyleInfo = style                                                                                                                   #set style
     aw.add_table(tab)
 
+   
+
+            
     #set conditional formatting for empty cells
+        
     pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
     for co in range(1,data["Number_of_COs"]+1):
         for po in range(1,12+1):
@@ -70,13 +55,30 @@ def CO_PO_Table(data,aw):
                 cell_coordinate,
                 FormulaRule(formula=[f'ISBLANK({cell_coordinate})'], stopIfTrue=False, fill=pink_fill)
             )
+            
         for pso in range(1,6):
             cell_coordinate = f"{get_column_letter(12+4+pso)}{co+2}"
             aw.conditional_formatting.add(
                 cell_coordinate,
                 FormulaRule(formula=[f'ISBLANK({cell_coordinate})'], stopIfTrue=False, fill=pink_fill)
             )
+         
+     # Create a data validation object for numbers between 0 and 100
+    number_validation = DataValidation(type="whole", operator="between", formula1=1, formula2=3)
+    number_validation.error = 'You must enter a number 1, 2 or 3'
+    number_validation.errorTitle = 'Invalid Entry'
+    number_validation.showErrorMessage = True
 
+    # Apply this validation to the specified cells
+    for co in range(1,data["Number_of_COs"]+1):
+        for po in range(1,12+1):
+            cell_coordinate = f"{get_column_letter(po+4)}{co+2}"
+            aw.add_data_validation(number_validation)
+            number_validation.add(aw[cell_coordinate])
+        for pso in range(1,6):
+            cell_coordinate = f"{get_column_letter(12+4+pso)}{co+2}"
+            aw.add_data_validation(number_validation)
+            number_validation.add(aw[cell_coordinate])
 
 
 

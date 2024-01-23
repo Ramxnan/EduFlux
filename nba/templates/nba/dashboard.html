@@ -111,7 +111,7 @@
             backdrop-filter: blur(8px); /* Apply a blur effect to the background */
             -webkit-backdrop-filter: blur(8px); /* For Safari */
         }
-        #inputDiv, #COcalcdiv, #SubjectCalcDiv {
+        #GenerateExcelForm, #COcalcdiv, #SubjectCalcDiv {
             display: none;
         }
         .custom-submit-btn {
@@ -184,13 +184,13 @@
 
                 <!-- Left Column: Forms -->
                 <div class="col-md-6">
-                    <form id="inputDiv" name="inputDiv" method="POST" action="{% url 'submit' %}">
+                    <form id="GenerateExcelForm" name="GenerateExcelForm" method="POST" action="{% url 'submit' %}">
                         <div class="form-group">
                             <label for="teacher">Teacher</label>
                             <input type="text" id="teacher" name="teacher" placeholder="Teacher" required class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="academicYear">Academic Year</label>
+                            <label for="academicYearStart">Academic Year</label>
                             <div class="row">
                                 <div class="col">
                                     <input type="number" id="academicYearStart" name="academicYearStart" placeholder="Start Year" required class="form-control">
@@ -206,7 +206,7 @@
         
                         <div class="form-group">
                             <label for="semester">Semester</label>
-                            <select name="semester" class="form-control" required>
+                            <select id="semester" name="semester" class="form-control" required>
                                 <option value="">Select the Semester</option>
                                 <option value="Even">Even</option>
                                 <option value="Odd">Odd</option>
@@ -214,7 +214,7 @@
                         </div>
                         <div class="form-group">
                             <label for="branch">Branch</label>
-                            <select name="branch" class="form-control" required>
+                            <select id="branch" name="branch" class="form-control" required>
                                 <option value="">Select the branch</option>
                                 <option value="AIE">AIE</option>
                                 <option value="EAC">EAC</option>
@@ -230,7 +230,7 @@
                 
                         <div class="form-group">
                             <label for="section">Section</label>
-                            <select name="section" class="form-control" required>
+                            <select id="section" name="section" class="form-control" required>
                                 <option value="">Select the section</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>
@@ -241,24 +241,24 @@
                         </div>
                         <div class="form-group">
                             <label for="subjectCode">Subject Code</label>
-                            <input type="text" name="subjectCode" placeholder="Subject Code" required class="form-control">
+                            <input id="subjectCode" type="text" name="subjectCode" placeholder="Subject Code" required class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="subjectName">Subject Name</label>
-                            <input type="text" name="subjectName" placeholder="Subject Name" required class="form-control">
+                            <input type="text" id="subjectName" name="subjectName" placeholder="Subject Name" required class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="numberOfStudents">Number of Students</label>
-                            <input type="number" name="numberOfStudents" placeholder="Number of Students" required class="form-control">
+                            <input id= "numberOfStudents" type="number" name="numberOfStudents" placeholder="Number of Students" required class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="numberOfCOs">Number of CO's</label>
-                            <input type="number" name="numberOfCOs" placeholder="Number of CO's" required class="form-control">
+                            <input id= "numberOfCOs" type="number" name="numberOfCOs" placeholder="Number of CO's" required class="form-control">
                         </div>
                         
                         <div class="form-group">
                             <label for="numberOfComponents">Number of Components</label>
-                            <input type="number" id="numberOfComponents" name="numberOfComponents" placeholder="Number of Components" required class="form-control" value="1">
+                            <input type="number" id="numberOfComponents" name="numberOfComponents" placeholder="Number of Components" required class="form-control" value="2">
                         </div>
         
                         <div class="component-container mt-3" id="componentContainer"></div>
@@ -304,11 +304,9 @@
     <script>
 
         document.getElementById("templateGenerationBtn").onclick = function() {
-            document.getElementById("inputDiv").style.display = "block";
+            document.getElementById("GenerateExcelForm").style.display = "block";
             document.getElementById("generated_templates").style.display = "block";
         }
-    
-
 
     
         $(document).ready(function(){
@@ -331,11 +329,11 @@
                 var table = $('<table></table>').addClass('table');
                 var thead = $('<thead></thead>').append('<tr><th>Component Name</th><th>Questions</th><th>Type</th></tr>');
                 table.append(thead);
-                for(var i = 0; i < numComponents; i++) {
+                for(var i = 1; i <= numComponents; i++) {
                     var row = $('<tr></tr>');
-                    row.append('<td><input type="text" name="componentName'+(i+1)+'" placeholder="Name '+(i+1)+'" required class="form-control"></td>');
-                    row.append('<td><input type="text" name="componentValue'+(i+1)+'" placeholder="No. of Questions" required class="form-control"></td>');
-                    row.append('<td><select name="componentType'+(i+1)+'" class="form-control" required><option value="">Type</option><option value="Internal">Internal</option><option value="External">External</option></select></td>');
+                    row.append('<td><input type="text" name="componentName'+(i)+'" placeholder="Name '+(i)+'" required class="form-control"></td>');
+                    row.append('<td><input type="text" name="componentValue'+(i)+'" placeholder="No. of Questions" required class="form-control"></td>');
+                    row.append('<td><select name="componentType'+(i)+'" class="form-control" required><option value="">Type</option><option value="Internal">Internal</option><option value="External">External</option></select></td>');
                     table.append(row);
                 }
                 $("#componentContainer").append(table);
@@ -350,49 +348,61 @@
             });
 
     
-            $("#inputDiv").on("submit", function(event){
+            $("#GenerateExcelForm").on("submit", function(event) {
+                // Prevent default form submission
+                event.preventDefault();
+
                 var form = $(this);
                 if (form[0].checkValidity() === false) {
-                    event.preventDefault();
                     event.stopPropagation();
+                } else {
+                    // Perform custom validation for components
+                    if (validateComponents()) {
+                        form.addClass('was-validated');
+                        // Submit the form if validation is successful
+                        form.off('submit').submit();
+                    } else {
+                        alert("Please ensure there is at least one internal and one external component.");
+                    }
                 }
-                form.addClass('was-validated');
             });
+            // Function to validate components
+            function validateComponents() {
+                var numComponents = $("#numberOfComponents").val();
+                var hasInternal = false;
+                var hasExternal = false;
+
+                for(var i = 1; i <= numComponents; i++) {
+                    var componentType = $('select[name="componentType' + i + '"]').val();
+                    if (componentType === "Internal") {
+                        hasInternal = true;
+                    } else if (componentType === "External") {
+                        hasExternal = true;
+                    }
+                }
+
+                return hasInternal && hasExternal;
+            }
         });
     
-        document.getElementById("downloadBtn").onclick = function() {
-            var fileContent = "Your file content here";
-            var blob = new Blob([fileContent], {type: "text/plain"});
-            var url = URL.createObjectURL(blob);
-    
-            var downloadLink = document.createElement("a");
-            downloadLink.href = url;
-            downloadLink.download = "filename.txt";
-    
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-        };
-    
-        function calculateInternal() {
-        var external = parseInt(document.getElementById('external').value);
-        if (!isNaN(external)) {
-            document.getElementById('internal').value = 100 - external;
-        } else {
-            document.getElementById('internal').value = "";
-        }
-    }
+        document.addEventListener('DOMContentLoaded', function() {
+        var downloadBtn = document.getElementById("downloadBtn");
+        if (downloadBtn) {
+            downloadBtn.onclick = function() {
+                var fileContent = "Your file content here";
+                var blob = new Blob([fileContent], {type: "text/plain"});
+                var url = URL.createObjectURL(blob);
 
-    function calculateIndirect() {
-        var direct = parseInt(document.getElementById('direct').value);
-        if (!isNaN(direct)) {
-            document.getElementById('indirect').value = 100 - direct;
-        } else {
-            document.getElementById('indirect').value = "";
-        }
-    }
+                var downloadLink = document.createElement("a");
+                downloadLink.href = url;
+                downloadLink.download = "filename.txt";
 
-    
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            };
+        }
+    }); 
     </script>
     
     

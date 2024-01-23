@@ -52,13 +52,13 @@ def indirect_co_assessment(data,aw):
 
 
     # Create a data validation object for numbers between 0 and 100
-    number_validation = DataValidation(type="whole", operator="between", formula1=0, formula2=100)
+    number_validation = DataValidation(type="decimal", operator="between", formula1=0, formula2=100)
     number_validation.error = 'You must enter a number between 0 and 100'
     number_validation.errorTitle = 'Invalid Entry'
     number_validation.showErrorMessage = True
 
     # Apply this validation to the specified cells
-    for row in range(13, 13 + data["Number_of_COs"]):
+    for row in range(2+data["Number_of_COs"]+5, 2+data["Number_of_COs"]+5 + data["Number_of_COs"]):
         cell_coordinate = f'E{row}'
         aw[cell_coordinate].protection = Protection(locked=False)
         aw.add_data_validation(number_validation)
@@ -71,6 +71,8 @@ def indirect_co_assessment(data,aw):
             cell_coordinate,
             FormulaRule(formula=[f'ISBLANK({cell_coordinate})'], stopIfTrue=False, fill=pink_fill)
         )
+
+    
 
 
     return aw

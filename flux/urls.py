@@ -7,7 +7,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("flux/", include("nba.urls")),
+    #path("flux/", include("nba.urls")),
+    path("", include("nba.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

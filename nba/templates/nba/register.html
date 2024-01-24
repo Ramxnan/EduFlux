@@ -96,6 +96,15 @@
     </style>
 </head>
 <body>
+    {% if messages %}
+        <script type="text/javascript">
+        window.onload = function() {
+            {% for message in messages %}
+            alert("{{ message }}");
+            {% endfor %}
+        }
+        </script>
+    {% endif %}
     <div class="register-container">
         <h2>Register for Flux.ai</h2>
         <form method="post" action="{% url 'register' %}"> <!-- Replace with your registration endpoint -->
@@ -111,6 +120,10 @@
             <div class="form-group">
                 <label for="password2" class="form-label">Confirm Password:</label>
                 <input type="password" id="password2" name="password2" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label for="college_code" class="form-label">College Code:</label>
+                <input type="text" id="college_code" name="college_code" class="form-input" required>
             </div>
             <button type="submit" class="register-button">Register</button>
         </form>

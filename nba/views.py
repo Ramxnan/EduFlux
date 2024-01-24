@@ -15,8 +15,8 @@ import json
 from django.http import FileResponse, JsonResponse
 from django.http import Http404
 from django.contrib.auth.models import User
+from django.contrib import messages
 
-sys.path.append('/path/to/copilot')
 
 from .Part_1.driver import main1
 from .Part_3.driver import driver_part3
@@ -29,27 +29,29 @@ def register(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            # Extract username part from the email
-            display_name = user.username.split('@')[0]
-            user.save()
+            # Check if the college code is correct
+            college_code = form.cleaned_data.get('college_code')
+            if college_code == '560035':
+                user = form.save(commit=False)
+                display_name = user.username.split('@')[0]
+                user.save()
             user_base_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
-
             try:
                 os.makedirs(user_base_directory, exist_ok=True)
                 empty_templates_dir = os.path.join(user_base_directory, 'empty_templates')
                 os.makedirs(empty_templates_dir, exist_ok=True)
-
             except Exception as e:
-                # Handle exceptions, such as permission issues
-                # messages.error(request, "Error during registration: " + str(e))
                 pass
-
-            return redirect('login')  # Redirect to login after successful registration
+            messages.success(request, "Registration successful, please login.")
+            return redirect('login')
+        else:
+            if User.objects.filter(username=request.POST.get('email')).exists():
+                messages.error(request, "Email already registered, please login.")
+            else:
+                messages.error(request, "Invalid college code, please contact system admin for further instructions.")
 
     context = {'registerform': form}
     return render(request, 'nba/register.html', context=context)
-
 
 def login(request):
     form = LoginForm()

@@ -16,6 +16,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('logout', views.logout, name='logout'),
     path('submit/', views.submit, name='submit'),
+    path('upload_multiple_files_branch/', views.upload_multiple_files_branch, name='upload_multiple_files_branch'),
     path('download/<str:file_name>/', views.download_file, name='download_file'),
     path('delete/<str:file_name>/', views.delete_file, name='delete_file'),
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

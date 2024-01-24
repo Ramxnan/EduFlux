@@ -6,16 +6,18 @@ from .models import File
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from django.core.files.storage import FileSystemStorage
-import sys
 import os
 from django.conf import settings
-import json
-from django.http import FileResponse, JsonResponse
 from django.http import Http404
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from datetime import datetime
+
 
 
 from .Part_1.driver import main1
@@ -83,9 +85,18 @@ def dashboard(request):
 
     # List all files in the user directory
     empty_templates_files = os.listdir(empty_templates_dir)
+    #get the time stamp of the file
+    file_time_stamp = []
+    for file in empty_templates_files:
+        file_time_stamp.append(os.path.getmtime(os.path.join(empty_templates_dir, file)))
+
+    #MAKE IT AS HH:MM:SS
+    file_time_stamp = [datetime.fromtimestamp(i).strftime("%H:%M:%S") for i in file_time_stamp]
+    #send it as a dictionary
+    empty_templates_files = dict(zip(empty_templates_files, file_time_stamp))
+
     
     return render(request, 'nba/dashboard.html', {'empty_templates_files': empty_templates_files})
-
 
 def logout(request):
     auth.logout(request)
@@ -141,7 +152,7 @@ def submit(request):
     return render(request, 'nba/dashboard.html')
 
 from django.http import FileResponse
-    
+
 
 
 @csrf_exempt   
@@ -166,32 +177,6 @@ def upload_multiple_files_po(request):
     else:
         # If it's not a POST request, redirect to dashboard or appropriate page
         return redirect('dashboard')
-
-from django.http import JsonResponse
-from django.core.cache import cache
-from django.views.decorators.cache import cache_page
-from django.utils.decorators import method_decorator
-@method_decorator(csrf_exempt, name='dispatch')  # Allow the view to be accessed without CSRF token for simplicity
-@method_decorator(cache_page(5), name='dispatch')  # Cache the view response for 5 seconds
-@login_required
-def fetch_file_lists(request):
-    user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username)
-
-    # Use cache to store and retrieve the file lists
-    cache_key = f'user_{request.user.username}_file_lists'
-    file_lists = cache.get(cache_key)
-
-    if not file_lists:
-        # Fetch empty template files
-        empty_templates_dir = os.path.join(user_directory, 'empty_templates')
-        empty_templates_files = os.listdir(empty_templates_dir) if os.path.exists(empty_templates_dir) else []
-        # Store file lists in cache for 5 seconds
-        file_lists = {
-            'empty_templates': empty_templates_files
-        }
-        cache.set(cache_key, file_lists, 5)
-
-    return JsonResponse(file_lists)
 
 
 

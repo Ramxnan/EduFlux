@@ -18,5 +18,4 @@ urlpatterns = [
     path('submit/', views.submit, name='submit'),
     path('download/<str:file_name>/', views.download_file, name='download_file'),
     path('delete/<str:file_name>/', views.delete_file, name='delete_file'),
-    path('fetch_file_lists/', views.fetch_file_lists, name='fetch_file_lists'),
     ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

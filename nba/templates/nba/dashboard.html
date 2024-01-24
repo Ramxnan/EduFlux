@@ -1,11 +1,18 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html>
 
 <head>
     <title>Amrita Course Accreditation System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="{% static '/assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static '/assets/vendor/bootstrap-icons/bootstrap-icons.css'%}" rel="stylesheet">
+    <link href="{% static '/assets/vendor/glightbox/css/glightbox.min.css'%}" rel="stylesheet">
+  
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
     {% load static %}
     <style>
         body, html {
@@ -141,6 +148,19 @@
 .custom-file-input {
     border-radius: 20px; /* Consistent rounded corners */
 }
+/* Additional CSS */
+.file-entry .file-timestamp {
+    font-size: 0.8em; /* smaller font size for the timestamp */
+    color: #6c757d; /* muted text color */
+    margin-right: auto; /* push the timestamp to the right */
+    padding-left: 10px; /* space between file name and timestamp */
+}
+
+.file-entry form {
+    margin-left: 10px; /* space between timestamp and delete button */
+}
+
+
 
 
 
@@ -272,26 +292,30 @@
 
                 <!-- Right Column: Files -->
                 <div class="col-md-6" name="files" >
-                    <div id="generated_templates" style="display: none;">
+                    <div id="generated_templates" style="display: none;"> <!-- Set display to block for visibility -->
                         <h3>Generated Templates:</h3>
-                        {% for file_name in empty_templates_files %}
-                        <div class="file-entry mb-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span><a href="{% url 'download_file' file_name %}">{{ file_name }}</a></span>
-                                <form method="POST" action="{% url 'delete_file' file_name %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                        {% for file_name, timestamp in empty_templates_files.items %}
+                            <div class="file-entry mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- File Name -->
+                                    <span><a href="{% url 'download_file' file_name %}">{{ file_name }}</a></span>
+                                    
+                                    <!-- Timestamp -->
+                                    <small class="text-muted file-timestamp">{{ timestamp }}</small>
+                                    
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="{% url 'delete_file' file_name %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
                         {% empty %}
-                        <p>No empty templates found.</p>
+                            <p>No empty templates found.</p>
                         {% endfor %}
                     </div>
 
                 
-                    
-                    
                         
                 </div>
                 

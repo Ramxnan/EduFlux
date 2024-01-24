@@ -64,6 +64,7 @@ def main1(data,Component_Details, file_path):
     #save workbook
     #wb.save(f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}.xlsx")
     excel_file_name = f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}_{data['Section']}_{data['Semester']}.xlsx"
+    excel_file_name.replace(" ","_")
     full_path = os.path.join(file_path, excel_file_name)
     wb.save(full_path)
     return excel_file_name    

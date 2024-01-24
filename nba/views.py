@@ -113,7 +113,7 @@ def submit(request):
             "Batch": int(request.POST.get('batch')),
             "Section": str(request.POST.get('section')),
             "Subject_Code": str(request.POST.get('subjectCode')),
-            "Subject_Name": str(request.POST.get('subjectName')).replace(" ", "_"),
+            "Subject_Name": str(request.POST.get('subjectName')),
             "Number_of_Students": int(request.POST.get('numberOfStudents')),
             "Number_of_COs": int(request.POST.get('numberOfCOs')),
         }

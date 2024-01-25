@@ -119,7 +119,7 @@
             backdrop-filter: blur(8px); /* Apply a blur effect to the background */
             -webkit-backdrop-filter: blur(8px); /* For Safari */
         }
-        #TemplateLeft, #COcalcdiv, #BranchLeft {
+        #TemplateLeft, #BranchLeft , #BatchLeft, #TemplateRight, #BranchRight, #BatchRight {
             display: none;
         }
         .custom-submit-btn {
@@ -347,7 +347,7 @@
                     <form id="BranchLeft" name="BranchLeft" method="POST" action="{% url 'upload_multiple_files_branch' %}" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="ExcelFiles">Upload all class Excel File for Branch calcualtions</label>
-                            <input type="file" name="ExcelFiles" multiple required class="form-control" accept=".xlsx">
+                            <input type="file" name="ExcelFiles" id="ExcelFiles" multiple required class="form-control" accept=".xlsx">
                         </div>
                     
                         <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Upload</button>

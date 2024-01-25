@@ -24,7 +24,7 @@ from django.urls import reverse
 
 
 from .Part_1.driver import main1
-from .Part_2.driver import driver_part3
+from .Part_2.driver import driver_part2
 
 def homepage(request):
     return render(request, 'nba/index.html')

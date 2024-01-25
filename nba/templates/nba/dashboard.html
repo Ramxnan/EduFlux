@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load custom_filters %}
 
 <html>
 
@@ -176,6 +177,39 @@
             padding-left: 10px; /* space between file name and timestamp */
         }
 
+        .folder-entry {
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+            padding: 10px;
+            border-radius: 25px;
+            border-color: #5724aa;
+            border-style: solid;
+            background-color: #e9ecef;
+            margin-bottom: 10px;
+        }
+                    /*on hover display change the colour*/
+        .folder-entry:hover {
+            background-color: #d1d1d1;
+        }
+
+       
+
+        .foldername {
+            /*make it ... if it is too long*/
+            font-size: 1em; /* smaller font size for the timestamp */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .folder-timestamp {
+            font-size: 0.9em; /* smaller font size for the timestamp */
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+        }
+
 
 
 
@@ -340,19 +374,70 @@
                         {% endfor %}
                     </div>
 
-                
-                        
+                    <div id="BranchRight" style="display: none;">
+                        <h3>Calculated Files</h3>
+                        {% for folder_name, data in Branch_Calculation.items %}
+                            <div class="folder-entry mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- Display Folder Name -->
+                                    <span class="foldername">
+                                        <a href="{% url 'download_folder' folder_name %}">
+                                            {{ folder_name|split_folder_name }}
+                                        </a>
+                                        <i class="bi bi-arrow-down-square-fill toggle-files" data-target="files_in_folder{{ forloop.counter }}"></i>
+                                    </span>
+
+                                    <!-- Timestamp (assuming it's the second item in your tuple) -->
+                                    <small class="folder-timestamp">{{ data.1 }}</small>
+                                    
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="{% url 'delete_file' folder_name %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                                <!-- Hidden Files List -->
+                                <div id="files_in_folder{{ forloop.counter }}" class="files-list" style="display: none;">
+                                    {% for file in data.0 %}
+                                        <p>|____{{ file }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No calculated files found.</p>
+                        {% endfor %}
+                    </div>
+
                 </div>
+                        
+            </div>
                 
           
-            </div>
-        </div>            
+        </div>
+    </div>            
                
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleFilesIcons = document.querySelectorAll('.toggle-files');
+
+            toggleFilesIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement.style.display === "none") {
+                        targetElement.style.display = "block";
+                        this.classList.replace('bi-arrow-down-square-fill', 'bi-arrow-up-square-fill');
+                    } else {
+                        targetElement.style.display = "none";
+                        this.classList.replace('bi-arrow-up-square-fill', 'bi-arrow-down-square-fill');
+                    }
+                });
+            });
+        })
 
         document.getElementById("TemplateBtn").onclick = function() {
             document.getElementById("TemplateLeft").style.display = "block";

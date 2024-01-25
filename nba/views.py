@@ -21,7 +21,7 @@ from datetime import datetime
 
 
 from .Part_1.driver import main1
-from .Part_3.driver import driver_part3
+from .Part_2.driver import driver_part3
 
 def homepage(request):
     return render(request, 'nba/index.html')
@@ -40,8 +40,12 @@ def register(request):
             user_base_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
             try:
                 os.makedirs(user_base_directory, exist_ok=True)
-                empty_templates_dir = os.path.join(user_base_directory, 'empty_templates')
-                os.makedirs(empty_templates_dir, exist_ok=True)
+                Generated_Templates_dir = os.path.join(user_base_directory, 'Generated_Templates')
+                os.makedirs(Generated_Templates_dir, exist_ok=True)
+                Branch_Calculation_dir = os.path.join(user_base_directory, 'Branch_Calculation')
+                os.makedirs(Branch_Calculation_dir, exist_ok=True)
+                Batch_Calculation_dir = os.path.join(user_base_directory, 'Batch_Calculation')
+                os.makedirs(Batch_Calculation_dir, exist_ok=True)
             except Exception as e:
                 pass
             messages.success(request, "Registration successful, please login.")
@@ -81,22 +85,21 @@ def login(request):
 def dashboard(request):
     display_name = request.user.username.split('@')[0]
     user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
-    empty_templates_dir = os.path.join(user_directory, 'empty_templates')
+    Generated_Templates_dir = os.path.join(user_directory, 'Generated_Templates')
 
     # List all files in the user directory
-    empty_templates_files = os.listdir(empty_templates_dir)
+    Generated_Templates = os.listdir(Generated_Templates_dir)
     #get the time stamp of the file
     file_time_stamp = []
-    for file in empty_templates_files:
-        file_time_stamp.append(os.path.getmtime(os.path.join(empty_templates_dir, file)))
+    for file in Generated_Templates:
+        file_time_stamp.append(os.path.getmtime(os.path.join(Generated_Templates_dir, file)))
 
     #MAKE IT AS HH:MM:SS
     file_time_stamp = [datetime.fromtimestamp(i).strftime("%H:%M:%S") for i in file_time_stamp]
-    #send it as a dictionary
-    empty_templates_files = dict(zip(empty_templates_files, file_time_stamp))
+    Generated_Templates = dict(zip(Generated_Templates, file_time_stamp))
 
     
-    return render(request, 'nba/dashboard.html', {'empty_templates_files': empty_templates_files})
+    return render(request, 'nba/dashboard.html', {'Generated_Templates': Generated_Templates})
 
 def logout(request):
     auth.logout(request)
@@ -152,6 +155,37 @@ def submit(request):
     return render(request, 'nba/dashboard.html')
 
 from django.http import FileResponse
+
+import os
+import uuid
+@csrf_exempt
+def upload_multiple_files_branch(request):
+    if request.method == 'POST':
+        uploaded_files = request.FILES.getlist('ExcelFiles')
+        num_files = len(uploaded_files)
+        display_name = request.user.username.split('@')[0]
+        user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
+        branch_directory = os.path.join(user_directory, 'Branch_Calculation')
+        if num_files == 0:
+            return JsonResponse({'status': 'error', 'message': 'No files were uploaded.'})
+        
+        timestamp = datetime.now().strftime("%H%M%S")
+        unique_id = str(uuid.uuid4())
+        unique_folder_name = f"{num_files}_{timestamp}_{unique_id}"
+        unique_folder_path = os.path.join(branch_directory, unique_folder_name)
+        os.makedirs(unique_folder_path, exist_ok=True)
+        fs = FileSystemStorage(location=unique_folder_path)
+        
+        saved_files = []
+        for uploaded_file in uploaded_files:
+            filename=fs.save(uploaded_file.name, uploaded_file)
+            saved_files.append(filename)
+        return JsonResponse({'status': 'success', 'files': saved_files, 'folder': unique_folder_name})
+    else:
+        # If it's not a POST request, handle accordingly
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
 
 
 

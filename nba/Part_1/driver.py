@@ -17,6 +17,8 @@ def main1(data,Component_Details, file_path):
     wb = Workbook()
     wb.remove(wb.active)
 
+    #replace spaces in component details keys with underscore
+    Component_Details = {key.replace(" ","_"):value for key,value in Component_Details.items()}
 
     wb.create_sheet("Input_Details")
     ws = wb["Input_Details"]

@@ -10,7 +10,7 @@ from django.http import JsonResponse, HttpResponse, FileResponse
 from django.core.files.storage import FileSystemStorage
 import os
 from django.conf import settings
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.cache import cache
@@ -19,6 +19,8 @@ from django.utils.decorators import method_decorator
 from datetime import datetime
 import uuid
 import zipfile
+import shutil
+from django.urls import reverse
 
 
 from .Part_1.driver import main1
@@ -253,10 +255,6 @@ def download_folder(request, folder_name):
     display_name = request.user.username.split('@')[0]
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation', folder_name)
 
-    # Check if the directory exists
-    if not os.path.isdir(branch_calculation_path):
-        raise Http404("Folder not found")
-
     # Create a ZIP file in memory
     response = HttpResponse(content_type='application/zip')
     zip_filename = f"{folder_name}.zip"
@@ -281,16 +279,26 @@ def delete_file(request, file_name):
     # Check which folder contains the file
     if os.path.isfile(os.path.join(empty_templates_path, file_name)):
         file_path = os.path.join(empty_templates_path, file_name)
-    else:
-        raise Http404("File not found")
 
     # If the file exists, delete it
     if os.path.exists(file_path):
         os.remove(file_path)
-        return redirect('dashboard')
+        return HttpResponseRedirect(reverse('dashboard'))
 
-    # If the file does not exist
-    raise Http404("File not found")
+def delete_folder(request, folder_name):
+    display_name = request.user.username.split('@')[0]
+    branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation')
+
+    # Check if the directory exists
+    if os.path.isdir(os.path.join(branch_calculation_path, folder_name)):
+        branch_calculation_path = os.path.join(branch_calculation_path, folder_name)
+
+    # Delete the folder and all its contents
+    if os.path.exists(branch_calculation_path):
+        shutil.rmtree(branch_calculation_path)
+
+    # Redirect to the dashboard or appropriate page
+    return HttpResponseRedirect(reverse('dashboard'))
 
 
 

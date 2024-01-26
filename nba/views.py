@@ -10,18 +10,21 @@ from django.http import JsonResponse, HttpResponse, FileResponse
 from django.core.files.storage import FileSystemStorage
 import os
 from django.conf import settings
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from datetime import datetime
-
+import uuid
+import zipfile
+import shutil
+from django.urls import reverse
 
 
 from .Part_1.driver import main1
-from .Part_2.driver import driver_part3
+from .Part_2.driver import driver_part2
 
 def homepage(request):
     return render(request, 'nba/index.html')
@@ -87,19 +90,33 @@ def dashboard(request):
     user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
     Generated_Templates_dir = os.path.join(user_directory, 'Generated_Templates')
 
-    # List all files in the user directory
+    #Template Generation
     Generated_Templates = os.listdir(Generated_Templates_dir)
-    #get the time stamp of the file
     file_time_stamp = []
     for file in Generated_Templates:
         file_time_stamp.append(os.path.getmtime(os.path.join(Generated_Templates_dir, file)))
-
-    #MAKE IT AS HH:MM:SS
     file_time_stamp = [datetime.fromtimestamp(i).strftime("%H:%M:%S") for i in file_time_stamp]
     Generated_Templates = dict(zip(Generated_Templates, file_time_stamp))
+    # End of Template Generation
 
-    
-    return render(request, 'nba/dashboard.html', {'Generated_Templates': Generated_Templates})
+    #Branch Calculation
+    Branch_Calculation_dir = os.path.join(user_directory, 'Branch_Calculation')
+    Branch_Calculation = os.listdir(Branch_Calculation_dir)
+    file_time_stamp = []
+    files=[]
+    for folder in Branch_Calculation:
+        file_time_stamp.append(os.path.getmtime(os.path.join(Branch_Calculation_dir, folder)))
+        files.append(os.listdir(os.path.join(Branch_Calculation_dir, folder)))
+    file_time_stamp = [datetime.fromtimestamp(i).strftime("%d-%m-%Y %H:%M") for i in file_time_stamp]
+
+    #i want the dictionary as {folder_name: [[file_name,file_name],file_time_stamp]}
+    Branch_Calculation = dict(zip(Branch_Calculation, zip(files,file_time_stamp)))
+
+    # End of Branch Calculation
+
+
+    return render(request, 'nba/dashboard.html', {'Generated_Templates': Generated_Templates, 
+                                                  'Branch_Calculation': Branch_Calculation})
 
 def logout(request):
     auth.logout(request)
@@ -154,10 +171,7 @@ def submit(request):
     # If the request method is not POST, handle accordingly (redirect to a form, etc.)
     return render(request, 'nba/dashboard.html')
 
-from django.http import FileResponse
 
-import os
-import uuid
 @csrf_exempt
 def upload_multiple_files_branch(request):
     if request.method == 'POST':
@@ -169,9 +183,8 @@ def upload_multiple_files_branch(request):
         if num_files == 0:
             return JsonResponse({'status': 'error', 'message': 'No files were uploaded.'})
         
-        timestamp = datetime.now().strftime("%H%M%S")
         unique_id = str(uuid.uuid4())
-        unique_folder_name = f"{num_files}_{timestamp}_{unique_id}"
+        unique_folder_name = f"{num_files}Files_BranchCalculation_{unique_id}"
         unique_folder_path = os.path.join(branch_directory, unique_folder_name)
         os.makedirs(unique_folder_path, exist_ok=True)
         fs = FileSystemStorage(location=unique_folder_path)
@@ -179,7 +192,9 @@ def upload_multiple_files_branch(request):
         saved_files = []
         for uploaded_file in uploaded_files:
             filename=fs.save(uploaded_file.name, uploaded_file)
-            saved_files.append(filename)
+            saved_files.append(os.path.join(unique_folder_path, filename))
+
+
         return JsonResponse({'status': 'success', 'files': saved_files, 'folder': unique_folder_name})
     else:
         # If it's not a POST request, handle accordingly
@@ -214,10 +229,7 @@ def upload_multiple_files_po(request):
 
 
 
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, Http404
-import os
-from django.conf import settings
+
 
 def download_file(request, file_name):
     # Paths to the different folders
@@ -239,6 +251,26 @@ def download_file(request, file_name):
     # If the file does not exist
     raise Http404("File not found")
 
+def download_folder(request, folder_name):
+    display_name = request.user.username.split('@')[0]
+    branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation', folder_name)
+
+    # Create a ZIP file in memory
+    response = HttpResponse(content_type='application/zip')
+    zip_filename = f"{folder_name}.zip"
+    response['Content-Disposition'] = f'attachment; filename={zip_filename}'
+
+    with zipfile.ZipFile(response, 'w') as zip_file:
+        for foldername, subfolders, filenames in os.walk(branch_calculation_path):
+            for filename in filenames:
+                # Create complete filepath of file in directory
+                file_path = os.path.join(foldername, filename)
+                # Add file to zip
+                zip_file.write(file_path, os.path.relpath(file_path, branch_calculation_path))
+
+    return response
+
+
 def delete_file(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
@@ -247,16 +279,26 @@ def delete_file(request, file_name):
     # Check which folder contains the file
     if os.path.isfile(os.path.join(empty_templates_path, file_name)):
         file_path = os.path.join(empty_templates_path, file_name)
-    else:
-        raise Http404("File not found")
 
     # If the file exists, delete it
     if os.path.exists(file_path):
         os.remove(file_path)
-        return redirect('dashboard')
+        return HttpResponseRedirect(reverse('dashboard'))
 
-    # If the file does not exist
-    raise Http404("File not found")
+def delete_folder(request, folder_name):
+    display_name = request.user.username.split('@')[0]
+    branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation')
+
+    # Check if the directory exists
+    if os.path.isdir(os.path.join(branch_calculation_path, folder_name)):
+        branch_calculation_path = os.path.join(branch_calculation_path, folder_name)
+
+    # Delete the folder and all its contents
+    if os.path.exists(branch_calculation_path):
+        shutil.rmtree(branch_calculation_path)
+
+    # Redirect to the dashboard or appropriate page
+    return HttpResponseRedirect(reverse('dashboard'))
 
 
 

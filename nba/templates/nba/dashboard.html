@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load custom_filters %}
 
 <html>
 
@@ -118,7 +119,7 @@
             backdrop-filter: blur(8px); /* Apply a blur effect to the background */
             -webkit-backdrop-filter: blur(8px); /* For Safari */
         }
-        #TemplateLeft, #COcalcdiv, #BranchLeft {
+        #TemplateLeft, #BranchLeft , #BatchLeft, #TemplateRight, #BranchRight, #BatchRight {
             display: none;
         }
         .custom-submit-btn {
@@ -175,6 +176,46 @@
             margin-right: auto; /* push the timestamp to the right */
             padding-left: 10px; /* space between file name and timestamp */
         }
+
+        .folder-entry {
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+            padding: 10px;
+            border-radius: 25px;
+            border-color: #5724aa;
+            border-style: solid;
+            background-color: #e9ecef;
+            margin-bottom: 10px;
+        }
+                    /*on hover display change the colour*/
+        .folder-entry:hover {
+            background-color: #d1d1d1;
+        }
+
+       
+
+        .foldername {
+            /*make it ... if it is too long*/
+            font-size: 1em; /* smaller font size for the timestamp */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .folder-timestamp {
+            font-size: 0.9em; /* smaller font size for the timestamp */
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+        }
+
+        .files-list {
+            color: #000000;
+        }
+
 
 
 
@@ -306,7 +347,7 @@
                     <form id="BranchLeft" name="BranchLeft" method="POST" action="{% url 'upload_multiple_files_branch' %}" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="ExcelFiles">Upload all class Excel File for Branch calcualtions</label>
-                            <input type="file" name="ExcelFiles" multiple required class="form-control">
+                            <input type="file" name="ExcelFiles" id="ExcelFiles" multiple required class="form-control" accept=".xlsx">
                         </div>
                     
                         <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Upload</button>
@@ -317,7 +358,7 @@
 
                 <!-- Right Column: Files -->
                 <div class="col-md-6" name="files" >
-                    <div id="TemplateRight" style="display: none;">
+                    <div id="TemplateRight" style="display: none">
                         <h3>Generated Templates:</h3>
                         {% for file_name, timestamp in Generated_Templates.items %}
                             <div class="file-entry mb-2">
@@ -340,19 +381,75 @@
                         {% endfor %}
                     </div>
 
-                
-                        
+                    <div id="BranchRight" style="display: none">
+                        <h3>Calculated Files</h3>
+                        {% for folder_name, data in Branch_Calculation.items %}
+                            <div class="folder-entry mb-2">
+                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="files{{ forloop.counter }}">
+                                    <!-- Display Folder Name -->
+                                    <span class="foldername">
+                                            {{ folder_name|split_folder_name }}
+                                    </span>
+                    
+                                    <!-- Timestamp -->
+                                    <small class="folder-timestamp">{{ data.1 }}</small>
+                                    
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="{% url 'delete_folder' folder_name %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                    
+                                <!-- Hidden Files List -->
+                                <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
+                                    {% for file in data.0 %}
+                                        <p>&ensp;&ensp; |_{{ file }}</p>
+                                    {% endfor %}
+                                    <button type="button" class="btn btn-success"a href="{% url 'download_folder' folder_name %}">
+                                        Download
+                                        </a>
+                                    </button>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No calculated files found.</p>
+                        {% endfor %}
+                    </div>
+                    
+
                 </div>
+                        
+            </div>
                 
           
-            </div>
-        </div>            
+        </div>
+    </div>            
                
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleFilesContainers = document.querySelectorAll('.toggle-files');
+        
+            toggleFilesContainers.forEach(container => {
+                container.addEventListener('click', function(event) {
+                    // Prevent triggering when clicking on form elements
+                    if (!['BUTTON', 'A', 'INPUT'].includes(event.target.tagName)) {
+                        const targetId = this.getAttribute('data-target');
+                        const targetElement = document.getElementById(targetId);        
+                        if (targetElement.style.display === "none") {
+                            targetElement.style.display = "block";
+                        } else {
+                            targetElement.style.display = "none";
+                        }
+                    }
+                });
+            });
+        })
+        
 
         document.getElementById("TemplateBtn").onclick = function() {
             document.getElementById("TemplateLeft").style.display = "block";
@@ -445,24 +542,7 @@
             }
         });
     
-        document.addEventListener('DOMContentLoaded', function() {
-        var downloadBtn = document.getElementById("downloadBtn");
-        if (downloadBtn) {
-            downloadBtn.onclick = function() {
-                var fileContent = "Your file content here";
-                var blob = new Blob([fileContent], {type: "text/plain"});
-                var url = URL.createObjectURL(blob);
 
-                var downloadLink = document.createElement("a");
-                downloadLink.href = url;
-                downloadLink.download = "filename.txt";
-
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-            };
-        }
-    });
     </script>
  
     

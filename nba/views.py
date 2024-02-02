@@ -24,7 +24,7 @@ from django.urls import reverse
 
 
 from .Part_1.driver import main1
-from .Part_2.driver import driver_part2
+#from .Part_2.driver import driver_part2
 
 def homepage(request):
     return render(request, 'nba/index.html')
@@ -156,14 +156,14 @@ def submit(request):
         print(Component_Details)
         # Directory for empty templates
         display_name = request.user.username.split('@')[0]
-        empty_templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
+        empty_templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
 
         # Generate file name for the Excel file
         excel_file_path = os.path.join(empty_templates_dir)
 
         # Call main1 function with the necessary data and file path
         generated_file_name = main1(data, Component_Details, excel_file_path)
-        file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates', generated_file_name)
+        file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates', generated_file_name)
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=generated_file_name)
             return response
@@ -234,7 +234,7 @@ def upload_multiple_files_po(request):
 def download_file(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
-    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
+    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, '')
     # Check which folder contains the file
     if os.path.isfile(os.path.join(empty_templates_path, file_name)):
         file_path = os.path.join(empty_templates_path, file_name)

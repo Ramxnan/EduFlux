@@ -26,7 +26,7 @@ def driver_part1(data, Component_Details, file_path):
 
     wb.create_sheet(f"{data['Section']}_Input_Details")
     ws = wb[f"{data['Section']}_Input_Details"]
-    ws = input_detail(data,ws)
+    ws = input_detail(data,Component_Details,ws)
     ws = indirect_co_assessment(data,ws)
     adjust_width(ws)
     ws = CO_PO_Table(data,ws)

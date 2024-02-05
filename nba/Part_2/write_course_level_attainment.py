@@ -206,7 +206,7 @@ def write_course_level_attainment(data,Component_Details,aw):
     
 
     current_row+=1
-    aw.cell(row=current_row, column=2).value = "COs\\POs"
+    aw.cell(row=current_row, column=2).value = "COs\POs"
     aw.cell(row=current_row, column=2).font = Font(bold=True, color="FFFFFF")
     aw.cell(row=current_row, column=2).alignment = Alignment(horizontal='center', vertical='center')
     aw.cell(row=current_row, column=2).border = Border(left=Side(border_style='thin', color='000000'),

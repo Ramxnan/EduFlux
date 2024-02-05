@@ -21,6 +21,9 @@ def driver_part1(data, Component_Details, file_path):
     #replace spaces in component details keys with underscore
     Component_Details = {key.replace(" ","_"):value for key,value in Component_Details.items()}
 
+    #prefix all the keys with the section name
+    Component_Details = {f"{data['Section']}_{key}":value for key,value in Component_Details.items()}
+
     wb.create_sheet(f"{data['Section']}_Input_Details")
     ws = wb[f"{data['Section']}_Input_Details"]
     ws = input_detail(data,ws)
@@ -36,8 +39,8 @@ def driver_part1(data, Component_Details, file_path):
 
     #iterate throught Keys of Component_Details and make a worksheet for each key
     for key in Component_Details.keys():
-        wb.create_sheet(f"{data['Section']}_{key}")
-        ws = wb[f"{data['Section']}_{key}"]
+        wb.create_sheet(key)
+        ws = wb[key]
         ws.title = key
         ws = qn_co_mm_btl(data, key, Component_Details[key], ws)
         ws = studentmarks(data, key, Component_Details[key], ws)
@@ -45,9 +48,6 @@ def driver_part1(data, Component_Details, file_path):
         ws = cummulative_co_mm_btl(data, key, Component_Details[key], ws)   
         ws = cummulative_studentmarks(data, key, Component_Details[key], ws)
 
-
-        #adjust_width(ws)
-    
     wb.create_sheet(f"{data['Section']}_Internal_Components")
     ws = wb[f"{data['Section']}_Internal_Components"]
     ws = Component_calculation(data,Component_Details,ws,"I")
@@ -66,7 +66,7 @@ def driver_part1(data, Component_Details, file_path):
 
     #save workbook
     unique_id = str(uuid.uuid4())
-    excel_file_name = f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}_{data['Section']}_{data['Semester']}_{unique_id}.xlsx"
+    excel_file_name = f"{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Section']}_{data['Subject_Code']}_{unique_id}.xlsx"
     excel_file_name.replace(" ","_")
     full_path = os.path.join(file_path, excel_file_name)
     wb.save(full_path)
@@ -92,17 +92,17 @@ if __name__ == "__main__":
     #      "target":60
     #         }
     
-    data={
-        "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
-        "Academic_year":"2022-2023",  
-        "Batch":2019,
-        "Branch":"CSE",                                                                          #set branch
-        "Subject_Name":"Computer system and architecture",
-        "Subject_Code":"19CSE345",
-        "Section":"A",
-        "Semester":"Even",
-        "Number_of_Students":47,
-        "Number_of_COs":4}
+    # data={
+    #     "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
+    #     "Academic_year":"2022-2023",  
+    #     "Batch":2019,
+    #     "Branch":"CSE",                                                                          #set branch
+    #     "Subject_Name":"Computer system and architecture",
+    #     "Subject_Code":"19CSE345",
+    #     "Section":"A",
+    #     "Semester":"Even",
+    #     "Number_of_Students":47,
+    #     "Number_of_COs":4}
     
     data={
         "Teacher":"Dr. S. S. Patil",                                                              #set teacher name

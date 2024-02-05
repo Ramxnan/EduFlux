@@ -154,9 +154,9 @@ def Component_calculation(data,Component_Details,aw,component_type):
     aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+10}'].font = Font(color='FFFFFF')
 
     if component_type=="I":
-            aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+11}']="I_attainment %"
+            aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+11}']="I-attainment %"
     else:
-        aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+11}']="E_attainment %"
+        aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+11}']="E-attainment %"
     aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+11}'].alignment = Alignment(horizontal='center')
     aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+11}'].font = Font(bold=True)
     aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+11}'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')

@@ -44,7 +44,7 @@ if __name__ == "__main__":
         "Section":"A",
         "Semester":"Even",
         "Number_of_Students":47,
-        "Number_of_COs":4}
+        "Number_of_COs":8}
     
     # Component_Details={"P1_I":{"Number_of_questions":3},
     #                     "P2_I":{"Number_of_questions":6},

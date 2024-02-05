@@ -120,14 +120,14 @@ def write_course_level_attainment(data,Component_Details,aw):
         index=1
         for j in range(start, start+interval+1):
             #print out COPO mapping
-            aw.cell(row=j, column=2).value =f'=Input_Details!{get_column_letter(index+4)}2'
+            aw.cell(row=j, column=2).value =f'={data["Section"]}_Input_Details!{get_column_letter(index+4)}2'
             aw.cell(row=j, column=2).alignment = Alignment(horizontal='center', vertical='center')
             aw.cell(row=j, column=2).border = Border(left=Side(border_style='thin', color='000000'),
                                  right=Side(border_style='thin', color='000000'),
                                  top=Side(border_style='thin', color='000000'),
                                  bottom=Side(border_style='thin', color='000000'))
             
-            aw.cell(row=j, column=3).value = f'=Input_Details!{get_column_letter(index+4)}{i+2}'
+            aw.cell(row=j, column=3).value = f'={data["Section"]}_Input_Details!{get_column_letter(index+4)}{i+2}'
             aw.cell(row=j, column=3).alignment = Alignment(horizontal='center', vertical='center')
             aw.cell(row=j, column=3).border = Border(left=Side(border_style='thin', color='000000'),
                                  right=Side(border_style='thin', color='000000'),
@@ -160,28 +160,28 @@ def write_course_level_attainment(data,Component_Details,aw):
                 external_components_num+=1
         col=(data["Number_of_COs"]*internal_components_num) + (1*internal_components_num) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
-        aw.cell(row=start, column=4).value=f'=Internal_Components!{get_column_letter(col)}{row}'
+        aw.cell(row=start, column=4).value=f'={data["Section"]}_Internal_Components!{get_column_letter(col)}{row}'
 
         aw.cell(row=start, column=5).value=f'=IF(AND({get_column_letter(4)}{start}>=0,{get_column_letter(4)}{start}<40),1,IF(AND({get_column_letter(4)}{start}>=40,{get_column_letter(4)}{start}<60),2,IF(AND({get_column_letter(4)}{start}>=60,{get_column_letter(4)}{start}<=100),3,"0")))'
 
         col=(data["Number_of_COs"]*external_components_num) + (1*external_components_num) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
-        aw.cell(row=start, column=6).value=f'=External_Components!{get_column_letter(col)}{row}'
+        aw.cell(row=start, column=6).value=f'={data["Section"]}_External_Components!{get_column_letter(col)}{row}'
 
         aw.cell(row=start, column=7).value=f'=IF(AND({get_column_letter(6)}{start}>=0,{get_column_letter(6)}{start}<40),1,IF(AND({get_column_letter(6)}{start}>=40,{get_column_letter(6)}{start}<60),2,IF(AND({get_column_letter(6)}{start}>=60,{get_column_letter(6)}{start}<=100),3,"0")))'
 
         column_5_cell = f'{get_column_letter(5)}{start}'
         column_7_cell = f'{get_column_letter(7)}{start}'
-        calculation = f'{column_5_cell}*(Input_Details!B16/100)+{column_7_cell}*Input_Details!B15/100'
+        calculation = f'{column_5_cell}*({data["Section"]}_Input_Details!B16/100)+{column_7_cell}*{data["Section"]}_Input_Details!B15/100'
 
         formula = f'={calculation}'
         aw.cell(row=start, column=8).value = formula
 
-        aw.cell(row=start, column=9).value=f'=IF(Input_Details!E{2+data["Number_of_COs"]+4+rowindex}>0,Input_Details!E{2+data["Number_of_COs"]+4+rowindex},"0")'
+        aw.cell(row=start, column=9).value=f'=IF({data["Section"]}_Input_Details!E{2+data["Number_of_COs"]+4+rowindex}>0,{data["Section"]}_Input_Details!E{2+data["Number_of_COs"]+4+rowindex},"0")'
 
         aw.cell(row=start, column=10).value=f'=IF(AND({get_column_letter(9)}{start}>=0,{get_column_letter(9)}{start}<40),1,IF(AND({get_column_letter(9)}{start}>=40,{get_column_letter(9)}{start}<60),2,IF(AND({get_column_letter(9)}{start}>=60,{get_column_letter(9)}{start}<=100),3,"0")))'
 
-        aw.cell(row=start, column=11).value=f'=({get_column_letter(8)}{start}*(Input_Details!B17/100))+({get_column_letter(10)}{start}*(Input_Details!B18/100))'
+        aw.cell(row=start, column=11).value=f'=({get_column_letter(8)}{start}*({data["Section"]}_Input_Details!B17/100))+({get_column_letter(10)}{start}*({data["Section"]}_Input_Details!B18/100))'
         
         rowindex+=1
         start=start+interval
@@ -289,8 +289,8 @@ def write_course_level_attainment(data,Component_Details,aw):
     aw[f"{get_column_letter(current_col)}{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
 
     for po in range(1,12+1):
-        main_formula = f'SUM({get_column_letter(po+2)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+2)}{current_row-2})/(SUM(Input_Details!{get_column_letter(4+po)}3:Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2}))'
-        complete_formula = f'=IF(AND(SUM({get_column_letter(po+2)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+2)}{current_row-2})>0, SUM(Input_Details!{get_column_letter(4+po)}3:Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
+        main_formula = f'SUM({get_column_letter(po+2)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+2)}{current_row-2})/(SUM({data["Section"]}_Input_Details!{get_column_letter(4+po)}3:{data["Section"]}_Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2}))'
+        complete_formula = f'=IF(AND(SUM({get_column_letter(po+2)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+2)}{current_row-2})>0, SUM({data["Section"]}_Input_Details!{get_column_letter(4+po)}3:{data["Section"]}_Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
         aw[f"{get_column_letter(po+2)}{current_row}"] = complete_formula
         aw[f"{get_column_letter(po+2)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(po+2)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
@@ -299,8 +299,8 @@ def write_course_level_attainment(data,Component_Details,aw):
                                  bottom=Side(border_style='thin', color='000000'))
 
     for pso in range(1,6):
-        main_formula = f'SUM({get_column_letter(12+2+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+2+pso)}{current_row-2})/(SUM(Input_Details!{get_column_letter(12+4+pso)}3:Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2}))'
-        complete_formula = f'=IF(AND(SUM({get_column_letter(12+2+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+2+pso)}{current_row-2})>0, SUM(Input_Details!{get_column_letter(12+4+pso)}3:Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
+        main_formula = f'SUM({get_column_letter(12+2+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+2+pso)}{current_row-2})/(SUM({data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}3:{data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2}))'
+        complete_formula = f'=IF(AND(SUM({get_column_letter(12+2+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+2+pso)}{current_row-2})>0, SUM({data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}3:{data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
         aw[f"{get_column_letter(12+2+pso)}{current_row}"] = complete_formula
         aw[f"{get_column_letter(12+2+pso)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(12+2+pso)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),

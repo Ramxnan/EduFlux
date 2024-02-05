@@ -25,6 +25,7 @@ from django.urls import reverse
 
 from .Part_1.driver import driver_part1
 #from .Part_2.driver import driver_part2
+#from .Part_3.driver import driver_part3
 
 def homepage(request):
     return render(request, 'nba/index.html')
@@ -204,28 +205,28 @@ def upload_multiple_files_branch(request):
 
 
 
-@csrf_exempt   
-def upload_multiple_files_po(request):
-    if request.method == 'POST':
-        uploaded_files = request.FILES.getlist('files')
-        PO_uploaded = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'POCalculations')
-        fs = FileSystemStorage(location=PO_uploaded)
-        for uploaded_file in uploaded_files:
-            fs.save(uploaded_file.name, uploaded_file)
-        po_calc_file_name=driver_part3(PO_uploaded, PO_uploaded)
-        po_calc_file_path = os.path.join(PO_uploaded, po_calc_file_name)
-        if os.path.exists(po_calc_file_path):
-            return FileResponse(open(po_calc_file_path, 'rb'), as_attachment=True, filename=po_calc_file_name)
+# @csrf_exempt   
+# def upload_multiple_files_po(request):
+#     if request.method == 'POST':
+#         uploaded_files = request.FILES.getlist('files')
+#         PO_uploaded = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'POCalculations')
+#         fs = FileSystemStorage(location=PO_uploaded)
+#         for uploaded_file in uploaded_files:
+#             fs.save(uploaded_file.name, uploaded_file)
+#         po_calc_file_name=driver_part3(PO_uploaded, PO_uploaded)
+#         po_calc_file_path = os.path.join(PO_uploaded, po_calc_file_name)
+#         if os.path.exists(po_calc_file_path):
+#             return FileResponse(open(po_calc_file_path, 'rb'), as_attachment=True, filename=po_calc_file_name)
         
 
-        return redirect('dashboard')
+#         return redirect('dashboard')
 
-        # You can redirect to a success page or do something else after processing files
-        #return redirect('success_page')  # Redirect to a success page or dashboard
+#         # You can redirect to a success page or do something else after processing files
+#         #return redirect('success_page')  # Redirect to a success page or dashboard
 
-    else:
-        # If it's not a POST request, redirect to dashboard or appropriate page
-        return redirect('dashboard')
+#     else:
+#         # If it's not a POST request, redirect to dashboard or appropriate page
+#         return redirect('dashboard')
 
 
 

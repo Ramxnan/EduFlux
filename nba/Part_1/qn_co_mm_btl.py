@@ -26,7 +26,7 @@ def qn_co_mm_btl(data,key, Component_details,aw):  #function to create qn_co_mm_
     for qno in range(1,Component_details+1):
         aw[get_column_letter(qno+2)+'2']=f"Q{qno}"        
         aw[get_column_letter(qno+2) + '6'].value = f'=CONCATENATE("{data["Subject_Code"]+"_CO"}", {get_column_letter(qno+2)}5)'
-        aw[get_column_letter(qno+2)+'4']=f'=Input_Details!B14/100*{get_column_letter(qno+2)}3'
+        aw[get_column_letter(qno+2)+'4']=f'={data["Section"]}_Input_Details!B14/100*{get_column_letter(qno+2)}3'
         
 
     light_red_fill = PatternFill(start_color="FF5E5E", end_color="FF5E5E", fill_type="solid")

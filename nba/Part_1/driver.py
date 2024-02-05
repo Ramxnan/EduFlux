@@ -13,7 +13,7 @@ from .printout import printout
 import os
 import uuid
 
-def driver_part1(data,Component_Details, file_path):
+def driver_part1(data, Component_Details, file_path):
     #create openpyxl workbook
     wb = Workbook()
     wb.remove(wb.active)
@@ -21,8 +21,8 @@ def driver_part1(data,Component_Details, file_path):
     #replace spaces in component details keys with underscore
     Component_Details = {key.replace(" ","_"):value for key,value in Component_Details.items()}
 
-    wb.create_sheet("Input_Details")
-    ws = wb["Input_Details"]
+    wb.create_sheet(f"{data['Section']}_Input_Details")
+    ws = wb[f"{data['Section']}_Input_Details"]
     ws = input_detail(data,ws)
     ws = indirect_co_assessment(data,ws)
     adjust_width(ws)
@@ -36,8 +36,8 @@ def driver_part1(data,Component_Details, file_path):
 
     #iterate throught Keys of Component_Details and make a worksheet for each key
     for key in Component_Details.keys():
-        wb.create_sheet(key)
-        ws = wb[key]
+        wb.create_sheet(f"{data['Section']}_{key}")
+        ws = wb[f"{data['Section']}_{key}"]
         ws.title = key
         ws = qn_co_mm_btl(data, key, Component_Details[key], ws)
         ws = studentmarks(data, key, Component_Details[key], ws)
@@ -48,26 +48,24 @@ def driver_part1(data,Component_Details, file_path):
 
         #adjust_width(ws)
     
-    wb.create_sheet("Internal_Components")
-    ws = wb["Internal_Components"]
+    wb.create_sheet(f"{data['Section']}_Internal_Components")
+    ws = wb[f"{data['Section']}_Internal_Components"]
     ws = Component_calculation(data,Component_Details,ws,"I")
 
-    wb.create_sheet("External_Components")
-    ws = wb["External_Components"]
+    wb.create_sheet(f"{data['Section']}_External_Components")
+    ws = wb[f"{data['Section']}_External_Components"]
     ws = Component_calculation(data,Component_Details,ws,"E")
 
-    wb.create_sheet("Course_level_Attainment")
-    ws = wb["Course_level_Attainment"]
+    wb.create_sheet(f"{data['Section']}_Course_level_Attainment")
+    ws = wb[f"{data['Section']}_Course_level_Attainment"]
     ws=write_course_level_attainment(data, Component_Details, ws)
 
-    wb.create_sheet("Printout")
-    ws = wb["Printout"]
+    wb.create_sheet(f"{data['Section']}_Printout")
+    ws = wb[f"{data['Section']}_Printout"]
     ws=printout(ws,data)
 
     #save workbook
-    #wb.save(f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}.xlsx")
     unique_id = str(uuid.uuid4())
-
     excel_file_name = f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}_{data['Section']}_{data['Semester']}_{unique_id}.xlsx"
     excel_file_name.replace(" ","_")
     full_path = os.path.join(file_path, excel_file_name)
@@ -137,4 +135,4 @@ if __name__ == "__main__":
     # Component_Details={"P1_I":{"Number_of_questions":3},
     #                     "EndSem_E":{"Number_of_questions":3}}
     #main1(data,Component_Details)
-    main1(data,Component_Details, os.getcwd())
+    driver_part1(data,Component_Details, os.getcwd())

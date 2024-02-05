@@ -9,6 +9,8 @@ from openpyxl.styles import Protection
 import numpy as np
 
 def printout_template(aw, data):
+    row=1
+    column=1
     aw.merge_cells("A1:A3")
     aw["A1"]="Course"
     aw["A1"].font = Font(bold=True)
@@ -110,7 +112,7 @@ def printout_template(aw, data):
             
     aw.merge_cells("G2:H2")
 # Formula to concatenate the header text with values from Input_Details!B15 and B16
-    aw["G2"].value = f"=Input_Details!B15 & \" % of CIE + \" & Input_Details!B16 & \" % of SEE\""
+    aw["G2"].value = f"={data['Section']}_Input_Details!B15 & \" % of CIE + \" & {data['Section']}_Input_Details!B16 & \" % of SEE\""
     aw["G2"].font = Font(bold=True)
     aw["G2"].alignment = Alignment(horizontal='center', vertical='center')
     for row in aw.iter_rows(min_row=2, max_row=2, min_col=7, max_col=8):
@@ -170,7 +172,7 @@ def printout_template(aw, data):
             
     aw.merge_cells("K2:L2")
 # Formula to concatenate the header text with values from Input_Details!B17 and B18
-    aw["K2"].value = f"=Input_Details!B17 & \" % of Direct + \" & Input_Details!B18 & \" % of Indirect\""
+    aw["K2"].value = f"={data['Section']}_Input_Details!B17 & \" % of Direct + \" & {data['Section']}_Input_Details!B18 & \" % of Indirect\""
     aw["K2"].font = Font(bold=True)
     aw["K2"].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
     for row in aw.iter_rows(min_row=2, max_row=2, min_col=11, max_col=12):
@@ -271,7 +273,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
         
-        aw[f"C{4+i}"]=f"=Course_Level_Attainment!D{5+(i*interval)}"
+        aw[f"C{4+i}"]=f"={data['Section']}_Course_Level_Attainment!D{5+(i*interval)}"
         aw[f"C{4+i}"].font = Font(bold=True)
         aw[f"C{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"C{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -279,7 +281,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
 
-        aw[f"D{4+i}"]=f"=Course_level_Attainment!E{5+(i*interval)}"
+        aw[f"D{4+i}"]=f"={data['Section']}_Course_level_Attainment!E{5+(i*interval)}"
         aw[f"D{4+i}"].font = Font(bold=True, color="fe3400")
         aw[f"D{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"D{4+i}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
@@ -288,7 +290,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
         
-        aw[f"E{4+i}"]=f"=Course_level_Attainment!F{5+(i*interval)}"
+        aw[f"E{4+i}"]=f"={data['Section']}_Course_level_Attainment!F{5+(i*interval)}"
         aw[f"E{4+i}"].font = Font(bold=True)
         aw[f"E{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"E{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -296,7 +298,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
 
-        aw[f"F{4+i}"]=f"=Course_level_Attainment!G{5+(i*interval)}"
+        aw[f"F{4+i}"]=f"={data['Section']}_Course_level_Attainment!G{5+(i*interval)}"
         aw[f"F{4+i}"].font = Font(bold=True, color="fe3400")
         aw[f"F{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"F{4+i}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
@@ -305,7 +307,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
 
-        aw[f"G{4+i}"]=f"=C{4+i}*(Input_Details!B16/100)+E{4+i}*(Input_Details!B15/100)"
+        aw[f"G{4+i}"]=f"=C{4+i}*({data['Section']}_Input_Details!B16/100)+E{4+i}*({data['Section']}_Input_Details!B15/100)"
         aw[f"G{4+i}"].font = Font(bold=True)
         aw[f"G{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"G{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -313,7 +315,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
         
-        aw[f"H{4+i}"]=f"=Course_level_Attainment!H{5+(i*interval)}"
+        aw[f"H{4+i}"]=f"={data['Section']}_Course_level_Attainment!H{5+(i*interval)}"
         aw[f"H{4+i}"].font = Font(bold=True, color="fe3400")
         aw[f"H{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"H{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -322,7 +324,7 @@ def printout(aw, data):
                                 right=Side(border_style='thin', color='000000'))
         aw[f"H{4+i}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
         
-        aw[f"I{4+i}"]=f"=Course_level_Attainment!I{5+(i*interval)}"
+        aw[f"I{4+i}"]=f"={data['Section']}_Course_level_Attainment!I{5+(i*interval)}"
         aw[f"I{4+i}"].font = Font(bold=True)
         aw[f"I{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"I{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -330,7 +332,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
         
-        aw[f"J{4+i}"]=f"=Course_level_Attainment!J{5+(i*interval)}"
+        aw[f"J{4+i}"]=f"={data['Section']}_Course_level_Attainment!J{5+(i*interval)}"
         aw[f"J{4+i}"].font = Font(bold=True, color="fe3400")
         aw[f"J{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"J{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -339,7 +341,7 @@ def printout(aw, data):
                                 right=Side(border_style='thin', color='000000'))
         aw[f"J{4+i}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
         
-        aw[f"K{4+i}"]=f"=(G{4+i}*(Input_Details!B17/100))+(I{4+i}*(Input_Details!B18/100))"
+        aw[f"K{4+i}"]=f"=(G{4+i}*({data['Section']}_Input_Details!B17/100))+(I{4+i}*({data['Section']}_Input_Details!B18/100))"
         aw[f"K{4+i}"].font = Font(bold=True)
         aw[f"K{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"K{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -347,7 +349,7 @@ def printout(aw, data):
                                 left=Side(border_style='thin', color='000000'),
                                 right=Side(border_style='thin', color='000000'))
         
-        aw[f"L{4+i}"]=f"=Course_level_Attainment!K{5+(i*interval)}"
+        aw[f"L{4+i}"]=f"={data['Section']}_Course_level_Attainment!K{5+(i*interval)}"
         aw[f"L{4+i}"].font = Font(bold=True, color="fe3400")
         aw[f"L{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"L{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -356,7 +358,7 @@ def printout(aw, data):
                                 right=Side(border_style='thin', color='000000'))
         aw[f"L{4+i}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
         
-        aw[f"M{4+i}"]=f"=Input_Details!B19"
+        aw[f"M{4+i}"]=f"={data['Section']}_Input_Details!B19"
         aw[f"M{4+i}"].font = Font(bold=True)
         aw[f"M{4+i}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"M{4+i}"].border = Border(top=Side(border_style='thin', color='000000'),

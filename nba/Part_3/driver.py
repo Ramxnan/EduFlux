@@ -10,7 +10,7 @@ import numpy as np
 from printout import printout_template
 
 
-def driver_part2(input_dir_path, output_dir_path):
+def driver_part3(input_dir_path, output_dir_path):
     wbwrite = Workbook()
     wbwrite.remove(wbwrite.active)
     wbwrite.create_sheet("Printouts",0)
@@ -243,4 +243,4 @@ if __name__ == "__main__":
     file2="C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_2\\2019_19MEE444_PCE_A_Even.xlsx"
     input_dir_path="C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_2"
     output_dir_path="C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_2"
-    driver_part2(input_dir_path, output_dir_path)
+    driver_part3(input_dir_path, output_dir_path)

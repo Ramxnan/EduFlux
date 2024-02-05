@@ -23,7 +23,7 @@ import shutil
 from django.urls import reverse
 
 
-from .Part_1.driver import main1
+from .Part_1.driver import driver_part1
 #from .Part_2.driver import driver_part2
 
 def homepage(request):
@@ -95,7 +95,7 @@ def dashboard(request):
     file_time_stamp = []
     for file in Generated_Templates:
         file_time_stamp.append(os.path.getmtime(os.path.join(Generated_Templates_dir, file)))
-    file_time_stamp = [datetime.fromtimestamp(i).strftime("%H:%M:%S") for i in file_time_stamp]
+    file_time_stamp = [datetime.fromtimestamp(i).strftime("%d-%m-%Y %H:%M") for i in file_time_stamp]
     Generated_Templates = dict(zip(Generated_Templates, file_time_stamp))
     # End of Template Generation
 
@@ -109,7 +109,7 @@ def dashboard(request):
         files.append(os.listdir(os.path.join(Branch_Calculation_dir, folder)))
     file_time_stamp = [datetime.fromtimestamp(i).strftime("%d-%m-%Y %H:%M") for i in file_time_stamp]
 
-    #i want the dictionary as {folder_name: [[file_name,file_name],file_time_stamp]}
+    #dictionary as {folder_name: [[file_name,file_name],file_time_stamp]}
     Branch_Calculation = dict(zip(Branch_Calculation, zip(files,file_time_stamp)))
 
     # End of Branch Calculation
@@ -154,15 +154,15 @@ def submit(request):
             Component_Details[full_component_name] = int(component_value)
 
         print(Component_Details)
-        # Directory for empty templates
+        # Directory for generated templates
         display_name = request.user.username.split('@')[0]
-        empty_templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
+        Generated_Templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
 
         # Generate file name for the Excel file
-        excel_file_path = os.path.join(empty_templates_dir)
+        excel_file_path = os.path.join(Generated_Templates_dir)
 
         # Call main1 function with the necessary data and file path
-        generated_file_name = main1(data, Component_Details, excel_file_path)
+        generated_file_name = driver_part1(data, Component_Details, excel_file_path)
         file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates', generated_file_name)
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=generated_file_name)
@@ -234,10 +234,10 @@ def upload_multiple_files_po(request):
 def download_file(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
-    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, '')
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
     # Check which folder contains the file
-    if os.path.isfile(os.path.join(empty_templates_path, file_name)):
-        file_path = os.path.join(empty_templates_path, file_name)
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
     else:
         raise Http404("File not found")
 
@@ -274,11 +274,11 @@ def download_folder(request, folder_name):
 def delete_file(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
-    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
 
     # Check which folder contains the file
-    if os.path.isfile(os.path.join(empty_templates_path, file_name)):
-        file_path = os.path.join(empty_templates_path, file_name)
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
 
     # If the file exists, delete it
     if os.path.exists(file_path):

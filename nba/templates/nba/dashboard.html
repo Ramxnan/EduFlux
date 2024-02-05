@@ -364,7 +364,7 @@
                             <div class="file-entry mb-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <!-- File Name -->
-                                    <span class="filename"><a href="{% url 'download_file' file_name %}">{{ file_name }}</a></span>
+                                    <span class="filename"><a href="{% url 'download_file' file_name %}">{{ file_name|split_file_name }}</a></span>
                                     
                                     <!-- Timestamp -->
                                     <small class="file-timestamp">{{ timestamp }}</small>
@@ -404,12 +404,11 @@
                                 <!-- Hidden Files List -->
                                 <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
                                     {% for file in data.0 %}
-                                        <p>&ensp;&ensp; |_{{ file }}</p>
+                                        <p>&ensp;&ensp; |-{{ file }}</p>
                                     {% endfor %}
-                                    <button type="button" class="btn btn-success"a href="{% url 'download_folder' folder_name %}">
+                                    <a href="{% url 'download_folder' folder_name %}" class="btn btn-success">
                                         Download
-                                        </a>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         {% empty %}

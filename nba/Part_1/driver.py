@@ -11,8 +11,9 @@ from .Component_calculation import Component_calculation
 from .write_course_level_attainment import write_course_level_attainment
 from .printout import printout
 import os
+import uuid
 
-def main1(data,Component_Details, file_path):
+def driver_part1(data,Component_Details, file_path):
     #create openpyxl workbook
     wb = Workbook()
     wb.remove(wb.active)
@@ -65,7 +66,9 @@ def main1(data,Component_Details, file_path):
 
     #save workbook
     #wb.save(f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}.xlsx")
-    excel_file_name = f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}_{data['Section']}_{data['Semester']}.xlsx"
+    unique_id = str(uuid.uuid4())
+
+    excel_file_name = f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}_{data['Section']}_{data['Semester']}_{unique_id}.xlsx"
     excel_file_name.replace(" ","_")
     full_path = os.path.join(file_path, excel_file_name)
     wb.save(full_path)

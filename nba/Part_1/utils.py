@@ -83,12 +83,12 @@ def colour_table_Input_Details(aw):
     row_start=aw.max_row+2
     row=row_start
     aw[f'A{row}']="Colour Code"
-    aw[f'A{row}'].font = Font(bold=True)
+    aw[f'A{row}'].font = Font(bold=True, color="FFFFFF")
     aw[f'A{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
-    aw[f'A{row}'].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+    aw[f'A{row}'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
     row+=1
     aw[f'A{row}']="Pink fill"
     aw[f'A{row}'].fill = PatternFill(start_color='D8A5B5', end_color='D8A5B5', fill_type='solid')
@@ -106,12 +106,12 @@ def colour_table_Input_Details(aw):
     
     row=row_start
     aw[f'B{row}']="Meaning"
-    aw[f'B{row}'].font = Font(bold=True)
+    aw[f'B{row}'].font = Font(bold=True, color="FFFFFF")
     aw[f'B{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
-    aw[f'B{row}'].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+    aw[f'B{row}'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
     row+=1
     aw[f'B{row}']="Empty cell"
     aw[f'B{row}'].fill = PatternFill(start_color='D8A5B5', end_color='D8A5B5', fill_type='solid')

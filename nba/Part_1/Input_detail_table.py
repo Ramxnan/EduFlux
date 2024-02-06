@@ -44,11 +44,11 @@ def input_detail(data,Component_Details,aw):  #function to input details
                                     right=Side(border_style='thin', color='000000'))
 
         if i%2==0:
-            aw[f'A{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
-            aw[f'B{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
-        else:
             aw[f'A{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
             aw[f'B{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
+        else:
+            aw[f'A{i}'].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
+            aw[f'B{i}'].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
 
         i+=1
     
@@ -84,9 +84,9 @@ def input_detail(data,Component_Details,aw):  #function to input details
                                     left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'))
         if i%2==0:
-            aw[f'A{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
-        else:
             aw[f'A{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
+        else:
+            aw[f'A{i}'].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
 
         aw[f'B{i}'].font = Font(bold=True)
         aw[f'B{i}'].alignment = Alignment(horizontal='center', vertical='center')
@@ -95,24 +95,21 @@ def input_detail(data,Component_Details,aw):  #function to input details
                                     left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'))
         if i%2==0:
-            aw[f'B{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
-        else:
             aw[f'B{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
+        else:
+            aw[f'B{i}'].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
 
 
     # =================================================================================================================================================================
-    aw.merge_cells('A21:B21')
-    aw['A21']="Component Details"
-    aw['A21'].font = Font(bold=True)
-    aw['A21'].alignment = Alignment(horizontal='center', vertical='center')
-    aw['A21'].border = Border(top=Side(border_style='thin', color='000000'),
-                            bottom=Side(border_style='thin', color='000000'),
-                            left=Side(border_style='thin', color='000000'),
-                            right=Side(border_style='thin', color='000000'))
-    
-    aw['A21'].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+    aw['A22']="Component Details"
+    aw['A22'].font = Font(bold=True, color="FFFFFF")
+    aw['A22'].alignment = Alignment(horizontal='center', vertical='center')
+  
+    aw['B22']="Number of Questions"
+    aw['B22'].font = Font(bold=True, color="FFFFFF")
+    aw['B22'].alignment = Alignment(horizontal='center', vertical='center')
 
-    row=22
+    row=23
     for key, value in Component_Details.items():
         aw[f'A{row}']=key
         aw[f'A{row}'].font = Font(bold=True)
@@ -121,6 +118,7 @@ def input_detail(data,Component_Details,aw):  #function to input details
                                     bottom=Side(border_style='thin', color='000000'),
                                     left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'))
+ 
 
         aw[f'B{row}']=value
         aw[f'B{row}'].font = Font(bold=True)
@@ -129,14 +127,17 @@ def input_detail(data,Component_Details,aw):  #function to input details
                                     bottom=Side(border_style='thin', color='000000'),
                                     left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'))
-
-        if row%2==0:
-            aw[f'A{row}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
-            aw[f'B{row}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
-        else:
-            aw[f'A{row}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
-            aw[f'B{row}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
         row+=1
+      
+    #make a table
+    tab = Table(displayName="Component_Details", ref=f"A22:B{row-1}")
+    style = TableStyleInfo(name="TableStyleMedium15", showFirstColumn=False,
+                        showLastColumn=False, showRowStripes=True, showColumnStripes=False)
+    tab.tableStyleInfo = style
+    aw.add_table(tab)
+    
+
+        
 
     pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
     #set conditional formatting for B9 to B19 such that if its empty, it will be highlighted pink

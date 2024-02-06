@@ -5,29 +5,29 @@ import os
 if __name__ == "__main__":
 
     
-    data={
-        "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
-        "Academic_year":"2022-2023",  
-        "Batch":2019,
-        "Branch":"MEE",                                                                          #set branch
-        "Subject_Name":"PCE",
-        "Subject_Code":"19MEE444",
-        "Section":"A",
-        "Semester":"Even",
-        "Number_of_Students":47,
-        "Number_of_COs":4}
-    
     # data={
     #     "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
     #     "Academic_year":"2022-2023",  
     #     "Batch":2019,
-    #     "Branch":"CSE",                                                                          #set branch
-    #     "Subject_Name":"FLA",
-    #     "Subject_Code":"CSE411",
-    #     "Section":"B",
-    #     "Semester":"Odd",
-    #     "Number_of_Students":20,
+    #     "Branch":"MEE",                                                                          #set branch
+    #     "Subject_Name":"PCE",
+    #     "Subject_Code":"19MEE444",
+    #     "Section":"A",
+    #     "Semester":"Even",
+    #     "Number_of_Students":47,
     #     "Number_of_COs":4}
+    
+    data={
+        "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
+        "Academic_year":"2022-2023",  
+        "Batch":2019,
+        "Branch":"CSE",                                                                          #set branch
+        "Subject_Name":"FLA",
+        "Subject_Code":"CSE411",
+        "Section":"B",
+        "Semester":"Odd",
+        "Number_of_Students":20,
+        "Number_of_COs":4}
     
 
     Component_Details={"P1_I":7,

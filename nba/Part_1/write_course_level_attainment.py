@@ -79,12 +79,12 @@ def write_course_level_attainment(data,Component_Details,aw):
     aw.column_dimensions['A'].width = 17.22
     aw.column_dimensions['B'].width = 9.33
     aw.column_dimensions['C'].width = 15.56
-    aw.column_dimensions['D'].width = 10.33
+    aw.column_dimensions['D'].width = 12
     aw.column_dimensions['E'].width = 14.11
-    aw.column_dimensions['F'].width = 10.33
+    aw.column_dimensions['F'].width = 12
     aw.column_dimensions['G'].width = 14.11
     aw.column_dimensions['H'].width = 20.67
-    aw.column_dimensions['I'].width = 10.33
+    aw.column_dimensions['I'].width = 12
     aw.column_dimensions['J'].width = 18.11
     aw.column_dimensions['K'].width = 22.78
     #center align the text in the cells
@@ -197,67 +197,66 @@ def write_course_level_attainment(data,Component_Details,aw):
 
     #================================================================================================================================================================
     current_row = aw.max_row+4
-    current_col = 2
-    aw.merge_cells(start_row=current_row, start_column=2, end_row=current_row, end_column=17+2)
-    aw.cell(row=current_row, column=2).value = "Weighted PO/PSO Attainment Contribution"
-    aw.cell(row=current_row, column=2).font = Font(bold=True)
-    aw.cell(row=current_row, column=2).alignment = Alignment(horizontal='center', vertical='center')
-    aw.cell(row=current_row, column=2).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
+    current_col = 4
+    aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=17+current_col)
+    aw.cell(row=current_row, column=current_col).value = "Weighted PO/PSO Attainment Contribution"
+    aw.cell(row=current_row, column=current_col).font = Font(bold=True)
+    aw.cell(row=current_row, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row, column=current_col).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
     
 
     current_row+=1
-    aw.cell(row=current_row, column=2).value = "COs\\POs"
-    aw.cell(row=current_row, column=2).font = Font(bold=True, color="FFFFFF")
-    aw.cell(row=current_row, column=2).alignment = Alignment(horizontal='center', vertical='center')
-    aw.cell(row=current_row, column=2).border = Border(left=Side(border_style='thin', color='000000'),
+    aw.cell(row=current_row, column=current_col).value = "COs\\POs"
+    aw.cell(row=current_row, column=current_col).font = Font(bold=True, color="FFFFFF")
+    aw.cell(row=current_row, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'),
                                     top=Side(border_style='thin', color='000000'),
                                     bottom=Side(border_style='thin', color='000000'))
-    aw.cell(row=current_row, column=2).fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+    aw.cell(row=current_row, column=current_col).fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
 
     for po in range(1,12+1):
-        aw[f"{get_column_letter(po+2)}{current_row}"]=f"PO{po}"
-        aw[f"{get_column_letter(po+2)}{current_row}"].font = Font(bold=True, color="FFFFFF")
-        aw[f"{get_column_letter(po+2)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
-        aw[f"{get_column_letter(po+2)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
+        aw[f"{get_column_letter(po+current_col)}{current_row}"]=f"PO{po}"
+        aw[f"{get_column_letter(po+current_col)}{current_row}"].font = Font(bold=True, color="FFFFFF")
+        aw[f"{get_column_letter(po+current_col)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f"{get_column_letter(po+current_col)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'),
                                     top=Side(border_style='thin', color='000000'),
                                     bottom=Side(border_style='thin', color='000000'))
-        aw[f"{get_column_letter(po+2)}{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+        aw[f"{get_column_letter(po+current_col)}{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
         
     
     for pso in range(1,6):
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"]=f"PSO{pso}"
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"].font = Font(bold=True, color="FFFFFF")
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"]=f"PSO{pso}"
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].font = Font(bold=True, color="FFFFFF")
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'),
                                     top=Side(border_style='thin', color='000000'),
                                     bottom=Side(border_style='thin', color='000000'))
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
         
 
     current_row+=1
-    current_col=3
 
     start=4
     interval=17
 
-
+    current_col=4
     for co in range(1,data["Number_of_COs"]+1):
-        aw[f"B{current_row}"]=f"CO{co}"
-        aw[f"B{current_row}"].font = Font(bold=True, color="FFFFFF")
-        aw[f"B{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
-        aw[f"B{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
+        aw[f"{get_column_letter(current_col)}{current_row}"]=f"CO{co}"
+        aw[f"{get_column_letter(current_col)}{current_row}"].font = Font(bold=True, color="FFFFFF")
+        aw[f"{get_column_letter(current_col)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f"{get_column_letter(current_col)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'),
                                     top=Side(border_style='thin', color='000000'),
                                     bottom=Side(border_style='thin', color='000000'))
-        aw[f"B{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+        aw[f"{get_column_letter(current_col)}{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
 
         for po in range(1,12+1):
-            aw[f"{get_column_letter(po+2)}{current_row}"]=f'=C{start+po}*K{start+1}'
-            aw[f"{get_column_letter(po+2)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
-            aw[f"{get_column_letter(po+2)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
+            aw[f"{get_column_letter(po+current_col)}{current_row}"]=f'=C{start+po}*K{start+1}'
+            aw[f"{get_column_letter(po+current_col)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
+            aw[f"{get_column_letter(po+current_col)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'),
                                     top=Side(border_style='thin', color='000000'),
                                     bottom=Side(border_style='thin', color='000000'))
@@ -265,9 +264,9 @@ def write_course_level_attainment(data,Component_Details,aw):
             
 
         for pso in range(1,6):
-            aw[f"{get_column_letter(12+2+pso)}{current_row}"]=f'=C{start+12+pso}*K{start+1}'
-            aw[f"{get_column_letter(12+2+pso)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
-            aw[f"{get_column_letter(12+2+pso)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
+            aw[f"{get_column_letter(12+current_col+pso)}{current_row}"]=f'=C{start+12+pso}*K{start+1}'
+            aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
+            aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'),
                                     top=Side(border_style='thin', color='000000'),
                                     bottom=Side(border_style='thin', color='000000'))
@@ -275,14 +274,89 @@ def write_course_level_attainment(data,Component_Details,aw):
         current_row+=1
         start+=interval
 
-    aw.merge_cells(start_row=current_row, start_column=2, end_row=current_row, end_column=17+2)
-    aw.cell(row=current_row, column=2).value = "Final Ratio"
-    aw.cell(row=current_row, column=2).font = Font(bold=True)
-    aw.cell(row=current_row, column=2).alignment = Alignment(horizontal='center', vertical='center')
-    aw.cell(row=current_row, column=2).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
+    current_col=1
+    aw.cell(row=current_row, column=current_col).value = "Academic Year"
+    aw.cell(row=current_row, column=current_col).font = Font(bold=True)
+    aw.cell(row=current_row, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row, column=current_col).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
+    aw.cell(row=current_row, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    aw.cell(row=current_row+1, column=current_col).value = data["Academic_year"]
+    aw.cell(row=current_row+1, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row+1, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    aw.cell(row=current_row+1, column=current_col).fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+    aw.cell(row=current_row+1, column=current_col).font = Font(bold=True, color="FFFFFF")
+
+    current_col+=1
+    aw.cell(row=current_row, column=current_col).value = "Semester"
+    aw.cell(row=current_row, column=current_col).font = Font(bold=True)
+    aw.cell(row=current_row, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row, column=current_col).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
+    aw.cell(row=current_row, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    aw.cell(row=current_row+1, column=current_col).value = data["Semester"]
+    aw.cell(row=current_row+1, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row+1, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    aw.cell(row=current_row+1, column=current_col).fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+    aw.cell(row=current_row+1, column=current_col).font = Font(bold=True, color="FFFFFF")
+    current_col+=1
+
+    aw.cell(row=current_row, column=current_col).value = "Subject Name"
+    aw.cell(row=current_row, column=current_col).font = Font(bold=True)
+    aw.cell(row=current_row, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row, column=current_col).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
+    aw.cell(row=current_row, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    aw.cell(row=current_row+1, column=current_col).value = data["Subject_Name"]
+    aw.cell(row=current_row+1, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row+1, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    aw.cell(row=current_row+1, column=current_col).fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+    aw.cell(row=current_row+1, column=current_col).font = Font(bold=True, color="FFFFFF")
+    current_col+=1
+
+    aw.cell(row=current_row, column=current_col).value = "Subject Code"
+    aw.cell(row=current_row, column=current_col).font = Font(bold=True)
+    aw.cell(row=current_row, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row, column=current_col).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
+    aw.cell(row=current_row, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    
+    current_col+=1
+
+
+
+
+
+    aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=16+current_col)
+    aw.cell(row=current_row, column=current_col).value = "Final Ratio"
+    aw.cell(row=current_row, column=current_col).font = Font(bold=True)
+    aw.cell(row=current_row, column=current_col).alignment = Alignment(horizontal='center', vertical='center')
+    aw.cell(row=current_row, column=current_col).fill = PatternFill(start_color='E6BA62', end_color='E6BA62', fill_type='solid')
+    aw.cell(row=current_row, column=current_col).border = Border(left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'),
+                                    top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'))
+    
 
     current_row+=1
-    current_col=2
+    current_col=4
     aw[f"{get_column_letter(current_col)}{current_row}"]=f"{data['Subject_Code']}"
     aw[f"{get_column_letter(current_col)}{current_row}"].font = Font(bold=True, color="FFFFFF")
     aw[f"{get_column_letter(current_col)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
@@ -293,21 +367,21 @@ def write_course_level_attainment(data,Component_Details,aw):
     aw[f"{get_column_letter(current_col)}{current_row}"].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
 
     for po in range(1,12+1):
-        main_formula = f'SUM({get_column_letter(po+2)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+2)}{current_row-2})/(SUM({data["Section"]}_Input_Details!{get_column_letter(4+po)}3:{data["Section"]}_Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2}))'
-        complete_formula = f'=IF(AND(SUM({get_column_letter(po+2)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+2)}{current_row-2})>0, SUM({data["Section"]}_Input_Details!{get_column_letter(4+po)}3:{data["Section"]}_Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
-        aw[f"{get_column_letter(po+2)}{current_row}"] = complete_formula
-        aw[f"{get_column_letter(po+2)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
-        aw[f"{get_column_letter(po+2)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
+        main_formula = f'SUM({get_column_letter(po+current_col)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+current_col)}{current_row-2})/(SUM({data["Section"]}_Input_Details!{get_column_letter(4+po)}3:{data["Section"]}_Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2}))'
+        complete_formula = f'=IF(AND(SUM({get_column_letter(po+current_col)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(po+current_col)}{current_row-2})>0, SUM({data["Section"]}_Input_Details!{get_column_letter(4+po)}3:{data["Section"]}_Input_Details!{get_column_letter(4+po)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
+        aw[f"{get_column_letter(po+current_col)}{current_row}"] = complete_formula
+        aw[f"{get_column_letter(po+current_col)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f"{get_column_letter(po+current_col)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
                                  right=Side(border_style='thin', color='000000'),
                                  top=Side(border_style='thin', color='000000'),
                                  bottom=Side(border_style='thin', color='000000'))
 
     for pso in range(1,6):
-        main_formula = f'SUM({get_column_letter(12+2+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+2+pso)}{current_row-2})/(SUM({data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}3:{data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2}))'
-        complete_formula = f'=IF(AND(SUM({get_column_letter(12+2+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+2+pso)}{current_row-2})>0, SUM({data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}3:{data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"] = complete_formula
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
-        aw[f"{get_column_letter(12+2+pso)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
+        main_formula = f'SUM({get_column_letter(12+current_col+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+current_col+pso)}{current_row-2})/(SUM({data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}3:{data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2}))'
+        complete_formula = f'=IF(AND(SUM({get_column_letter(12+current_col+pso)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(12+current_col+pso)}{current_row-2})>0, SUM({data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}3:{data["Section"]}_Input_Details!{get_column_letter(12+4+pso)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"] = complete_formula
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f"{get_column_letter(12+current_col+pso)}{current_row}"].border = Border(left=Side(border_style='thin', color='000000'),
                                  right=Side(border_style='thin', color='000000'),
                                  top=Side(border_style='thin', color='000000'),
                                  bottom=Side(border_style='thin', color='000000'))

@@ -19,6 +19,7 @@ def driver_part2(input_dir_path, output_dir_path):
     wbwrite = Workbook()
     wbwrite.remove(wbwrite.active)
     excel_files=[]
+    total_students = 0
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("Combined"):
             excel_files.append(file)
@@ -31,7 +32,6 @@ def driver_part2(input_dir_path, output_dir_path):
 
             alldata={}
             Component_Details = {}
-            total_students = 0
             for sheet_name in wbread.sheetnames:
                 if sheet_name.endswith("Input_Details"):
                     input_details_title = sheet_name
@@ -45,10 +45,8 @@ def driver_part2(input_dir_path, output_dir_path):
                 alldata[key] = value
 
             total_students+=alldata['Number_of_Students']
-
-            #get only Teacher Academic_year, Batch, Branch, Subject_Name, Subject_Code, Section, Semester, Number_of_Students, Number_of_COs from alldata
             data = {key: alldata[key] for key in alldata.keys() & {'Teacher', 'Academic_year', 'Batch', 'Branch', 'Subject_Name', 'Subject_Code', 'Section', 'Semester', 'Number_of_Students', 'Number_of_COs'}}
-
+            combined_data = alldata
 
 
 
@@ -57,7 +55,8 @@ def driver_part2(input_dir_path, output_dir_path):
             for row in wsread_input_details[table_range][1:]:
                 Component_Details[row[0].value] = row[1].value
 
-        
+            combined_Component_Details = Component_Details
+
             
 
             wbwrite.create_sheet(f"{data['Section']}_Input_Details")
@@ -105,8 +104,9 @@ def driver_part2(input_dir_path, output_dir_path):
                         except:
                             pass
 
+            
 
-
+            
 
 
 
@@ -115,6 +115,56 @@ def driver_part2(input_dir_path, output_dir_path):
 
             wbread.close()
     #save the workbook
+    print(total_students)
+    print(combined_data)
+    # combined_data['Section'] = "Combined"
+    # combined_data['Number_of_Students'] = total_students
+
+
+    # wbwrite.create_sheet("Combined_Input_Details")
+    # wswrite = wbwrite["Combined_Input_Details"]
+    # wswrite['B14'] = combined_data['Default Threshold %']
+    # wswrite['B15'] = combined_data['Internal %']
+    # wswrite['B17'] = combined_data['Direct %']
+    # wswrite['B19'] = combined_data['Target CO Attainment %']
+    # wswrite = input_detail(combined_data,Component_Details,wswrite)
+    
+
+    # wswrite = indirect_co_assessment(combined_data,wswrite)
+    # adjust_width(wswrite)
+    # wswrite = CO_PO_Table(combined_data,wswrite)
+
+    # for key in combined_Component_Details.keys():
+    #     #replace first letter with combined
+    #     sheet_name="Combined"+key[1:] 
+    #     wbwrite.create_sheet(sheet_name)
+    #     wswrite = wbwrite[sheet_name]
+    #     wswrite.title = sheet_name
+    #     wswrite = qn_co_mm_btl(combined_data, key, combined_Component_Details[key], wswrite)
+    #     wswrite = studentmarks(combined_data, key, combined_Component_Details[key], wswrite)
+
+    #     wswrite = cummulative_co_mm_btl(combined_data, key, combined_Component_Details[key], wswrite)
+    #     wswrite = cummulative_studentmarks(combined_data, key, combined_Component_Details[key], wswrite)
+
+    # wbwrite.create_sheet("Combined_Internal_Components")
+    # wswrite = wbwrite["Combined_Internal_Components"]
+    # wswrite = Component_calculation(combined_data,combined_Component_Details,wswrite,"I")
+
+    # wbwrite.create_sheet("Combined_External_Components")
+    # wswrite = wbwrite["Combined_External_Components"]
+    # wswrite = Component_calculation(combined_data,combined_Component_Details,wswrite,"E")
+
+    # wbwrite.create_sheet("Combined_Course_level_Attainment")
+    # wswrite = wbwrite["Combined_Course_level_Attainment"]
+    # wswrite=write_course_level_attainment(combined_data, combined_Component_Details, wswrite)
+
+    # wbwrite.create_sheet("Combined_Printout")
+    # wswrite = wbwrite["Combined_Printout"]
+    # wswrite=printout(wswrite,combined_data)
+
+
+
+
     unique_id = str(uuid.uuid4())
     excel_file_name = f"Combined_{unique_id}.xlsx"
     wbwrite.save(os.path.join(output_dir_path, excel_file_name))

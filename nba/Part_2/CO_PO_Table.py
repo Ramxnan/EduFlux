@@ -17,30 +17,61 @@ def CO_PO_Table(data,aw):
 
     aw["D2"]="COs\\POs"
     aw["D2"].font = Font(bold=True)
+    aw["D2"].alignment = Alignment(horizontal='center', vertical='center')
+    aw["D2"].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+    aw["D2"].fill = PatternFill(start_color='9bbb59', end_color='9bbb59', fill_type='solid')
 
 
     for co in range(1,data["Number_of_COs"]+1):
         aw[f"D{co+2}"]=f"CO{co}"
         aw[f"D{co+2}"].font = Font(bold=True)
+
     for po in range(1,12+1):
         aw[f"{get_column_letter(po+4)}2"]=f"PO{po}   "
         aw[f"{get_column_letter(po+4)}2"].font = Font(bold=True)
         aw[f"{get_column_letter(po+4)}2"].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f"{get_column_letter(po+4)}2"].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+        aw[f"{get_column_letter(po+4)}2"].fill = PatternFill(start_color='9bbb59', end_color='9bbb59', fill_type='solid')
     for pso in range(1,6):
         aw[f"{get_column_letter(12+4+pso)}2"]=f"PSO{pso}"
         aw[f"{get_column_letter(12+4+pso)}2"].font = Font(bold=True)
         aw[f"{get_column_letter(12+4+pso)}2"].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f"{get_column_letter(12+4+pso)}2"].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+        aw[f"{get_column_letter(12+4+pso)}2"].fill = PatternFill(start_color='9bbb59', end_color='9bbb59', fill_type='solid')
     
-    
+    for co in range(1,data["Number_of_COs"]+1):
+        for po in range(12+1):
+            aw[f"{get_column_letter(po+4)}{co+2}"].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+            if co%2==0:
+                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
+            else:
+                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
+
+        for pso in range(1,6):
+            aw[f"{get_column_letter(12+4+pso)}{co+2}"].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+            if co%2==0:
+                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
+            else:
+                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
+
     #for columns 4 to 4+12+5 set width to 13
     for col in range(4,4+12+5):
         aw.column_dimensions[f"{get_column_letter(col)}"].width = 13
-
-    #make it into a table
-    tab = Table(displayName=f"CO_PO", ref=f"D2:{get_column_letter(12+4+5)}{data['Number_of_COs']+2}")  #create table
-    style = TableStyleInfo(name="TableStyleMedium4", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)  #set style
-    tab.tableStyleInfo = style                                                                                                                   #set style
-    aw.add_table(tab)
 
    
 

@@ -10,6 +10,7 @@ from openpyxl.formatting.rule import FormulaRule
 from openpyxl.styles import Protection 
 from openpyxl.worksheet.datavalidation import DataValidation
 from .utils import adjust_width
+from .utils import colour_table
 
 def studentmarks(data,key, Component_details,aw):
     aw.merge_cells(f'B9:{get_column_letter(Component_details+2)}9')
@@ -28,6 +29,12 @@ def studentmarks(data,key, Component_details,aw):
     for qno in range(1,Component_details+1):
         aw[get_column_letter(qno+2)+'10']=f"Q{qno}"
         aw[get_column_letter(qno+2)+'10'].font = Font(bold=True)
+        aw[get_column_letter(qno+2)+'10'].alignment = Alignment(horizontal='center', vertical='center')
+        aw[get_column_letter(qno+2)+'10'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+        aw[get_column_letter(qno+2)+'10'].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
 
     #conditional formatting
     pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
@@ -106,17 +113,6 @@ def studentmarks(data,key, Component_details,aw):
     aw.column_dimensions['A'].width = 20
     aw.column_dimensions['B'].width = 30
 
-
-    table_range = f"C10:{get_column_letter(Component_details + 2)}{data['Number_of_Students'] + 10}"
-    tab = Table(displayName=f"studentmarks_{key}", ref=table_range)
-    style = TableStyleInfo(name="TableStyleLight13", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
-
-    tab.tableStyleInfo = style
-    aw.add_table(tab)
-
-    
-
-    
-
+    colour_table(aw, data)
 
     return aw

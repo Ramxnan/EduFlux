@@ -22,35 +22,77 @@ def driver_part2(input_dir_path, output_dir_path):
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("Combined"):
             file_path = os.path.join(input_dir_path, file)
-            wbread = load_workbook(file_path)
+            wbread = load_workbook(file_path, data_only=True)
 
-            wsread_input_details = None
-            data={}
+            alldata={}
             Component_Details = {}
             for sheet_name in wbread.sheetnames:
                 if sheet_name.endswith("Input_Details"):
-                    wsread_input_details = wbread[sheet_name]
-                    #create a dictionary from A2 to B11
-                    for key, value in wsread_input_details.iter_rows(min_row=2, max_row=11, min_col=1, max_col=2, values_only=True):
-                        data[key] = value
+                    input_details_title = sheet_name
 
-                    #also from A14 to B19
-                    for key, value in wsread_input_details.iter_rows(min_row=14, max_row=19, min_col=1, max_col=2, values_only=True):
-                        data[key] = value
-                    print(data)
+            wsread_input_details = wbread[input_details_title]
+            #create a dictionary from A2 to B11
+            for key, value in wsread_input_details.iter_rows(min_row=2, max_row=11, min_col=1, max_col=2, values_only=True):
+                alldata[key] = value
+            for key, value in wsread_input_details.iter_rows(min_row=14, max_row=19, min_col=1, max_col=2, values_only=True):
+                alldata[key] = value
 
-                     
-
-
-                                         
+            #get only Teacher Academic_year, Batch, Branch, Subject_Name, Subject_Code, Section, Semester, Number_of_Students, Number_of_COs from alldata
+            data = {key: alldata[key] for key in alldata.keys() & {'Teacher', 'Academic_year', 'Batch', 'Branch', 'Subject_Name', 'Subject_Code', 'Section', 'Semester', 'Number_of_Students', 'Number_of_COs'}}
 
 
-            #copy all sheets to the new workbook
-            for sheet in wbread.sheetnames:
-                wswrite = wbwrite.create_sheet(sheet)
-                wsread = wbread[sheet]
-                for row in wsread.iter_rows(min_row=1, max_row=wsread.max_row, min_col=1, max_col=wsread.max_column, values_only=True):
-                    wswrite.append(row)
+
+
+            #extract table called Component_Details and store it in a dictionary
+            table_range = wsread_input_details.tables['Component_Details'].ref
+            for row in wsread_input_details[table_range][1:]:
+                Component_Details[row[0].value] = row[1].value
+
+        
+            
+
+            wbwrite.create_sheet(f"{data['Section']}_Input_Details")
+            wswrite = wbwrite[f"{data['Section']}_Input_Details"]
+            wswrite = input_detail(data,Component_Details,wswrite)
+            wswrite = indirect_co_assessment(data,wswrite)
+            adjust_width(wswrite)
+            wswrite = CO_PO_Table(data,wswrite)
+
+            for key in Component_Details.keys():
+                wbwrite.create_sheet(key)
+                wswrite = wbwrite[key]
+                wswrite.title = key
+                wswrite = qn_co_mm_btl(data, key, Component_Details[key], wswrite)
+                wswrite = studentmarks(data, key, Component_Details[key], wswrite)
+
+                wswrite = cummulative_co_mm_btl(data, key, Component_Details[key], wswrite)   
+                wswrite = cummulative_studentmarks(data, key, Component_Details[key], wswrite)
+
+            wbwrite.create_sheet(f"{data['Section']}_Internal_Components")
+            wswrite = wbwrite[f"{data['Section']}_Internal_Components"]
+            wswrite = Component_calculation(data,Component_Details,wswrite,"I")
+
+            wbwrite.create_sheet(f"{data['Section']}_External_Components")
+            wswrite = wbwrite[f"{data['Section']}_External_Components"]
+            wswrite = Component_calculation(data,Component_Details,wswrite,"E")
+
+            wbwrite.create_sheet(f"{data['Section']}_Course_level_Attainment")
+            wswrite = wbwrite[f"{data['Section']}_Course_level_Attainment"]
+            wswrite=write_course_level_attainment(data, Component_Details, wswrite)
+
+            wbwrite.create_sheet(f"{data['Section']}_Printout")
+            wswrite = wbwrite[f"{data['Section']}_Printout"]
+            wswrite=printout(wswrite,data)
+
+            # #copy data from all the sheets of wbread to wbwrite
+            # for sheet in wbread.sheetnames:
+            #     wsread = wbread[sheet]
+            #     wswrite = wbwrite[sheet]
+            #     for row in wsread.iter_rows(min_row=1, max_row=wsread.max_row, min_col=1, max_col=wsread.max_column):
+            #         for cell in row:
+            #             wswrite[cell.coordinate].value = cell.value
+
+
 
 
 

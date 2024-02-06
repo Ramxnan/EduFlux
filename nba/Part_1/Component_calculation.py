@@ -26,6 +26,11 @@ def Component_calculation(data,Component_Details,aw,component_type):
                 #bold and center align the cell
                 aw[f'{get_column_letter(start_column+nco-1)}2'].alignment = Alignment(horizontal='center')
                 aw[f'{get_column_letter(start_column+nco-1)}2'].font = Font(bold=True)
+                aw[f'{get_column_letter(start_column+nco-1)}2'].fill = PatternFill(start_color='4f81bd', end_color='4f81bd', fill_type='solid')
+                aw[f'{get_column_letter(start_column+nco-1)}2'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
 
                 aw[f'{get_column_letter(start_column+nco-1)}3']=f"='{component_name}'!{get_column_letter(2+Component_Details[component_name]+1+nco)}3"
                 #bold and center align the cell
@@ -34,33 +39,40 @@ def Component_calculation(data,Component_Details,aw,component_type):
                 aw[f'{get_column_letter(start_column+nco-1)}4']=f"='{component_name}'!{get_column_letter(2+Component_Details[component_name]+1+nco)}4"
                 #bold and center align the cell
                 aw[f'{get_column_letter(start_column+nco-1)}4'].alignment = Alignment(horizontal='center')
+
+                #add border to the cells
+                aw[f'{get_column_letter(start_column+nco-1)}3'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+                aw[f'{get_column_letter(start_column+nco-1)}4'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+                
             
             for nco in range(1,data['Number_of_COs']+1):
                 aw[f'{get_column_letter(start_column+nco-1)}6']=f"CO{nco}"
                 #bold and center align the cell
                 aw[f'{get_column_letter(start_column+nco-1)}6'].alignment = Alignment(horizontal='center')
                 aw[f'{get_column_letter(start_column+nco-1)}6'].font = Font(bold=True)
+                aw[f'{get_column_letter(start_column+nco-1)}6'].fill = PatternFill(start_color='4f81bd', end_color='4f81bd', fill_type='solid')
 
                 for nstudents in range(1,data['Number_of_Students']+1):
                     aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}']=f"='{component_name}'!{get_column_letter(2+Component_Details[component_name]+1+nco)}{10+nstudents}"
                     aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}'].alignment = Alignment(horizontal='center')
                     aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}'].font = Font(bold=True)
+                    aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+                    
 
-            table_range = f"{get_column_letter(start_column)}2:{get_column_letter(start_column+data['Number_of_COs']-1)}4"
-            tab = Table(displayName=f"{component_name}_ComponentData", ref=table_range)
-            style = TableStyleInfo(name=f"TableStyleMedium{component_num}", showFirstColumn=False, showLastColumn=False, showRowStripes=False, showColumnStripes=False)
-            tab.tableStyleInfo = style
-            aw.add_table(tab)
-
-            table_range = f"{get_column_letter(start_column)}6:{get_column_letter(start_column+data['Number_of_COs']-1)}{6+data['Number_of_Students']}"
-            tab = Table(displayName=f"{component_name}_StudentMarks", ref=table_range)
-            style = TableStyleInfo(name=f"TableStyleMedium{component_num}", showFirstColumn=False, showLastColumn=False, showRowStripes=False, showColumnStripes=False)
-            tab.tableStyleInfo = style
-            aw.add_table(tab)
 
             start_column+=data['Number_of_COs']+1 
             component_num+=1
             components_len+=1
+
     #make a column of rows black to demarcate the components
     #set width of columns
     aw.column_dimensions[f'{get_column_letter(start_column)}'].width = 2.5
@@ -78,8 +90,8 @@ def Component_calculation(data,Component_Details,aw,component_type):
         aw[f'{get_column_letter(start_column+nco-1)}2']=f"CO{nco}"
         #bold and center align the cell
         aw[f'{get_column_letter(start_column+nco-1)}2'].alignment = Alignment(horizontal='center')
-        aw[f'{get_column_letter(start_column+nco-1)}2'].font = Font(bold=True)
-        aw[f'{get_column_letter(start_column+nco-1)}2'].font = Font(color='FFFFFF')    
+        aw[f'{get_column_letter(start_column+nco-1)}2'].font = Font(bold=True, color='FFFFFF')
+        aw[f'{get_column_letter(start_column+nco-1)}2'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
 
         corr_column=nco
         formula="=SUM("
@@ -91,6 +103,11 @@ def Component_calculation(data,Component_Details,aw,component_type):
         aw[f'{get_column_letter(start_column+nco-1)}3']=formula
         aw[f'{get_column_letter(start_column+nco-1)}3'].alignment = Alignment(horizontal='center')
         aw[f'{get_column_letter(start_column+nco-1)}3'].font = Font(bold=True)
+        #add border to the cells
+        aw[f'{get_column_letter(start_column+nco-1)}3'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
 
         corr_column=nco
         formula="=SUM("
@@ -102,19 +119,21 @@ def Component_calculation(data,Component_Details,aw,component_type):
         aw[f'{get_column_letter(start_column+nco-1)}4']=formula
         aw[f'{get_column_letter(start_column+nco-1)}4'].alignment = Alignment(horizontal='center')
         aw[f'{get_column_letter(start_column+nco-1)}4'].font = Font(bold=True)
+        #add border to the cells
+        aw[f'{get_column_letter(start_column+nco-1)}4'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
 
-    table_range = f"{get_column_letter(start_column)}2:{get_column_letter(start_column+data['Number_of_COs']-1)}4"
-    tab = Table(displayName=f"Combined_ComponentData_{component_type}", ref=table_range)
-    style = TableStyleInfo(name=f"TableStyleMedium{1}", showFirstColumn=False, showLastColumn=False, showRowStripes=False, showColumnStripes=False)
-    tab.tableStyleInfo = style
-    aw.add_table(tab)
+
 
     for nco in range(1,data['Number_of_COs']+1):
         aw[f'{get_column_letter(start_column+nco-1)}6']=f"CO{nco}"
         #bold and center align the cell
         aw[f'{get_column_letter(start_column+nco-1)}6'].alignment = Alignment(horizontal='center')
-        aw[f'{get_column_letter(start_column+nco-1)}6'].font = Font(bold=True)
-        aw[f'{get_column_letter(start_column+nco-1)}6'].font = Font(color='FFFFFF')
+        aw[f'{get_column_letter(start_column+nco-1)}6'].font = Font(bold=True, color='FFFFFF')
+        aw[f'{get_column_letter(start_column+nco-1)}6'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
+
 
         for nstudents in range(1,data['Number_of_Students']+1):
             corr_column=nco
@@ -127,12 +146,12 @@ def Component_calculation(data,Component_Details,aw,component_type):
             aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}']=formula
             aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}'].alignment = Alignment(horizontal='center')
             aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}'].font = Font(bold=True)
+            aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+            
 
-    table_range = f"{get_column_letter(start_column)}6:{get_column_letter(start_column+data['Number_of_COs']-1)}{6+data['Number_of_Students']}"
-    tab = Table(displayName=f"Combined_StudentMarks_{component_type}", ref=table_range)
-    style = TableStyleInfo(name=f"TableStyleMedium{1}", showFirstColumn=False, showLastColumn=False, showRowStripes=False, showColumnStripes=False)
-    tab.tableStyleInfo = style
-    aw.add_table(tab)
 
     aw.column_dimensions[f'{get_column_letter(start_column-1)}'].width = 14.3
     aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+8}']="CO"
@@ -165,9 +184,9 @@ def Component_calculation(data,Component_Details,aw,component_type):
     for nco in range(1,data['Number_of_COs']+1):
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}']=f"CO{nco}"
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}'].alignment = Alignment(horizontal='center')
-        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}'].font = Font(bold=True)
-        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}'].font = Font(color='FFFFFF')
-
+        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}'].font = Font(bold=True, color='FFFFFF')
+        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
+  
         # Let's say the criterion is to count cells greater than or equal to the value in cell at (column, row) = (start_column-1+nco, 4)
         range_start = f"{get_column_letter(start_column-1+nco)}7"
         range_end = f"{get_column_letter(start_column-1+nco)}{6+data['Number_of_Students']}"
@@ -184,10 +203,21 @@ def Component_calculation(data,Component_Details,aw,component_type):
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+9}'] = formula
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+9}'].alignment = Alignment(horizontal='center')
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+9}'].font = Font(bold=True)
+        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+9}'].fill = PatternFill(start_color='d9d9d9', end_color='d9d9d9', fill_type='solid')
+        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+9}'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
 
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+10}']=data['Number_of_Students']
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+10}'].alignment = Alignment(horizontal='center')
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+10}'].font = Font(bold=True)
+        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+10}'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+        
+
 
         #aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+11}']=f"={get_column_letter(start_column-1+nco)}{data['Number_of_Students']+9}/{get_column_letter(start_column-1+nco)}{data['Number_of_Students']+10}*100"
         num_students = data['Number_of_Students']
@@ -202,13 +232,13 @@ def Component_calculation(data,Component_Details,aw,component_type):
         aw[target_cell_position] = formula
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+11}'].alignment = Alignment(horizontal='center')
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+11}'].font = Font(bold=True)
+        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+11}'].fill = PatternFill(start_color='d9d9d9', end_color='d9d9d9', fill_type='solid')
+        aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+11}'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
 
-    #make it a table
-    table_range = f"{get_column_letter(start_column)}{data['Number_of_Students']+8}:{get_column_letter(start_column+data['Number_of_COs']-1)}{data['Number_of_Students']+11}"
-    tab = Table(displayName=f"Final_attainment_{component_type}", ref=table_range)
-    style = TableStyleInfo(name=f"TableStyleMedium{1}", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
-    tab.tableStyleInfo = style
-    aw.add_table(tab)
+
 
     for row in aw.iter_rows():
         for cell in row:

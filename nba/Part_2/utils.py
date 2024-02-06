@@ -80,41 +80,49 @@ def colour_table(aw, data):
     
 def colour_table_Input_Details(aw):
     #just the pink means empty cell
-    aw[f'A21']="Colour Code"
-    aw[f'A21'].font = Font(bold=True)
-    aw[f'A21'].border = Border(top=Side(border_style='thin', color='000000'),
+    row_start=aw.max_row+2
+    row=row_start
+    aw[f'A{row}']="Colour Code"
+    aw[f'A{row}'].font = Font(bold=True, color="FFFFFF")
+    aw[f'A{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
-    aw[f'A22']="Pink fill"
-    aw[f'A22'].fill = PatternFill(start_color='D8A5B5', end_color='D8A5B5', fill_type='solid')
-    aw[f'A22'].border = Border(top=Side(border_style='thin', color='000000'),
+    aw[f'A{row}'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
+    row+=1
+    aw[f'A{row}']="Pink fill"
+    aw[f'A{row}'].fill = PatternFill(start_color='D8A5B5', end_color='D8A5B5', fill_type='solid')
+    aw[f'A{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
-    aw[f'A23']="Red fill"
-    aw[f'A23'].fill = PatternFill(start_color='FF5E5E', end_color='FF5E5E', fill_type='solid')
-    aw[f'A23'].border = Border(top=Side(border_style='thin', color='000000'),
+    row+=1
+    aw[f'A{row}']="Red fill"
+    aw[f'A{row}'].fill = PatternFill(start_color='FF5E5E', end_color='FF5E5E', fill_type='solid')
+    aw[f'A{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
     
-
-    aw[f'B21']="Meaning"
-    aw[f'B21'].font = Font(bold=True)
-    aw[f'B21'].border = Border(top=Side(border_style='thin', color='000000'),
+    row=row_start
+    aw[f'B{row}']="Meaning"
+    aw[f'B{row}'].font = Font(bold=True, color="FFFFFF")
+    aw[f'B{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
-    aw[f'B22']="Empty cell"
-    aw[f'B22'].fill = PatternFill(start_color='D8A5B5', end_color='D8A5B5', fill_type='solid')
-    aw[f'B22'].border = Border(top=Side(border_style='thin', color='000000'),
+    aw[f'B{row}'].fill = PatternFill(start_color='000000', end_color='000000', fill_type='solid')
+    row+=1
+    aw[f'B{row}']="Empty cell"
+    aw[f'B{row}'].fill = PatternFill(start_color='D8A5B5', end_color='D8A5B5', fill_type='solid')
+    aw[f'B{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
-    aw[f'B23']="Cell value greater than expected"
-    aw[f'B23'].fill = PatternFill(start_color='FF5E5E', end_color='FF5E5E', fill_type='solid')
-    aw[f'B23'].border = Border(top=Side(border_style='thin', color='000000'),
+    row+=1
+    aw[f'B{row}']="Cell value greater than expected"
+    aw[f'B{row}'].fill = PatternFill(start_color='FF5E5E', end_color='FF5E5E', fill_type='solid')
+    aw[f'B{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))

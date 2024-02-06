@@ -24,10 +24,28 @@ def qn_co_mm_btl(data,key, Component_details,aw):  #function to create qn_co_mm_
     
 
     for qno in range(1,Component_details+1):
-        aw[get_column_letter(qno+2)+'2']=f"Q{qno}"        
+        aw[get_column_letter(qno+2)+'2']=f"Q{qno}"    
+        aw[get_column_letter(qno+2)+'2'].font = Font(bold=True)
+        aw[get_column_letter(qno+2)+'2'].alignment = Alignment(horizontal='center', vertical='center')
+        aw[get_column_letter(qno+2)+'2'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+        aw[get_column_letter(qno+2)+'2'].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+
         aw[get_column_letter(qno+2) + '6'].value = f'=CONCATENATE("{data["Subject_Code"]+"_CO"}", {get_column_letter(qno+2)}5)'
+        
         aw[get_column_letter(qno+2)+'4']=f'={data["Section"]}_Input_Details!B14/100*{get_column_letter(qno+2)}3'
         
+    for row in aw.iter_rows(min_row=2, max_row=7, min_col=2, max_col=Component_details+2):
+        for cell in row:
+            cell.border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+
 
     light_red_fill = PatternFill(start_color="FF5E5E", end_color="FF5E5E", fill_type="solid")
     green_fill=PatternFill(start_color="5e9955", end_color="5e9955", fill_type='solid')                                                                                                                     #add table to workshee
@@ -86,11 +104,5 @@ def qn_co_mm_btl(data,key, Component_details,aw):  #function to create qn_co_mm_
             cell.font = Font(color="FFFFFF")
             cell.font = Font(bold=True)
 
-    table_range = f"C2:{get_column_letter(Component_details + 2)}7"
-    tab = Table(displayName=f"qn_co_mm_btl_{key}", ref=table_range)
-    style = TableStyleInfo(name="TableStyleLight13", showFirstColumn=False, showLastColumn=False, showRowStripes=True, showColumnStripes=False)
-
-    tab.tableStyleInfo = style
-    aw.add_table(tab)
 
     return aw

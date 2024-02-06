@@ -130,7 +130,7 @@ def input_detail(data,Component_Details,aw):  #function to input details
         row+=1
       
     #make a table
-    tab = Table(displayName="Component_Details", ref=f"A22:B{row-1}")
+    tab = Table(displayName=f"{data['Section']}_Component_Details", ref=f"A22:B{row-1}")
     style = TableStyleInfo(name="TableStyleMedium15", showFirstColumn=False,
                         showLastColumn=False, showRowStripes=True, showColumnStripes=False)
     tab.tableStyleInfo = style

@@ -15,7 +15,7 @@ def CO_PO_Table(data,aw):
     aw['D1'].font = Font(bold=True)
     aw['D1'].alignment = Alignment(horizontal='center', vertical='center')
 
-    aw["D2"]="COs\POs"
+    aw["D2"]="COs\\POs"
     aw["D2"].font = Font(bold=True)
 
 
@@ -64,7 +64,7 @@ def CO_PO_Table(data,aw):
             )
          
      # Create a data validation object for numbers between 0 and 100
-    number_validation = DataValidation(type="whole", operator="between", formula1=1, formula2=3)
+    number_validation = DataValidation(type="whole", operator="between", formula1=0, formula2=3)
     number_validation.error = 'You must enter a number 1, 2 or 3'
     number_validation.errorTitle = 'Invalid Entry'
     number_validation.showErrorMessage = True

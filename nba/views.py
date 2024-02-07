@@ -168,9 +168,9 @@ def submit(request):
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=generated_file_name)
             return response
-        return redirect('dashboard')
+        return redirect('/dashboard/?show=template')
     # If the request method is not POST, handle accordingly (redirect to a form, etc.)
-    return render(request, 'nba/dashboard.html')
+    return redirect('/dashboard/?show=template')
 
 
 @csrf_exempt
@@ -189,10 +189,19 @@ def upload_multiple_files_branch(request):
         fs = FileSystemStorage(location=unique_folder_path)
         
         for uploaded_file in uploaded_files:
-            filename=fs.save(uploaded_file.name, uploaded_file)
-        driver_part2(unique_folder_path, unique_folder_path)        
+            fs.save(uploaded_file.name, uploaded_file)
+        message = driver_part2(unique_folder_path, unique_folder_path)
+        message=message[0]
+        if "Files successfully merged" in message:
+            messages.success(request, message)
+        else:
+            messages.error(request, message)
+            # Optionally, delete the folder
+            if os.path.exists(unique_folder_path):
+                shutil.rmtree(unique_folder_path)
 
-        return redirect('dashboard')
+        return redirect('/dashboard/?show=branch')  # This assumes you want to redirect to a new request where the message will be displayed
+
 
 
     else:
@@ -282,7 +291,7 @@ def delete_file(request, file_name):
     # If the file exists, delete it
     if os.path.exists(file_path):
         os.remove(file_path)
-        return HttpResponseRedirect(reverse('dashboard'))
+        return redirect('/dashboard/?show=template')
 
 def delete_folder(request, folder_name):
     display_name = request.user.username.split('@')[0]
@@ -297,7 +306,7 @@ def delete_folder(request, folder_name):
         shutil.rmtree(branch_calculation_path)
 
     # Redirect to the dashboard or appropriate page
-    return HttpResponseRedirect(reverse('dashboard'))
+    return redirect('/dashboard/?show=branch')
 
 
 

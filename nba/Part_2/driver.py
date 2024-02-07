@@ -22,6 +22,7 @@ def driver_part2(input_dir_path, output_dir_path):
     wbwrite.remove(wbwrite.active)
     excel_files=[]
     total_students = 0
+    Warnings = []
 
 
     sum_indirect_assessment = pd.DataFrame()
@@ -29,10 +30,35 @@ def driver_part2(input_dir_path, output_dir_path):
     sum_qn_co_mm_btl = {}
     sum_studentmarks = {}
 
+    prev_qn_co_mm_btl_check = {}
+    prev_co_po_table_check = None
+    prev_Component_Details_check = None
+
+    new_qn_co_mm_btl_check = {}
+    new_co_po_table_check = None
+    new_Component_Details_check = None
+
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("Sum"):
             excel_files.append(file)
     excel_files.sort(reverse=True)
+
+    #All the files should have different sections
+    sections = []
+    sheet_names = []
+    for file in excel_files:
+        sections.append(file[0])
+
+    #if section is not letter, return an error
+    for section in sections:
+        if not section.isalpha():
+            Warnings.append(f"{file} has invalid section name")
+            return Warnings
+
+    if len(sections) != len(set(sections)):
+        Warnings.append("All the files should have different sections")
+        return Warnings
+
 
     for file in excel_files:
         if file.endswith(".xlsx") and not file.startswith("Sum"):
@@ -44,10 +70,14 @@ def driver_part2(input_dir_path, output_dir_path):
             indirect_assessment = pd.DataFrame()
 
 
-
+            input_details_title=None
             for sheet_name in wbread.sheetnames:
                 if sheet_name.endswith("Input_Details"):
                     input_details_title = sheet_name
+
+            if input_details_title is None:
+                Warnings.append(f"{file} does not have Input_Details sheet")
+                return Warnings
 
             wsread_input_details = wbread[input_details_title]
             #create a dictionary from A2 to B11
@@ -57,11 +87,17 @@ def driver_part2(input_dir_path, output_dir_path):
             for key, value in wsread_input_details.iter_rows(min_row=14, max_row=19, min_col=1, max_col=2, values_only=True):
                 alldata[key] = value
 
+            #if any of the values in alldata is None, return an error
+            if None in alldata.values():
+                Warnings.append(f"{file} has missing values in Input_Details sheet")
+                return Warnings
+
             total_students+=alldata['Number_of_Students']
             data = {key: alldata[key] for key in alldata.keys() & {'Teacher', 'Academic_year', 'Batch', 'Branch', 'Subject_Name', 'Subject_Code', 'Section', 'Semester', 'Number_of_Students', 'Number_of_COs'}}
             sum_data_all = alldata
 
-
+            
+                
             #extract table called Component_Details and store it in a dictionary
             table_range = wsread_input_details.tables[f'{data["Section"]}_Component_Details'].ref
             for row in wsread_input_details[table_range][1:]:
@@ -69,7 +105,16 @@ def driver_part2(input_dir_path, output_dir_path):
 
             sum_Component_Details = {f"Sum_{key[2:]}":value for key,value in Component_Details.items()}
 
-            #create key value pair for each component in Component_Details
+            #Check if Component_Details is same as previous file
+            new_Component_Details_check = {f"{key[2:]}":value for key,value in Component_Details.items()}
+            if prev_Component_Details_check is not None:
+                for key in new_Component_Details_check.keys():
+                    if prev_Component_Details_check[key] != new_Component_Details_check[key]:
+                        Warnings.append(f"{file} has different Component_Details")
+                        return Warnings
+            prev_Component_Details_check = new_Component_Details_check
+
+            new_qn_co_mm_btl_check = {}         
             for key, qnum in Component_Details.items():
                 comp_ws = wbread[key]
                 
@@ -85,6 +130,9 @@ def driver_part2(input_dir_path, output_dir_path):
                     data_rows.append([cell.value for cell in row])
                 df_qn_co_mm_btl = pd.DataFrame(data_rows[1:], columns=data_rows[0])
                 sum_qn_co_mm_btl["Sum_"+key[2:]] = df_qn_co_mm_btl
+                
+                new_qn_co_mm_btl_check[key[2:]] = df_qn_co_mm_btl
+
 
                 # Define the range for student marks
                 start_row = 10
@@ -102,7 +150,16 @@ def driver_part2(input_dir_path, output_dir_path):
                 else:
                     sum_studentmarks["Sum_"+key[2:]] = df_student_marks
                  
+            #Check if QN-CO-MM-BTL is same as previous file
+            if prev_qn_co_mm_btl_check:
+                for key in new_qn_co_mm_btl_check.keys():
+                    if not prev_qn_co_mm_btl_check[key].equals(new_qn_co_mm_btl_check[key]):
+                        Warnings.append(f"{file} has different QN-CO-MM-BTL Table in {key} Component")
+                        return Warnings
+            prev_qn_co_mm_btl_check = new_qn_co_mm_btl_check
+
             #get values from wsread_input_details from cell E{2+number_of_COs+4+1} to E{2+number_of_COs+4+1+number_of_COs} and concat it to sum_indirect_assessment
+
             start_row = 2 + data["Number_of_COs"] + 4 + 1
             end_row = 2 + data["Number_of_COs"] + 4 + data["Number_of_COs"]
             cell_range = f'E{start_row}:E{end_row}'
@@ -120,14 +177,23 @@ def driver_part2(input_dir_path, output_dir_path):
             start_col = 5
             end_col=21
             cell_range = f'{get_column_letter(start_col)}{start_row}:{get_column_letter(end_col)}{end_row}'
+
             values = []
-            r=[]
             for row in wsread_input_details[cell_range]:
-                for cell in row:
-                    r.append(cell.value)
-                values.append(r)
-                r=[]
-            sum_co_po_table=pd.DataFrame(values[1:], columns=values[0])
+                values.append([cell.value for cell in row])
+
+            co_po_table=pd.DataFrame(values)
+            #replace 0 with NaN
+            co_po_table.replace(0, pd.NA, inplace=True)
+            sum_co_po_table = co_po_table
+
+            new_co_po_table_check = co_po_table
+            if prev_co_po_table_check is not None:
+                if not prev_co_po_table_check.equals(new_co_po_table_check):
+                    Warnings.append(f"{file} has different CO-PO Table")
+                    return Warnings
+            prev_co_po_table_check = new_co_po_table_check
+            
                                                          
             wbwrite.create_sheet(f"{data['Section']}_Input_Details")
             wswrite = wbwrite[f"{data['Section']}_Input_Details"]
@@ -306,6 +372,10 @@ def driver_part2(input_dir_path, output_dir_path):
     unique_id = str(uuid.uuid4()).split("-")[0]
     excel_file_name=f"Sum_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
     wbwrite.save(os.path.join(output_dir_path, excel_file_name))
+    if Warnings:
+        return Warnings
+    else:
+        return ["Files successfully merged"]
 
 if __name__ == "__main__":
     input_dir_path="C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_2"

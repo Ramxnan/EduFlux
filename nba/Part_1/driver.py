@@ -65,8 +65,8 @@ def driver_part1(data, Component_Details, file_path):
     ws=printout(ws,data)
 
     #save workbook
-    unique_id = str(uuid.uuid4())
-    excel_file_name = f"{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Section']}_{data['Subject_Code']}_{unique_id}.xlsx"
+    unique_id = str(uuid.uuid4()).split("-")[0]
+    excel_file_name = f"{data['Section']}_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
     excel_file_name.replace(" ","_")
     full_path = os.path.join(file_path, excel_file_name)
     wb.save(full_path)

@@ -303,10 +303,7 @@ def driver_part2(input_dir_path, output_dir_path):
     wswrite = wbwrite["Sum_Printout"]
     wswrite=printout(wswrite,sum_data)
 
-
-
-
-    unique_id = str(uuid.uuid4())
+    unique_id = str(uuid.uuid4()).split("-")[0]
     excel_file_name = f"Sum_{unique_id}.xlsx"
     wbwrite.save(os.path.join(output_dir_path, excel_file_name))
 

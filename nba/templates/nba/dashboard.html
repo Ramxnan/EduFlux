@@ -404,8 +404,9 @@
                                 <!-- Hidden Files List -->
                                 <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
                                     {% for file in data.0 %}
-                                        <p>&ensp;&ensp; |-{{ file }}</p>
+                                        &ensp;&ensp; |-{{ file|split_file_name }}<br>
                                     {% endfor %}
+                                    <br>
                                     <a href="{% url 'download_folder' folder_name %}" class="btn btn-success">
                                         Download
                                     </a>

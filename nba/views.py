@@ -24,7 +24,7 @@ from django.urls import reverse
 
 
 from .Part_1.driver import driver_part1
-#from .Part_2.driver import driver_part2
+from .Part_2.driver import driver_part2
 #from .Part_3.driver import driver_part3
 
 def homepage(request):
@@ -181,22 +181,20 @@ def upload_multiple_files_branch(request):
         display_name = request.user.username.split('@')[0]
         user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
         branch_directory = os.path.join(user_directory, 'Branch_Calculation')
-        if num_files == 0:
-            return JsonResponse({'status': 'error', 'message': 'No files were uploaded.'})
         
-        unique_id = str(uuid.uuid4())
+        unique_id = str(uuid.uuid4()).split('-')[0]
         unique_folder_name = f"{num_files}Files_BranchCalculation_{unique_id}"
         unique_folder_path = os.path.join(branch_directory, unique_folder_name)
         os.makedirs(unique_folder_path, exist_ok=True)
         fs = FileSystemStorage(location=unique_folder_path)
         
-        saved_files = []
         for uploaded_file in uploaded_files:
             filename=fs.save(uploaded_file.name, uploaded_file)
-            saved_files.append(os.path.join(unique_folder_path, filename))
+        driver_part2(unique_folder_path, unique_folder_path)        
+
+        return redirect('dashboard')
 
 
-        return JsonResponse({'status': 'success', 'files': saved_files, 'folder': unique_folder_name})
     else:
         # If it's not a POST request, handle accordingly
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})

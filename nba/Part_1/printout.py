@@ -612,7 +612,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f'=IF(K{4+numco}>=M{4+numco},"Yes","No")'
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f'=IF({get_column_letter(column-3)}{row+3+numco}>=B19,"Yes","No")'
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),

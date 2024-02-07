@@ -41,11 +41,10 @@ def driver_part2(input_dir_path, output_dir_path):
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("Sum"):
             excel_files.append(file)
-    excel_files.sort(reverse=True)
+    excel_files.sort()
 
     #All the files should have different sections
     sections = []
-    sheet_names = []
     for file in excel_files:
         sections.append(file[0])
 
@@ -172,7 +171,7 @@ def driver_part2(input_dir_path, output_dir_path):
             indirect_assessment=pd.DataFrame(values, columns=[f"{data['Section']}"])
             sum_indirect_assessment = pd.concat([sum_indirect_assessment, indirect_assessment], axis=1)
 
-            start_row = 2
+            start_row = 3
             end_row = 3 + data["Number_of_COs"] - 1
             start_col = 5
             end_col=21
@@ -182,7 +181,12 @@ def driver_part2(input_dir_path, output_dir_path):
             for row in wsread_input_details[cell_range]:
                 values.append([cell.value for cell in row])
 
-            co_po_table=pd.DataFrame(values)
+            po_columns=[f"PO{i}" for i in range(1,13)]
+            pso_columns=[f"PSO{i}" for i in range(1,6)]
+            df_columns=po_columns+pso_columns
+            print(df_columns)
+            
+            co_po_table=pd.DataFrame(values, columns=df_columns)
             #replace 0 with NaN
             co_po_table.replace(0, pd.NA, inplace=True)
             sum_co_po_table = co_po_table

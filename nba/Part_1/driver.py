@@ -39,6 +39,7 @@ def driver_part1(data, Component_Details, file_path):
 
     #iterate throught Keys of Component_Details and make a worksheet for each key
     for key in Component_Details.keys():
+        key.replace(" ","_")
         wb.create_sheet(key)
         ws = wb[key]
         ws.title = key

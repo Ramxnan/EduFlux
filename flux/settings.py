@@ -125,7 +125,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'nba','static','assets')
 STATIC_URL = '/flux/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'nba', 'static'),
-    # Add other paths here
 ]
 
 # Default primary key field type

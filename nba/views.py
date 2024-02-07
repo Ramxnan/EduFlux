@@ -23,8 +23,9 @@ import shutil
 from django.urls import reverse
 
 
-from .Part_1.driver import main1
+from .Part_1.driver import driver_part1
 from .Part_2.driver import driver_part2
+#from .Part_3.driver import driver_part3
 
 def homepage(request):
     return render(request, 'nba/index.html')
@@ -95,7 +96,7 @@ def dashboard(request):
     file_time_stamp = []
     for file in Generated_Templates:
         file_time_stamp.append(os.path.getmtime(os.path.join(Generated_Templates_dir, file)))
-    file_time_stamp = [datetime.fromtimestamp(i).strftime("%H:%M:%S") for i in file_time_stamp]
+    file_time_stamp = [datetime.fromtimestamp(i).strftime("%d-%m-%Y %H:%M") for i in file_time_stamp]
     Generated_Templates = dict(zip(Generated_Templates, file_time_stamp))
     # End of Template Generation
 
@@ -109,7 +110,7 @@ def dashboard(request):
         files.append(os.listdir(os.path.join(Branch_Calculation_dir, folder)))
     file_time_stamp = [datetime.fromtimestamp(i).strftime("%d-%m-%Y %H:%M") for i in file_time_stamp]
 
-    #i want the dictionary as {folder_name: [[file_name,file_name],file_time_stamp]}
+    #dictionary as {folder_name: [[file_name,file_name],file_time_stamp]}
     Branch_Calculation = dict(zip(Branch_Calculation, zip(files,file_time_stamp)))
 
     # End of Branch Calculation
@@ -150,26 +151,26 @@ def submit(request):
             component_value = request.POST.get(component_value_key)
             component_type = request.POST.get(component_type_key)
 
-            full_component_name = f"{component_name}_{component_type[0]}"
+            full_component_name = f"{component_name}-{component_type[0]}"
             Component_Details[full_component_name] = int(component_value)
 
         print(Component_Details)
-        # Directory for empty templates
+        # Directory for generated templates
         display_name = request.user.username.split('@')[0]
-        empty_templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
+        Generated_Templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
 
         # Generate file name for the Excel file
-        excel_file_path = os.path.join(empty_templates_dir)
+        excel_file_path = os.path.join(Generated_Templates_dir)
 
         # Call main1 function with the necessary data and file path
-        generated_file_name = main1(data, Component_Details, excel_file_path)
-        file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates', generated_file_name)
+        generated_file_name = driver_part1(data, Component_Details, excel_file_path)
+        file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates', generated_file_name)
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=generated_file_name)
             return response
-        return redirect('dashboard')
+        return redirect('/dashboard/?show=template')
     # If the request method is not POST, handle accordingly (redirect to a form, etc.)
-    return render(request, 'nba/dashboard.html')
+    return redirect('/dashboard/?show=template')
 
 
 @csrf_exempt
@@ -180,22 +181,29 @@ def upload_multiple_files_branch(request):
         display_name = request.user.username.split('@')[0]
         user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
         branch_directory = os.path.join(user_directory, 'Branch_Calculation')
-        if num_files == 0:
-            return JsonResponse({'status': 'error', 'message': 'No files were uploaded.'})
         
-        unique_id = str(uuid.uuid4())
+        unique_id = str(uuid.uuid4()).split('-')[0]
         unique_folder_name = f"{num_files}Files_BranchCalculation_{unique_id}"
         unique_folder_path = os.path.join(branch_directory, unique_folder_name)
         os.makedirs(unique_folder_path, exist_ok=True)
         fs = FileSystemStorage(location=unique_folder_path)
         
-        saved_files = []
         for uploaded_file in uploaded_files:
-            filename=fs.save(uploaded_file.name, uploaded_file)
-            saved_files.append(os.path.join(unique_folder_path, filename))
+            fs.save(uploaded_file.name, uploaded_file)
+        message = driver_part2(unique_folder_path, unique_folder_path)
+        message=message[0]
+        if "Files successfully merged" in message:
+            messages.success(request, message)
+        else:
+            messages.error(request, message)
+            # Optionally, delete the folder
+            if os.path.exists(unique_folder_path):
+                shutil.rmtree(unique_folder_path)
+
+        return redirect('/dashboard/?show=branch')  # This assumes you want to redirect to a new request where the message will be displayed
 
 
-        return JsonResponse({'status': 'success', 'files': saved_files, 'folder': unique_folder_name})
+
     else:
         # If it's not a POST request, handle accordingly
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
@@ -204,28 +212,28 @@ def upload_multiple_files_branch(request):
 
 
 
-@csrf_exempt   
-def upload_multiple_files_po(request):
-    if request.method == 'POST':
-        uploaded_files = request.FILES.getlist('files')
-        PO_uploaded = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'POCalculations')
-        fs = FileSystemStorage(location=PO_uploaded)
-        for uploaded_file in uploaded_files:
-            fs.save(uploaded_file.name, uploaded_file)
-        po_calc_file_name=driver_part3(PO_uploaded, PO_uploaded)
-        po_calc_file_path = os.path.join(PO_uploaded, po_calc_file_name)
-        if os.path.exists(po_calc_file_path):
-            return FileResponse(open(po_calc_file_path, 'rb'), as_attachment=True, filename=po_calc_file_name)
+# @csrf_exempt   
+# def upload_multiple_files_po(request):
+#     if request.method == 'POST':
+#         uploaded_files = request.FILES.getlist('files')
+#         PO_uploaded = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'POCalculations')
+#         fs = FileSystemStorage(location=PO_uploaded)
+#         for uploaded_file in uploaded_files:
+#             fs.save(uploaded_file.name, uploaded_file)
+#         po_calc_file_name=driver_part3(PO_uploaded, PO_uploaded)
+#         po_calc_file_path = os.path.join(PO_uploaded, po_calc_file_name)
+#         if os.path.exists(po_calc_file_path):
+#             return FileResponse(open(po_calc_file_path, 'rb'), as_attachment=True, filename=po_calc_file_name)
         
 
-        return redirect('dashboard')
+#         return redirect('dashboard')
 
-        # You can redirect to a success page or do something else after processing files
-        #return redirect('success_page')  # Redirect to a success page or dashboard
+#         # You can redirect to a success page or do something else after processing files
+#         #return redirect('success_page')  # Redirect to a success page or dashboard
 
-    else:
-        # If it's not a POST request, redirect to dashboard or appropriate page
-        return redirect('dashboard')
+#     else:
+#         # If it's not a POST request, redirect to dashboard or appropriate page
+#         return redirect('dashboard')
 
 
 
@@ -234,10 +242,10 @@ def upload_multiple_files_po(request):
 def download_file(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
-    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
     # Check which folder contains the file
-    if os.path.isfile(os.path.join(empty_templates_path, file_name)):
-        file_path = os.path.join(empty_templates_path, file_name)
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
     else:
         raise Http404("File not found")
 
@@ -274,16 +282,16 @@ def download_folder(request, folder_name):
 def delete_file(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
-    empty_templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'empty_templates')
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
 
     # Check which folder contains the file
-    if os.path.isfile(os.path.join(empty_templates_path, file_name)):
-        file_path = os.path.join(empty_templates_path, file_name)
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
 
     # If the file exists, delete it
     if os.path.exists(file_path):
         os.remove(file_path)
-        return HttpResponseRedirect(reverse('dashboard'))
+        return redirect('/dashboard/?show=template')
 
 def delete_folder(request, folder_name):
     display_name = request.user.username.split('@')[0]
@@ -298,7 +306,7 @@ def delete_folder(request, folder_name):
         shutil.rmtree(branch_calculation_path)
 
     # Redirect to the dashboard or appropriate page
-    return HttpResponseRedirect(reverse('dashboard'))
+    return redirect('/dashboard/?show=branch')
 
 
 

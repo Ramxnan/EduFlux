@@ -11,8 +11,9 @@ from .Component_calculation import Component_calculation
 from .write_course_level_attainment import write_course_level_attainment
 from .printout import printout
 import os
+import uuid
 
-def main1(data,Component_Details, file_path):
+def driver_part1(data, Component_Details, file_path):
     #create openpyxl workbook
     wb = Workbook()
     wb.remove(wb.active)
@@ -20,9 +21,12 @@ def main1(data,Component_Details, file_path):
     #replace spaces in component details keys with underscore
     Component_Details = {key.replace(" ","_"):value for key,value in Component_Details.items()}
 
-    wb.create_sheet("Input_Details")
-    ws = wb["Input_Details"]
-    ws = input_detail(data,ws)
+    #prefix all the keys with the section name
+    Component_Details = {f"{data['Section']}_{key}":value for key,value in Component_Details.items()}
+
+    wb.create_sheet(f"{data['Section']}_Input_Details")
+    ws = wb[f"{data['Section']}_Input_Details"]
+    ws = input_detail(data,Component_Details,ws)
     ws = indirect_co_assessment(data,ws)
     adjust_width(ws)
     ws = CO_PO_Table(data,ws)
@@ -45,28 +49,25 @@ def main1(data,Component_Details, file_path):
         ws = cummulative_co_mm_btl(data, key, Component_Details[key], ws)   
         ws = cummulative_studentmarks(data, key, Component_Details[key], ws)
 
-
-        #adjust_width(ws)
-    
-    wb.create_sheet("Internal_Components")
-    ws = wb["Internal_Components"]
+    wb.create_sheet(f"{data['Section']}_Internal_Components")
+    ws = wb[f"{data['Section']}_Internal_Components"]
     ws = Component_calculation(data,Component_Details,ws,"I")
 
-    wb.create_sheet("External_Components")
-    ws = wb["External_Components"]
+    wb.create_sheet(f"{data['Section']}_External_Components")
+    ws = wb[f"{data['Section']}_External_Components"]
     ws = Component_calculation(data,Component_Details,ws,"E")
 
-    wb.create_sheet("Course_level_Attainment")
-    ws = wb["Course_level_Attainment"]
+    wb.create_sheet(f"{data['Section']}_Course_level_Attainment")
+    ws = wb[f"{data['Section']}_Course_level_Attainment"]
     ws=write_course_level_attainment(data, Component_Details, ws)
 
-    wb.create_sheet("Printout")
-    ws = wb["Printout"]
+    wb.create_sheet(f"{data['Section']}_Printout")
+    ws = wb[f"{data['Section']}_Printout"]
     ws=printout(ws,data)
 
     #save workbook
-    #wb.save(f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}.xlsx")
-    excel_file_name = f"{data['Batch']}_{data['Subject_Code']}_{data['Subject_Name']}_{data['Section']}_{data['Semester']}.xlsx"
+    unique_id = str(uuid.uuid4()).split("-")[0]
+    excel_file_name = f"{data['Section']}_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
     excel_file_name.replace(" ","_")
     full_path = os.path.join(file_path, excel_file_name)
     wb.save(full_path)
@@ -74,23 +75,7 @@ def main1(data,Component_Details, file_path):
 
 
 if __name__ == "__main__":
-    
-    # data={
-    #     "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
-    #     "Academic_year":"2022-2023",                                                              #set academic year
-    #     "Semester":7,                                                                                 #set semester
-    #     "Branch":"CSE",                                                                          #set branch
-    #     "Batch":2019,                                                                             #set batch
-    #     "Section":"A",                                                                           #set section
-    #     "Subject_Code":"19CSE345",                                                            #set subject code
-    #     "Subject_Name":"Computer system and architecture",                          #set subject name
-    #     "Number_of_Students":47,
-    #     "Number_of_COs":4,
-    #     "Internal":50,
-    #     "Direct":80,
-    #     "Default threshold %":70,
-    #      "target":60
-    #         }
+
     
     data={
         "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
@@ -104,22 +89,18 @@ if __name__ == "__main__":
         "Number_of_Students":47,
         "Number_of_COs":4}
     
-    data={
-        "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
-        "Academic_year":"2022-2023",  
-        "Batch":2019,
-        "Branch":"CSE",                                                                          #set branch
-        "Subject_Name":"PCE",
-        "Subject_Code":"19MEE444",
-        "Section":"A",
-        "Semester":"Even",
-        "Number_of_Students":10,
-        "Number_of_COs":4}
+    # data={
+    #     "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
+    #     "Academic_year":"2022-2023",  
+    #     "Batch":2019,
+    #     "Branch":"CSE",                                                                          #set branch
+    #     "Subject_Name":"PCE",
+    #     "Subject_Code":"19MEE444",
+    #     "Section":"A",
+    #     "Semester":"Even",
+    #     "Number_of_Students":10,
+    #     "Number_of_COs":4}
     
-    # Component_Details={"P1_I":{"Number_of_questions":3},
-    #                     "P2_I":{"Number_of_questions":6},
-    #                     "CA_I":{"Number_of_questions":6},
-    #                     "EndSem_E":{"Number_of_questions":9}}
 
     # Component_Details={"P1_I":3,
     #                     "P2_I":6,
@@ -132,7 +113,4 @@ if __name__ == "__main__":
     #                     "CA_I":6,
     #                     "EndSem_E":9}
 
-    # Component_Details={"P1_I":{"Number_of_questions":3},
-    #                     "EndSem_E":{"Number_of_questions":3}}
-    #main1(data,Component_Details)
-    main1(data,Component_Details, os.getcwd())
+    driver_part1(data,Component_Details, os.getcwd())

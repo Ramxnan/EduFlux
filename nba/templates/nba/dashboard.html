@@ -259,6 +259,20 @@
         
         <div class="container">
             <div class="row justify-content-center">
+                {% if messages %}
+                        {% for message in messages %}
+                            <!-- Check the message tag and apply the corresponding Bootstrap class -->
+                            <div class="alert alert-dismissible 
+                                {% if message.tags == 'success' %}alert-success{% endif %}
+                                {% if message.tags == 'error' %}alert-danger{% endif %}" 
+                                role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
                 <!-- Left Column: Forms -->
                 <div class="col-md-6">
@@ -315,7 +329,8 @@
                                 <option value="C">C</option>
                                 <option value="D">D</option>
                                 <option value="E">E</option>
-                                <option value="F">F</option>                            </select>
+                                <option value="F">F</option>
+                                <option value="Sum">Sum</option>                            </select>
                         </div>
                         <div class="form-group">
                             <label for="subjectCode">Subject Code</label>
@@ -346,14 +361,19 @@
                     <!-- upload multiple files for BranchLeft-->
                     <form id="BranchLeft" name="BranchLeft" method="POST" action="{% url 'upload_multiple_files_branch' %}" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="ExcelFiles">Upload all class Excel File for Branch calcualtions</label>
+                            <label for="ExcelFiles">Upload Atleast 2 Sections Excel File For Merging</label>
                             <input type="file" name="ExcelFiles" id="ExcelFiles" multiple required class="form-control" accept=".xlsx">
                         </div>
-                    
+    
                         <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Upload</button>
                     </form>
 
+                        
                     
+
+
+                    
+
                 </div>
 
                 <!-- Right Column: Files -->
@@ -364,7 +384,7 @@
                             <div class="file-entry mb-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <!-- File Name -->
-                                    <span class="filename"><a href="{% url 'download_file' file_name %}">{{ file_name }}</a></span>
+                                    <span class="filename"><a href="{% url 'download_file' file_name %}">{{ file_name|split_file_name }}</a></span>
                                     
                                     <!-- Timestamp -->
                                     <small class="file-timestamp">{{ timestamp }}</small>
@@ -404,12 +424,12 @@
                                 <!-- Hidden Files List -->
                                 <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
                                     {% for file in data.0 %}
-                                        <p>&ensp;&ensp; |_{{ file }}</p>
+                                        &ensp;&ensp; <i class="bi bi-arrow-return-right"></i>{{ file|split_file_name }}<br>
                                     {% endfor %}
-                                    <button type="button" class="btn btn-success"a href="{% url 'download_folder' folder_name %}">
+                                    <br>
+                                    <a href="{% url 'download_folder' folder_name %}" class="btn btn-success">
                                         Download
-                                        </a>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         {% empty %}
@@ -429,6 +449,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -450,7 +471,23 @@
             });
         })
         
+        document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const showSection = urlParams.get('show');
 
+        if (showSection === 'branch') {
+            document.getElementById("TemplateLeft").style.display = "none";
+            document.getElementById("TemplateRight").style.display = "none";
+            document.getElementById("BranchLeft").style.display = "block";
+            document.getElementById("BranchRight").style.display = "block";
+        } else if (showSection === 'template') {
+            document.getElementById("TemplateLeft").style.display = "block";
+            document.getElementById("TemplateRight").style.display = "block";
+            document.getElementById("BranchLeft").style.display = "none";
+            document.getElementById("BranchRight").style.display = "none";
+        }
+        // Add more conditions as needed for other buttons/sections
+    });
         document.getElementById("TemplateBtn").onclick = function() {
             document.getElementById("TemplateLeft").style.display = "block";
             document.getElementById("TemplateRight").style.display = "block";
@@ -544,7 +581,32 @@
     
 
     </script>
- 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("BranchLeft");
+            const fileInput = document.getElementById("ExcelFiles");
+            const submitButton = form.querySelector('button[type="submit"]');
+        
+            form.onsubmit = function(e) {
+                if (fileInput.files.length < 2) {
+                    e.preventDefault(); // Prevent form submission
+                    alert("You must select at least 2 files."); // Alert or better to use a more user-friendly message display
+                    // Optionally, disable the submit button until the condition is met
+                    submitButton.disabled = true;
+                }
+            };
+        
+            fileInput.onchange = function() {
+                // Re-enable the submit button if the condition is now met
+                if (fileInput.files.length >= 2) {
+                    submitButton.disabled = false;
+                } else {
+                    submitButton.disabled = true;
+                }
+            };
+        });
+        </script>
+        
     
     
 </body>

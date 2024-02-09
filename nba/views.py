@@ -250,7 +250,50 @@ def upload_multiple_files_branch(request):
         # If it's not a POST request, handle accordingly
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
+#=======================================================================================================
+#=======================================================================================================
+#============================Template Generation========================================================
+def download_file_generated(request, file_name):
+    # Paths to the different folders
+    display_name = request.user.username.split('@')[0]
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
+    # Check which folder contains the file
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
+    else:
+        raise Http404("File not found")
 
+    # If the file exists, serve it
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+
+    # If the file does not exist
+    raise Http404("File not found")
+
+
+def delete_file_generated(request, file_name):
+    # Paths to the different folders
+    display_name = request.user.username.split('@')[0]
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
+
+    # Check which folder contains the file
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
+
+    # If the file exists, delete it
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return redirect('/dashboard/?show=template')
+
+#=======================================================================================================
+#=======================================================================================================
+#============================Branch Calculation========================================================
+
+
+>>>>>>> 8dd4e517412e5a92a8ff597ba763c9404b7d882b
 def download_file_branch(request, file_name, folder_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]

@@ -296,7 +296,7 @@ def download_folder_branch(request, folder_name):
                 # Add file to zip
                 zip_file.write(file_path, os.path.relpath(file_path, branch_calculation_path))
 
-    return redirect('/dashboard/?show=branch')
+    return response
 
 
 

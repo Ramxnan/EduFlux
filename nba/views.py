@@ -123,7 +123,14 @@ def logout(request):
     auth.logout(request)
     return render(request, 'nba/index.html')
 
-@csrf_exempt  # Note: Use this decorator if you want to allow POST requests without CSRF token validation
+
+
+
+
+#=======================================================================================================
+#=======================================================================================================
+#============================Template Generation========================================================
+@csrf_exempt
 def submit(request):
     if request.method == 'POST':
         data = {
@@ -172,7 +179,45 @@ def submit(request):
     # If the request method is not POST, handle accordingly (redirect to a form, etc.)
     return redirect('/dashboard/?show=template')
 
+def download_file_generated(request, file_name):
+    # Paths to the different folders
+    display_name = request.user.username.split('@')[0]
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
+    # Check which folder contains the file
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
+    else:
+        raise Http404("File not found")
 
+    # If the file exists, serve it
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+
+    # If the file does not exist
+    raise Http404("File not found")
+
+
+def delete_file_generated(request, file_name):
+    # Paths to the different folders
+    display_name = request.user.username.split('@')[0]
+    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
+
+    # Check which folder contains the file
+    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
+        file_path = os.path.join(Generated_Templates_path, file_name)
+
+    # If the file exists, delete it
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return redirect('/dashboard/?show=template')
+
+#=======================================================================================================
+#=======================================================================================================
+#============================Branch Calculation========================================================
+    
 @csrf_exempt
 def upload_multiple_files_branch(request):
     if request.method == 'POST':
@@ -201,63 +246,10 @@ def upload_multiple_files_branch(request):
                 shutil.rmtree(unique_folder_path)
 
         return redirect('/dashboard/?show=branch')  # This assumes you want to redirect to a new request where the message will be displayed
-
-
-
     else:
         # If it's not a POST request, handle accordingly
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
-
-
-
-
-# @csrf_exempt   
-# def upload_multiple_files_po(request):
-#     if request.method == 'POST':
-#         uploaded_files = request.FILES.getlist('files')
-#         PO_uploaded = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'POCalculations')
-#         fs = FileSystemStorage(location=PO_uploaded)
-#         for uploaded_file in uploaded_files:
-#             fs.save(uploaded_file.name, uploaded_file)
-#         po_calc_file_name=driver_part3(PO_uploaded, PO_uploaded)
-#         po_calc_file_path = os.path.join(PO_uploaded, po_calc_file_name)
-#         if os.path.exists(po_calc_file_path):
-#             return FileResponse(open(po_calc_file_path, 'rb'), as_attachment=True, filename=po_calc_file_name)
-        
-
-#         return redirect('dashboard')
-
-#         # You can redirect to a success page or do something else after processing files
-#         #return redirect('success_page')  # Redirect to a success page or dashboard
-
-#     else:
-#         # If it's not a POST request, redirect to dashboard or appropriate page
-#         return redirect('dashboard')
-
-
-
-
-
-def download_file_generated(request, file_name):
-    # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
-    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
-    # Check which folder contains the file
-    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
-        file_path = os.path.join(Generated_Templates_path, file_name)
-    else:
-        raise Http404("File not found")
-
-    # If the file exists, serve it
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/octet-stream")
-            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
-            return response
-
-    # If the file does not exist
-    raise Http404("File not found")
 
 def download_file_branch(request, file_name, folder_name):
     # Paths to the different folders
@@ -300,21 +292,6 @@ def download_folder_branch(request, folder_name):
 
 
 
-def delete_file_generated(request, file_name):
-    # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
-    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
-
-    # Check which folder contains the file
-    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
-        file_path = os.path.join(Generated_Templates_path, file_name)
-
-    # If the file exists, delete it
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        return redirect('/dashboard/?show=template')
-
-
 def delete_folder_branch(request, folder_name):
     display_name = request.user.username.split('@')[0]
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation')
@@ -329,6 +306,42 @@ def delete_folder_branch(request, folder_name):
 
     # Redirect to the dashboard or appropriate page
     return redirect('/dashboard/?show=branch')
+
+
+#=======================================================================================================
+#=======================================================================================================
+#============================Batch Calculation========================================================
+
+
+
+
+
+# @csrf_exempt   
+# def upload_multiple_files_po(request):
+#     if request.method == 'POST':
+#         uploaded_files = request.FILES.getlist('files')
+#         PO_uploaded = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'POCalculations')
+#         fs = FileSystemStorage(location=PO_uploaded)
+#         for uploaded_file in uploaded_files:
+#             fs.save(uploaded_file.name, uploaded_file)
+#         po_calc_file_name=driver_part3(PO_uploaded, PO_uploaded)
+#         po_calc_file_path = os.path.join(PO_uploaded, po_calc_file_name)
+#         if os.path.exists(po_calc_file_path):
+#             return FileResponse(open(po_calc_file_path, 'rb'), as_attachment=True, filename=po_calc_file_name)
+        
+
+#         return redirect('dashboard')
+
+#         # You can redirect to a success page or do something else after processing files
+#         #return redirect('success_page')  # Redirect to a success page or dashboard
+
+#     else:
+#         # If it's not a POST request, redirect to dashboard or appropriate page
+#         return redirect('dashboard')
+
+
+
+
 
 
 

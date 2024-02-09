@@ -292,8 +292,6 @@ def delete_file_generated(request, file_name):
 #=======================================================================================================
 #============================Branch Calculation========================================================
 
-
->>>>>>> 8dd4e517412e5a92a8ff597ba763c9404b7d882b
 def download_file_branch(request, file_name, folder_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]

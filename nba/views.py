@@ -239,7 +239,7 @@ def upload_multiple_files_branch(request):
 
 
 
-def download_file(request, file_name):
+def download_file_generated(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
     Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
@@ -259,7 +259,27 @@ def download_file(request, file_name):
     # If the file does not exist
     raise Http404("File not found")
 
-def download_folder(request, folder_name):
+def download_file_branch(request, file_name, folder_name):
+    # Paths to the different folders
+    display_name = request.user.username.split('@')[0]
+    Branch_file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation', folder_name)
+    # Check which folder contains the file
+    if os.path.isfile(os.path.join(Branch_file_path, file_name)):
+        file_path = os.path.join(Branch_file_path, file_name)
+    else:
+        raise Http404("File not found")
+
+    # If the file exists, serve it
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+
+    # If the file does not exist
+    raise Http404("File not found")
+
+def download_folder_branch(request, folder_name):
     display_name = request.user.username.split('@')[0]
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation', folder_name)
 
@@ -276,10 +296,11 @@ def download_folder(request, folder_name):
                 # Add file to zip
                 zip_file.write(file_path, os.path.relpath(file_path, branch_calculation_path))
 
-    return response
+    return redirect('/dashboard/?show=branch')
 
 
-def delete_file(request, file_name):
+
+def delete_file_generated(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
     Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
@@ -293,7 +314,8 @@ def delete_file(request, file_name):
         os.remove(file_path)
         return redirect('/dashboard/?show=template')
 
-def delete_folder(request, folder_name):
+
+def delete_folder_branch(request, folder_name):
     display_name = request.user.username.split('@')[0]
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation')
 

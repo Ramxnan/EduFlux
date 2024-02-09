@@ -384,13 +384,13 @@
                             <div class="file-entry mb-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <!-- File Name -->
-                                    <span class="filename"><a href="{% url 'download_file' file_name %}">{{ file_name|split_file_name }}</a></span>
+                                    <span class="filename"><a href="{% url 'download_file_generated' file_name %}">{{ file_name|split_file_name }}</a></span>
                                     
                                     <!-- Timestamp -->
                                     <small class="file-timestamp">{{ timestamp }}</small>
                                     
                                     <!-- Delete Form -->
-                                    <form method="POST" action="{% url 'delete_file' file_name %}">
+                                    <form method="POST" action="{% url 'delete_file_generated' file_name %}">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
                                     </form>
@@ -415,7 +415,7 @@
                                     <small class="folder-timestamp">{{ data.1 }}</small>
                                     
                                     <!-- Delete Form -->
-                                    <form method="POST" action="{% url 'delete_folder' folder_name %}">
+                                    <form method="POST" action="{% url 'delete_folder_branch' folder_name %}">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
                                     </form>
@@ -424,10 +424,10 @@
                                 <!-- Hidden Files List -->
                                 <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
                                     {% for file in data.0 %}
-                                        &ensp;&ensp; <i class="bi bi-arrow-return-right"></i>{{ file|split_file_name }}<br>
+                                        &ensp;&ensp; <i class="bi bi-arrow-return-right"></i><a href="{% url 'download_file_branch' folder_name file %}">{{ file|split_file_name }}</a><br>
                                     {% endfor %}
                                     <br>
-                                    <a href="{% url 'download_folder' folder_name %}" class="btn btn-success">
+                                    <a href="{% url 'download_folder_branch' folder_name %}" class="btn btn-success">
                                         Download Folder
                                     </a>
                                 </div>

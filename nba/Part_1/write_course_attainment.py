@@ -3,104 +3,103 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Protection
 
-def write_course_level_attainment(data,Component_Details,aw):
+def write_course_attainment(data,Component_Details,aw):
+    start_row_ca = 1
+    start_col_ca = 5
 
-    aw.merge_cells('A1:A4')
-    aw['A1'] = 'Course Outcome'
-    aw['A1'].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca, start_column=start_col_ca, end_row=start_row_ca+3, end_column=start_col_ca)
+    aw[f'{get_column_letter(start_col_ca)}{start_row_ca}'] = 'Course Outcome'
+    aw[f'{get_column_letter(start_col_ca)}{start_row_ca}'].font = Font(bold=True)
 
-    aw.merge_cells('B1:C1')
-    aw['B1'] = 'Mapping with Program'
-    aw['B1'].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca, start_column=start_col_ca+1, end_row=start_row_ca, end_column=start_col_ca+2)
+    aw[f'{get_column_letter(start_col_ca+1)}{start_row_ca}'] = 'Mapping with Program'
+    aw[f'{get_column_letter(start_col_ca+1)}{start_row_ca}'].font = Font(bold=True)
 
-    aw.merge_cells('D1:K1')
-    aw['D1'] = 'Attainment % in'
-    aw['D1'].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+1, start_column=start_col_ca+1, end_row=start_row_ca+3, end_column=start_col_ca+1)
+    aw[f'{get_column_letter(start_col_ca+1)}{start_row_ca+1}'] = 'POs & PSOs'
+    aw[f'{get_column_letter(start_col_ca+1)}{start_row_ca+1}'].font = Font(bold=True)
 
-    aw.merge_cells('B2:B4')
-    aw['B2'] = 'POs & PSOs'
-    aw['B2'].font = Font(bold=True)
+    aw[f'{get_column_letter(start_col_ca+2)}{start_row_ca+1}'] = 'Level of Mapping'
+    aw[f'{get_column_letter(start_col_ca+2)}{start_row_ca+1}'].font = Font(bold=True)
 
-    aw["C2"]="Level of Mapping"
-    aw["C2"].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+2, end_row=start_row_ca+3, end_column=start_col_ca+2)
+    aw[f'{get_column_letter(start_col_ca+2)}{start_row_ca+2}'] = 'Affinity'
+    aw[f'{get_column_letter(start_col_ca+2)}{start_row_ca+2}'].font = Font(bold=True)
 
-    aw.merge_cells('C3:C4')
-    aw['C3'] = 'Affinity'
-    aw['C3'].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca, start_column=start_col_ca+3, end_row=start_row_ca, end_column=start_col_ca+10)
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca}'] = 'Attainment % in'
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca}'].font = Font(bold=True)
 
-    aw.merge_cells('D2:H2')
-    aw['D2'] = 'Direct'
-    aw['D2'].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+1, start_column=start_col_ca+3, end_row=start_row_ca+1, end_column=start_col_ca+7)
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca+1}'] = 'Direct'
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca+1}'].font = Font(bold=True)
 
-    aw.merge_cells('I2:J2')
-    aw['I2'] = 'Indirect'
-    aw['I2'].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+3, end_row=start_row_ca+2, end_column=start_col_ca+4)
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca+2}'] = 'University(SEE)'
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca+2}'].font = Font(bold=True)
 
-    aw.merge_cells('K2:K3')
-    aw['K2'] = 'Final Weighted CO Attainment (80% Direct + 20% Indirect)'
-    aw['K2'].font = Font(bold=True)
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca+3}'] = 'Attainment'
+    aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca+3}'].font = Font(bold=True)
 
-    aw.merge_cells('D3:E3')
-    aw['D3'] = 'University(SEE)'
-    aw['D3'].font = Font(bold=True)
+    aw[f'{get_column_letter(start_col_ca+4)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    aw[f'{get_column_letter(start_col_ca+4)}{start_row_ca+3}'].font = Font(bold=True)
 
-    aw.merge_cells('F3:G3')
-    aw['F3'] = 'Internal(CIE)'
-    aw['F3'].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+5, end_row=start_row_ca+2, end_column=start_col_ca+6)
+    aw[f'{get_column_letter(start_col_ca+5)}{start_row_ca+2}'] = 'Internal(CIE)'
+    aw[f'{get_column_letter(start_col_ca+5)}{start_row_ca+2}'].font = Font(bold=True)
 
-    aw.merge_cells('H3:H4')
-    aw['H3'] = 'Weighted Level of Attainment (University + IA)'
-    aw['H3'].font = Font(bold=True)
+    aw[f'{get_column_letter(start_col_ca+5)}{start_row_ca+3}'] = 'Attainment'
+    aw[f'{get_column_letter(start_col_ca+5)}{start_row_ca+3}'].font = Font(bold=True)
 
-    aw["D4"]="Attainment"
-    aw["D4"].font = Font(bold=True)
+    aw[f'{get_column_letter(start_col_ca+6)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    aw[f'{get_column_letter(start_col_ca+6)}{start_row_ca+3}'].font = Font(bold=True)
 
-    aw["E4"]="Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)"
-    aw["E4"].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+7, end_row=start_row_ca+3, end_column=start_col_ca+7)
+    aw[f'{get_column_letter(start_col_ca+7)}{start_row_ca+2}'] = 'Weighted Level of Attainment (University + IA)'
+    aw[f'{get_column_letter(start_col_ca+7)}{start_row_ca+2}'].font = Font(bold=True)
 
-    aw["F4"]="Attainment"
-    aw["F4"].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+1, start_column=start_col_ca+8, end_row=start_row_ca+1, end_column=start_col_ca+9)
+    aw[f'{get_column_letter(start_col_ca+8)}{start_row_ca+1}'] = 'Indirect'
+    aw[f'{get_column_letter(start_col_ca+8)}{start_row_ca+1}'].font = Font(bold=True)
 
-    aw["G4"]="Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)"
-    aw["G4"].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+8, end_row=start_row_ca+3, end_column=start_col_ca+8)
+    aw[f'{get_column_letter(start_col_ca+8)}{start_row_ca+2}'] = 'Attainment'
+    aw[f'{get_column_letter(start_col_ca+8)}{start_row_ca+2}'].font = Font(bold=True)
 
-    aw.merge_cells('I3:I4')
-    aw["I3"]="Attainment"
-    aw["I3"].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+9, end_row=start_row_ca+3, end_column=start_col_ca+9)
+    aw[f'{get_column_letter(start_col_ca+9)}{start_row_ca+2}'] = 'Level Of Attainment'
+    aw[f'{get_column_letter(start_col_ca+9)}{start_row_ca+2}'].font = Font(bold=True)
 
-    aw.merge_cells('J3:J4')
-    aw['J3']="Level Of Attainment"
-    aw["J3"].font = Font(bold=True)
+    aw.merge_cells(start_row=start_row_ca+1, start_column=start_col_ca+10, end_row=start_row_ca+2, end_column=start_col_ca+10)
+    aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+1}'] = 'Final Weighted CO Attainment (80% Direct + 20% Indirect)'
+    aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+1}'].font = Font(bold=True)
 
-    aw["K4"]="Level of Attainment"
-    aw["K4"].font = Font(bold=True)
+    aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+3}'] = 'Level of Attainment'
+    aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+3}'].font = Font(bold=True)
 
-    #Set column width for A to 17.22
-    aw.column_dimensions['A'].width = 17.22
-    aw.column_dimensions['B'].width = 9.33
-    aw.column_dimensions['C'].width = 15.56
-    aw.column_dimensions['D'].width = 12
-    aw.column_dimensions['E'].width = 14.11
-    aw.column_dimensions['F'].width = 12
-    aw.column_dimensions['G'].width = 14.11
-    aw.column_dimensions['H'].width = 20.67
-    aw.column_dimensions['I'].width = 12
-    aw.column_dimensions['J'].width = 18.11
-    aw.column_dimensions['K'].width = 22.78
-    #center align the text in the cells
-    for row in aw.iter_rows(min_row=1, max_row=aw.max_row, min_col=1, max_col=aw.max_column):
+    aw.column_dimensions[get_column_letter(start_col_ca)].width = 17.22
+    aw.column_dimensions[get_column_letter(start_col_ca+1)].width = 9.33
+    aw.column_dimensions[get_column_letter(start_col_ca+2)].width = 15.56
+    aw.column_dimensions[get_column_letter(start_col_ca+3)].width = 12
+    aw.column_dimensions[get_column_letter(start_col_ca+4)].width = 14.11
+    aw.column_dimensions[get_column_letter(start_col_ca+5)].width = 12
+    aw.column_dimensions[get_column_letter(start_col_ca+6)].width = 14.11
+    aw.column_dimensions[get_column_letter(start_col_ca+7)].width = 20.67
+    aw.column_dimensions[get_column_letter(start_col_ca+8)].width = 12
+    aw.column_dimensions[get_column_letter(start_col_ca+9)].width = 18.11
+    aw.column_dimensions[get_column_letter(start_col_ca+10)].width = 22.78
+    
+    for row in aw.iter_rows(min_row=start_row_ca, max_row=start_row_ca+3, min_col=start_col_ca, max_col=aw.max_column):
         for cell in row:
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-            #set color of the cells to blue
             cell.fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
             cell.border = Border(left=Side(border_style='thin', color='000000'),
                                  right=Side(border_style='thin', color='000000'),
                                  top=Side(border_style='thin', color='000000'),
                                  bottom=Side(border_style='thin', color='000000'))
-
-    #set color of the cells to green
-    aw["C3"].fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
-    aw["K4"].fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
+            
+    aw[f'{get_column_letter(start_col_ca+2)}{start_row_ca+2}'].fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
+    aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+3}'].fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
 
     start=4
     interval=16

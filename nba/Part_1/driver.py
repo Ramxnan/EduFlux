@@ -8,7 +8,7 @@ from .studentmarks import studentmarks
 from .cummulative_co_mm_btl import cummulative_co_mm_btl
 from .cummulative_studentsmarks import cummulative_studentmarks
 from .Component_calculation import Component_calculation
-from .write_course_level_attainment import write_course_level_attainment
+from .write_course_attainment import write_course_attainment
 from .printout import printout
 import os
 import uuid
@@ -57,9 +57,9 @@ def driver_part1(data, Component_Details, file_path):
     ws = wb[f"{data['Section']}_External_Components"]
     ws = Component_calculation(data,Component_Details,ws,"E")
 
-    wb.create_sheet(f"{data['Section']}_Course_level_Attainment")
-    ws = wb[f"{data['Section']}_Course_level_Attainment"]
-    ws=write_course_level_attainment(data, Component_Details, ws)
+    wb.create_sheet(f"{data['Section']}_Course_Attainment")
+    ws = wb[f"{data['Section']}_Course_Attainment"]
+    ws=write_course_attainment(data, Component_Details, ws)
 
     wb.create_sheet(f"{data['Section']}_Printout")
     ws = wb[f"{data['Section']}_Printout"]

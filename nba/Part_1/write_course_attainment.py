@@ -4,8 +4,111 @@ from openpyxl.utils import get_column_letter
 from openpyxl.styles import Protection
 
 def write_course_attainment(data,Component_Details,aw):
+    #============================================================================================================
+
+    aw.merge_cells('A1:B1')
+    aw['A1']="Constants"
+    aw['A1'].font = Font(bold=True)
+    aw['A1'].alignment = Alignment(horizontal='center', vertical='center')
+    aw['A1'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+    aw['B1'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+    aw['A1'].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+
+    i=2
+    for key, value in data.items():
+        aw[f'A{i}']=key
+        aw[f'A{i}'].font = Font(bold=True)
+        aw[f'A{i}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        aw[f'A{i}'].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f'A{i}'].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+
+        aw[f'B{i}']=value
+        aw[f'B{i}'].font = Font(bold=True)
+        aw[f'B{i}'].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f'B{i}'].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+
+        if i%2==0:
+            aw[f'A{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
+            aw[f'B{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
+        else:
+            aw[f'A{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
+            aw[f'B{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
+
+        i+=1
+    
+    i+=1
+    aw.merge_cells(f'A{i}:B{i}')
+    aw[f'A{i}']="Variables"
+    aw[f'A{i}'].font = Font(bold=True)
+    aw[f'A{i}'].alignment = Alignment(horizontal='center', vertical='center')
+    aw[f'A{i}'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+    aw[f'B{i}'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+    aw[f'A{i}'].fill = PatternFill(start_color='4bacc6', end_color='4bacc6', fill_type='solid')
+
+    aw['A14']="Default Threshold %"
+    aw['B14']=f'={data["Section"]}_Input_Details!B14'
+    aw['A15']="Internal %"
+    aw['B15']=f'={data["Section"]}_Input_Details!B15'
+    aw['A16']="External %"
+    aw['B16']=f'={data["Section"]}_Input_Details!B16'
+    aw['A17']="Direct %"
+    aw['B17']=f'={data["Section"]}_Input_Details!B17'
+    aw['A18']="Indirect %"
+    aw['B18']=f'={data["Section"]}_Input_Details!B18'
+    aw['A19']="Target CO Attainment %"
+    aw['B19']=f'={data["Section"]}_Input_Details!B19'
+
+    for i in range(14,20):
+        aw[f'A{i}'].font = Font(bold=True)
+        aw[f'A{i}'].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f'A{i}'].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+        if i%2==0:
+            aw[f'A{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
+        else:
+            aw[f'A{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
+
+        aw[f'B{i}'].font = Font(bold=True)
+        aw[f'B{i}'].alignment = Alignment(horizontal='center', vertical='center')
+        aw[f'B{i}'].border = Border(top=Side(border_style='thin', color='000000'),
+                                    bottom=Side(border_style='thin', color='000000'),
+                                    left=Side(border_style='thin', color='000000'),
+                                    right=Side(border_style='thin', color='000000'))
+        if i%2==0:
+            aw[f'B{i}'].fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
+        else:
+            aw[f'B{i}'].fill = PatternFill(start_color='daeef3', end_color='daeef3', fill_type='solid')
+
+    aw.column_dimensions['A'].width = 23
+    aw.column_dimensions['B'].width = 12
+
+    #============================================================================================================
+    #============================================================================================================
+
+
+
     start_row_ca = 1
-    start_col_ca = 5
+    start_col_ca = 4
 
     aw.merge_cells(start_row=start_row_ca, start_column=start_col_ca, end_row=start_row_ca+3, end_column=start_col_ca)
     aw[f'{get_column_letter(start_col_ca)}{start_row_ca}'] = 'Course Outcome'
@@ -101,49 +204,51 @@ def write_course_attainment(data,Component_Details,aw):
     aw[f'{get_column_letter(start_col_ca+2)}{start_row_ca+2}'].fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
     aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+3}'].fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
 
-    start=4
+    #================================================================================================================================================================
+
+    start=start_row_ca+3
     interval=16
     rowindex=1
+    column=start_col_ca
     for i in range(1, (data["Number_of_COs"]+1)):
         start+=1
-        aw.merge_cells(start_row=start, start_column=1, end_row=start+interval, end_column=1)
-        aw.cell(row=start, column=1).value = "CO"+str(i)
-        aw.cell(row=start, column=1).font = Font(bold=True)
-        aw.cell(row=start, column=1).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        aw.merge_cells(start_row=start, start_column=start_col_ca, end_row=start+interval, end_column=start_col_ca)
+        aw.cell(row=start, column=start_col_ca).value = "CO"+str(i)
+        aw.cell(row=start, column=start_col_ca).font = Font(bold=True)
+        aw.cell(row=start, column=start_col_ca).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
         if i%2==0:
-            aw.cell(row=start, column=1).fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
+            aw.cell(row=start, column=start_col_ca).fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
         else:
-            aw.cell(row=start, column=1).fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
+            aw.cell(row=start, column=start_col_ca).fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
 
 
         index=1
         for j in range(start, start+interval+1):
             #print out COPO mapping
-            aw.cell(row=j, column=2).value =f'={data["Section"]}_Input_Details!{get_column_letter(index+4)}2'
-            aw.cell(row=j, column=2).alignment = Alignment(horizontal='center', vertical='center')
-            aw.cell(row=j, column=2).border = Border(left=Side(border_style='thin', color='000000'),
+            aw.cell(row=j, column=start_col_ca+1).value =f'={data["Section"]}_Input_Details!{get_column_letter(index+4)}2'
+            aw.cell(row=j, column=start_col_ca+1).alignment = Alignment(horizontal='center', vertical='center')
+            aw.cell(row=j, column=start_col_ca+1).border = Border(left=Side(border_style='thin', color='000000'),
                                  right=Side(border_style='thin', color='000000'),
                                  top=Side(border_style='thin', color='000000'),
                                  bottom=Side(border_style='thin', color='000000'))
             
-            aw.cell(row=j, column=3).value = f'={data["Section"]}_Input_Details!{get_column_letter(index+4)}{i+2}'
-            aw.cell(row=j, column=3).alignment = Alignment(horizontal='center', vertical='center')
-            aw.cell(row=j, column=3).border = Border(left=Side(border_style='thin', color='000000'),
+            aw.cell(row=j, column=start_col_ca+2).value = f'={data["Section"]}_Input_Details!{get_column_letter(index+4)}{i+2}'
+            aw.cell(row=j, column=start_col_ca+2).alignment = Alignment(horizontal='center', vertical='center')
+            aw.cell(row=j, column=start_col_ca+2).border = Border(left=Side(border_style='thin', color='000000'),
                                  right=Side(border_style='thin', color='000000'),
                                  top=Side(border_style='thin', color='000000'),
                                  bottom=Side(border_style='thin', color='000000'))
             
             if index%2==0:
-                aw.cell(row=j, column=2).fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
-                aw.cell(row=j, column=3).fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
+                aw.cell(row=j, column=start_col_ca+1).fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
+                aw.cell(row=j, column=start_col_ca+2).fill = PatternFill(start_color='c4d79b', end_color='c4d79b', fill_type='solid')
             else:
-                aw.cell(row=j, column=2).fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
-                aw.cell(row=j, column=3).fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
+                aw.cell(row=j, column=start_col_ca+1).fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
+                aw.cell(row=j, column=start_col_ca+2).fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
             index+=1
 
-        for k in range(4,12):
+        for k in range(start_col_ca+3, start_col_ca+11):
             aw.merge_cells(start_row=start, start_column=k, end_row=start+interval, end_column=k)
-            #aw.cell(row=start, column=k).value = final_table.iloc[i-1, k-4]
             aw.cell(row=start, column=k).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             if k%2==0:
                 aw.cell(row=start, column=k).fill = PatternFill(start_color='b8cce4', end_color='b8cce4', fill_type='solid')
@@ -159,33 +264,33 @@ def write_course_attainment(data,Component_Details,aw):
                 external_components_num+=1
         col=(data["Number_of_COs"]*internal_components_num) + (1*internal_components_num) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
-        aw.cell(row=start, column=4).value=f'=IFERROR({data["Section"]}_Internal_Components!{get_column_letter(col)}{row}, 0)'
+        aw.cell(row=start, column=start_col_ca+3).value=f'=IFERROR({data["Section"]}_Internal_Components!{get_column_letter(col)}{row}, 0)'
 
-        aw.cell(row=start, column=5).value=f'=IF(AND({get_column_letter(4)}{start}>=0,{get_column_letter(4)}{start}<40),1,IF(AND({get_column_letter(4)}{start}>=40,{get_column_letter(4)}{start}<60),2,IF(AND({get_column_letter(4)}{start}>=60,{get_column_letter(4)}{start}<=100),3,"0")))'
+        aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>=0,{get_column_letter(start_col_ca+3)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+3)}{start}>=40,{get_column_letter(start_col_ca+3)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+3)}{start}>=60,{get_column_letter(start_col_ca+3)}{start}<=100),3,"0")))'
 
         col=(data["Number_of_COs"]*external_components_num) + (1*external_components_num) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
-        aw.cell(row=start, column=6).value=f'=IFERROR({data["Section"]}_External_Components!{get_column_letter(col)}{row}, 0)'
+        aw.cell(row=start, column=start_col_ca+5).value=f'=IFERROR({data["Section"]}_External_Components!{get_column_letter(col)}{row}, 0)'
 
-        aw.cell(row=start, column=7).value=f'=IF(AND({get_column_letter(6)}{start}>=0,{get_column_letter(6)}{start}<40),1,IF(AND({get_column_letter(6)}{start}>=40,{get_column_letter(6)}{start}<60),2,IF(AND({get_column_letter(6)}{start}>=60,{get_column_letter(6)}{start}<=100),3,"0")))'
+        aw.cell(row=start, column=start_col_ca+6).value=f'=IF(AND({get_column_letter(start_col_ca+5)}{start}>=0,{get_column_letter(start_col_ca+5)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+5)}{start}>=40,{get_column_letter(start_col_ca+5)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+5)}{start}>=60,{get_column_letter(start_col_ca+5)}{start}<=100),3,"0")))'
 
-        column_5_cell = f'{get_column_letter(5)}{start}'
-        column_7_cell = f'{get_column_letter(7)}{start}'
+        column_5_cell = f'{get_column_letter(start_col_ca+4)}{start}'
+        column_7_cell = f'{get_column_letter(start_col_ca+6)}{start}'
         calculation = f'{column_5_cell}*({data["Section"]}_Input_Details!B16/100)+{column_7_cell}*{data["Section"]}_Input_Details!B15/100'
 
         formula = f'={calculation}'
-        aw.cell(row=start, column=8).value = formula
+        aw.cell(row=start, column=start_col_ca+7).value = formula
 
-        aw.cell(row=start, column=9).value=f'=IF({data["Section"]}_Input_Details!E{2+data["Number_of_COs"]+4+rowindex}>0,{data["Section"]}_Input_Details!E{2+data["Number_of_COs"]+4+rowindex},"0")'
+        aw.cell(row=start, column=start_col_ca+8).value=f'=IF({data["Section"]}_Input_Details!E{2+data["Number_of_COs"]+4+rowindex}>0,{data["Section"]}_Input_Details!E{2+data["Number_of_COs"]+4+rowindex},"0")'
 
-        aw.cell(row=start, column=10).value=f'=IF(AND({get_column_letter(9)}{start}>=0,{get_column_letter(9)}{start}<40),1,IF(AND({get_column_letter(9)}{start}>=40,{get_column_letter(9)}{start}<60),2,IF(AND({get_column_letter(9)}{start}>=60,{get_column_letter(9)}{start}<=100),3,"0")))'
+        aw.cell(row=start, column=start_col_ca+9).value=f'=IF(AND({get_column_letter(start_col_ca+8)}{start}>=0,{get_column_letter(start_col_ca+8)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+8)}{start}>=40,{get_column_letter(start_col_ca+8)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+8)}{start}>=60,{get_column_letter(start_col_ca+8)}{start}<=100),3,"0")))'
 
-        aw.cell(row=start, column=11).value=f'=({get_column_letter(8)}{start}*({data["Section"]}_Input_Details!B17/100))+({get_column_letter(10)}{start}*({data["Section"]}_Input_Details!B18/100))'
+        aw.cell(row=start, column=start_col_ca+10).value=f'=({get_column_letter(start_col_ca+7)}{start}*({data["Section"]}_Input_Details!B17/100))+({get_column_letter(start_col_ca+9)}{start}*({data["Section"]}_Input_Details!B18/100))'
         
         rowindex+=1
         start=start+interval
 
-    for row in aw.iter_rows(min_row=1, max_row=aw.max_row, min_col=1, max_col=aw.max_column):
+    for row in aw.iter_rows(min_row=1, max_row=aw.max_row, min_col=start_col_ca, max_col=aw.max_column):
         for cell in row:
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             cell.border = Border(left=Side(border_style='thin', color='000000'),

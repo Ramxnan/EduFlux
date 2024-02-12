@@ -253,6 +253,9 @@ def printout(aw, data):
 
 
     #============================================================================================================
+    
+    start_row_ca_data=data["Number_of_COs"]+8+data["Number_of_COs"]+3+4
+    start_col_ca_data=4+3
             
     attainment_cell_reference = f"{get_column_letter(column)}{row+2}"
     aw[attainment_cell_reference] = "Attainment"
@@ -263,7 +266,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!D{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -282,7 +285,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!E{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+1)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -332,7 +335,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!F{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+2)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -354,7 +357,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!G{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+3)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -403,7 +406,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={get_column_letter(column-4)}{row+3+numco}*(B16/100)+{get_column_letter(column-2)}{row+3+numco}*(B15/100)"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+4)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -424,7 +427,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!H{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+5)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -459,7 +462,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!I{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+6)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -479,7 +482,7 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!J{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+7)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
@@ -528,8 +531,8 @@ def printout(aw, data):
                             right=Side(border_style='thin', color='000000'))
     
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"=({get_column_letter(column-4)}{4+numco}*(B17/100))+({get_column_letter(column-2)}{4+numco}*(B18/100))"
-        aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"=={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+8)}{start_row_ca_data+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"].font= Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),
                                 bottom=Side(border_style='thin', color='000000'),
@@ -547,7 +550,7 @@ def printout(aw, data):
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
     for numco in range(data['Number_of_COs']):
-        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!K{5+(numco*interval)}"
+        aw[f"{get_column_letter(column)}{row+3+numco}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+9)}{start_row_ca_data+(numco*interval)}"
         aw[f"{get_column_letter(column)}{row+3+numco}"].font = Font(bold=True)
         aw[f"{get_column_letter(column)}{row+3+numco}"].alignment = Alignment(horizontal='center', vertical='center')
         aw[f"{get_column_letter(column)}{row+3+numco}"].border = Border(top=Side(border_style='thin', color='000000'),

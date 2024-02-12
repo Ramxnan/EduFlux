@@ -14,6 +14,11 @@ def CO_PO_Table(data,aw):
     aw['D1']="CO-PO Mapping"
     aw['D1'].font = Font(bold=True)
     aw['D1'].alignment = Alignment(horizontal='center', vertical='center')
+    aw['D1'].border = Border(top=Side(border_style='thin', color='000000'),
+                            bottom=Side(border_style='thin', color='000000'),
+                            left=Side(border_style='thin', color='000000'),
+                            right=Side(border_style='thin', color='000000'))
+    aw['D1'].fill = PatternFill(start_color='ffe74e', end_color='ffe74e', fill_type='solid')
 
     aw["D2"]="COs\\POs"
     aw["D2"].font = Font(bold=True)
@@ -65,10 +70,9 @@ def CO_PO_Table(data,aw):
                                     left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'))
             if co%2==0:
-                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
+                aw[f"{get_column_letter(12+4+pso)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
             else:
-                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
-
+                aw[f"{get_column_letter(12+4+pso)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
     #for columns 4 to 4+12+5 set width to 13
     for col in range(4,4+12+5):
         aw.column_dimensions[f"{get_column_letter(col)}"].width = 13

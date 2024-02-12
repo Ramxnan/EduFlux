@@ -65,9 +65,9 @@ def CO_PO_Table(data,aw):
                                     left=Side(border_style='thin', color='000000'),
                                     right=Side(border_style='thin', color='000000'))
             if co%2==0:
-                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
+                aw[f"{get_column_letter(po+4+12)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
             else:
-                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
+                aw[f"{get_column_letter(po+4+12)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
 
     #for columns 4 to 4+12+5 set width to 13
     for col in range(4,4+12+5):

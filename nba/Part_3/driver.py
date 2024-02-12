@@ -113,7 +113,6 @@ def driver_part3(input_dir_path, output_dir_path):
     wswrite_POCalculation["A2"]="Direct Attainment at PO level"
     wswrite_POCalculation["A2"].font = Font(bold=True, size=14)
     wswrite_POCalculation["A2"].alignment = Alignment(horizontal='center', vertical='center')
-    wswrite_POCalculation["A2"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
     for row in wswrite_POCalculation.iter_rows(min_row=2, max_row=2, min_col=1, max_col=20):
         for cell in row:
             cell.border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
@@ -190,6 +189,9 @@ def driver_part3(input_dir_path, output_dir_path):
             rowdata_df=pd.DataFrame(rowdata).T
             rowdata_df.columns=columns
             final_po_table = pd.concat([final_po_table,rowdata_df], axis=0)
+    final_po_table = final_po_table.apply(lambda x: x.astype(float) if x.dtype == int else x)
+            
+            
     final_po_table=final_po_table.replace(0, np.nan)
     final_po_table.reset_index(drop=True, inplace=True)
     
@@ -212,6 +214,7 @@ def driver_part3(input_dir_path, output_dir_path):
     startrow=4
     startcol=1
     sno=1
+    trows=[]
     for key, value in dataframes_dict.items():
         wswrite_POCalculation.merge_cells(start_row=startrow, start_column=startcol, end_row=startrow, end_column=startcol+19)
         wswrite_POCalculation.cell(row=startrow, column=startcol).value=f"{key[0]} {key[1]}"
@@ -235,6 +238,7 @@ def driver_part3(input_dir_path, output_dir_path):
                 wswrite_POCalculation.cell(row=startrow, column=c).border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
                 if ridex==len(value)-1 and c == startcol+20-1:
                     startrow+=1
+                    trows.append(startrow)
                     wswrite_POCalculation.merge_cells(start_row=startrow, start_column=startcol, end_row=startrow, end_column=startcol+2)
                     wswrite_POCalculation.cell(row=startrow, column=startcol).value="Total"
                     for cfin in range (4, 21):
@@ -253,8 +257,64 @@ def driver_part3(input_dir_path, output_dir_path):
         startrow+=1
     startrow-=1
 
+    wswrite_POCalculation.merge_cells(f'A{startrow}:T{startrow}')
+    wswrite_POCalculation[f"A{startrow}"]="Indirect Assessment At PO Level"
+    wswrite_POCalculation[f"A{startrow}"].font = Font(bold=True, size=14)
+    wswrite_POCalculation[f"A{startrow}"].alignment = Alignment(horizontal='center', vertical='center')
+    for row in wswrite_POCalculation.iter_rows(min_row=startrow, max_row=startrow, min_col=1, max_col=20):
+        for cell in row:
+            cell.border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+    po_data_col=3
+    startrow+=1
 
+    wswrite_POCalculation.cell(row=startrow, column=1).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+    wswrite_POCalculation.cell(row=startrow, column=2).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+    wswrite_POCalculation.cell(row=startrow, column=3).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+
+    for po in range(1, 13):
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).value=f"PO{po}"
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).font = Font(bold=True, color="ffffff")
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+
+    for pso in range(1, 6):
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).value=f"PSO{pso}"
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).font = Font(bold=True, color="ffffff")
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+
+    startrow+=1
+    wswrite_POCalculation[f'A{startrow}']=sno
+    sno+=1
+    wswrite_POCalculation.merge_cells(start_row=startrow, end_row=startrow, start_column=2, end_column=3)
+    wswrite_POCalculation[f'B{startrow}']="Exit survey feedback"
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
     
+    startrow+=1
+    wswrite_POCalculation[f'A{startrow}']=sno
+    sno+=1
+    wswrite_POCalculation.merge_cells(start_row=startrow, end_row=startrow, start_column=2, end_column=3)
+    wswrite_POCalculation[f'B{startrow}']="Recruiters Feedback"
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+    
+    startrow+=1
+    wswrite_POCalculation.merge_cells(start_row=startrow, end_row=startrow, start_column=1, end_column=3)
+    wswrite_POCalculation[f'A{startrow}']="Average"
+    wswrite_POCalculation[f'A{startrow}'].font = Font(bold=True)
+
+    for colind in range(4,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}']=f'=AVERAGE({get_column_letter(colind)}{startrow-2}:{get_column_letter(colind)}{startrow-1})'
+
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].fill = PatternFill(start_color='fcd5b4', end_color='fcd5b4', fill_type='solid')
     # lastrow=[]
     # # Calculate average, excluding NaN values
     # for col in final_po_table.columns:

@@ -9,6 +9,7 @@ import os
 import numpy as np
 import uuid
 from openpyxl.utils import get_column_letter
+from .printout_p3 import printout
 #from printout import printout_template
 
 
@@ -18,83 +19,48 @@ def driver_part3(input_dir_path, output_dir_path):
     wbwrite.create_sheet("Printouts",0)
     wbwrite.create_sheet("PO_calculations",1)
     
-    # wswrite_printouts=wbwrite["Printouts"]
-    # startrow=2
-    # for file in os.listdir(input_dir_path):
-    #     if file.endswith(".xlsx") and file != "final.xlsx":
-    #         wbread=load_workbook(input_dir_path+"\\"+file, data_only=True) 
-    #         print("=====================================")
-    #         print(wbread.sheetnames)
-    #         print(file)
-    #         print("=====================================")
-    #         wsread_input_detials=wbread["Input_Details"]
-    #         Number_of_COs=wsread_input_detials["B8"].value
+    wswrite_printouts=wbwrite["Printouts"]
+    startrow=2
+    for file in os.listdir(input_dir_path):
+        if file.endswith(".xlsx") and not file.startswith("final"):
+            wbread=load_workbook(input_dir_path+"\\"+file, data_only=True) 
+            ws_printout=""
+            for ws in wbread.sheetnames:
+                if ws.endswith("Printout"):
+                    ws_printout=ws
+            wsread_printout=wbread[ws_printout]
+            Number_of_COs=wsread_printout["B11"].value
+            wswrite_printouts.merge_cells(f"D{startrow}:R{startrow}")
+            wswrite_printouts[f"D{startrow}"]=file
+            wswrite_printouts[f"D{startrow}"].font = Font(bold=True, size=14)
+            wswrite_printouts[f"D{startrow}"].alignment = Alignment(horizontal='center', vertical='center')
+            wswrite_printouts[f"D{startrow}"].fill = PatternFill(start_color='ce875c', end_color='ce875c', fill_type='solid')
+            for row in wswrite_printouts.iter_rows(min_row=startrow, max_row=startrow, min_col=4, max_col=18):
+                for cell in row:
+                    cell.border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
 
-    #         wsread_printout=wbread["Printout"]
-    #         min_row=1
-    #         min_col=1
-    #         max_row=3+Number_of_COs
-    #         max_col=14
-    #         rowdata=[]
-    #         for row in range(min_row, max_row+1):
-    #                 rowdata.append([])
-    #                 for col in range(min_col, max_col+1):
-    #                     rowdata[-1].append(wsread_printout.cell(row=row, column=col).value)
-    #         Printouttable = pd.DataFrame(rowdata[1:], columns=rowdata[0])
-    #         #print(Printouttable)
-
-    #         #prin the table in the final workbook
-    #         wswrite_printouts.append([file])
-    #         for r in dataframe_to_rows(Printouttable, index=False, header=True):
-    #             wswrite_printouts.append(r)
-    #         wswrite_printouts.append([])
-
-    #         wswrite_printouts.merge_cells(f"A{startrow-1}:N{startrow-1}")
-    #         wswrite_printouts[f"A{startrow-1}"].fill = PatternFill(start_color='D39554', end_color='D39554', fill_type='solid')
-    #         wswrite_printouts[f"A{startrow-1}"].font = Font(bold=True)
-    #         wswrite_printouts[f"A{startrow-1}"].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-
-    #         #style the table
-    #         printout_template(wswrite_printouts, startrow)
+            startrow+=1
+            wswrite_printouts=printout(wswrite_printouts, Number_of_COs, startrow)
+            
+            min_row=1
+            min_col=4
+            max_row=3+Number_of_COs
+            max_col=18
+            for row in range(min_row, max_row+1):
+                for col in range(min_col, max_col+1):
+                    try:
+                        wswrite_printouts.cell(row=startrow, column=col).value=wsread_printout.cell(row=row, column=col).value
+                    except:
+                        pass
+                startrow+=1
           
-    #         min_row=startrow+3
-    #         min_col=1
-    #         max_row=startrow+3+Number_of_COs-1
-    #         max_col=14
-    #         for row in range(min_row, max_row+1):
-    #             for col in range(min_col, max_col+1):
-    #                 wswrite_printouts.cell(row=row, column=col).border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
-    #                 wswrite_printouts.cell(row=row, column=col).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-    #                 wswrite_printouts.cell(row=row, column=col).font = Font(bold=True)
-
-    #         wswrite_printouts.merge_cells(f"A{startrow+3}:A{startrow+3+Number_of_COs-1}")
-    #         wswrite_printouts[f"A{startrow+3}"].font = Font(bold=True)
-    #         wswrite_printouts[f"A{startrow+3}"].alignment = Alignment(horizontal='center', vertical='center', textRotation=90, wrap_text=True)
-    #         wswrite_printouts[f"A{startrow+3}"].fill = PatternFill(start_color='1ed760', end_color='1ed760', fill_type='solid')
-    #         for numco in range(Number_of_COs):
-    #             if numco%2==0:
-    #                 wswrite_printouts[f"B{startrow+3+numco}"].fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type='solid')
-                
-    #             wswrite_printouts[f"D{startrow+3+numco}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
-    #             wswrite_printouts[f"D{startrow+3+numco}"].font = Font(bold=True, color="fe3400")
-
-    #             wswrite_printouts[f"F{startrow+3+numco}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
-    #             wswrite_printouts[f"F{startrow+3+numco}"].font = Font(bold=True, color="fe3400")
-
-    #             wswrite_printouts[f"H{startrow+3+numco}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
-    #             wswrite_printouts[f"H{startrow+3+numco}"].font = Font(bold=True, color="fe3400")
-
-    #             wswrite_printouts[f"J{startrow+3+numco}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
-    #             wswrite_printouts[f"J{startrow+3+numco}"].font = Font(bold=True, color="fe3400")
-
-    #             wswrite_printouts[f"L{startrow+3+numco}"].fill = PatternFill(start_color='fde9d9', end_color='fde9d9', fill_type='solid')
-    #             wswrite_printouts[f"L{startrow+3+numco}"].font = Font(bold=True, color="fe3400")
-
-    #             wswrite_printouts[f"M{startrow+3+numco}"].fill = PatternFill(start_color='ffff00', end_color='ffff00', fill_type='solid')
-
-    #         startrow=startrow+Number_of_COs+5
 
 
+
+            startrow+=1
+            
+
+            
     #================================================================================================
     #================================================================================================
     # #PO calculation
@@ -155,8 +121,8 @@ def driver_part3(input_dir_path, output_dir_path):
     columns=[]
     columns.append("Academic Year")
     columns.append("Semester")
-    columns.append("Course Name")
     columns.append("Course Code")
+    columns.append("Course Name")
     for i in range(1, 13):
         columns.append(f"PO{i}")
     for i in range(1, 6):
@@ -195,45 +161,41 @@ def driver_part3(input_dir_path, output_dir_path):
     final_po_table=final_po_table.replace(0, np.nan)
     final_po_table.reset_index(drop=True, inplace=True)
 
-    #mappedpo is a copy of final_po_table
-    mappedpo=final_po_table.copy()
-    mappedpo.drop(['Academic Year', 'Semester','Course Name','Course Code'], axis=1, inplace=True)
-    mappedpo['nonnull_count'] = mappedpo.count(axis=0)
-    
     semester_sort = {'Odd': 1, 'Even': 2}
     final_po_table['Semester code'] = final_po_table['Semester'].map(semester_sort)
 
     final_po_table = final_po_table.sort_values(by=['Academic Year', 'Semester code'])
-    print(final_po_table)
+    #print(final_po_table)
 
     dataframes_dict = {group: data.drop(['Academic Year', 'Semester', 'Semester code'], axis=1)
                    for group, data in final_po_table.groupby(['Academic Year', 'Semester'])}
 
 
 
-    for key, value in dataframes_dict.items():
-        print(key)
-        print(value)
-        print("=====================================")
+    # for key, value in dataframes_dict.items():
+    #     print(key)
+    #     print(value)
+    #     print("=====================================")
 
     startrow=4
     startcol=1
     sno=1
     trows=[]
+    vrows=[]
     for key, value in dataframes_dict.items():
         wswrite_POCalculation.merge_cells(start_row=startrow, start_column=startcol, end_row=startrow, end_column=startcol+19)
         wswrite_POCalculation.cell(row=startrow, column=startcol).value=f"{key[0]} {key[1]}"
         wswrite_POCalculation.cell(row=startrow, column=startcol).font = Font(bold=True)
         wswrite_POCalculation.cell(row=startrow, column=startcol).alignment = Alignment(horizontal='center', vertical='center')
         wswrite_POCalculation.cell(row=startrow, column=startcol).fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
-        #set row height to 16
-        wswrite_POCalculation.row_dimensions[startrow]=16
+ 
         for row in wswrite_POCalculation.iter_rows(min_row=startrow, max_row=startrow, min_col=startcol, max_col=startcol+19):
             for cell in row:
                 cell.border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
         startrow+=1
         ridex=0
         for _ in dataframe_to_rows(value, index=False, header=False):
+            vrows.append(startrow)
             cindex = 0
             for c in range(2, startcol+20):
                 wswrite_POCalculation.cell(row=startrow, column=1).value=sno
@@ -261,6 +223,7 @@ def driver_part3(input_dir_path, output_dir_path):
             sno+=1
             ridex+=1
 
+    #================================================================================================
     wswrite_POCalculation.merge_cells(f'A{startrow}:T{startrow}')
     wswrite_POCalculation[f"A{startrow}"]="Indirect Assessment At PO Level"
     wswrite_POCalculation[f"A{startrow}"].font = Font(bold=True, size=14)
@@ -324,6 +287,7 @@ def driver_part3(input_dir_path, output_dir_path):
         
     startrow+=2
     wswrite_POCalculation.merge_cells(f'A{startrow}:T{startrow}')
+    wswrite_POCalculation[f"A{startrow}"]='Total PO Attainment'
     wswrite_POCalculation[f"A{startrow}"].font = Font(bold=True, size=18)
     wswrite_POCalculation[f"A{startrow}"].alignment = Alignment(horizontal='center', vertical='center')
     wswrite_POCalculation[f"A{startrow}"].fill = PatternFill(start_color='95b3d7', end_color='95b3d7', fill_type='solid')
@@ -361,7 +325,7 @@ def driver_part3(input_dir_path, output_dir_path):
     for colind in range(4,21):
         formula=f'=SUM('
         for trow in trows:
-            formula+=f'{colind}{trow},'
+            formula+=f'{get_column_letter(colind)}{trow},'
         formula=formula[:-1]
         formula+=')'
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=formula
@@ -372,10 +336,46 @@ def driver_part3(input_dir_path, output_dir_path):
     for colind in range(1,21):
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+    print(vrows)
     for colind in range(4,21):
-        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=mappedpo.iloc[-1, colind-4]
+        # wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=mappedpo.iloc[-1, colind-4]
+        formula=f'=COUNT('
+        for vrow in vrows:
+            formula+=f'{get_column_letter(colind)}{vrow},'
+        formula=formula[:-1]
+        formula+=')'
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=formula
 
+    startrow+=1
+    wswrite_POCalculation.merge_cells(f'A{startrow}:C{startrow}')
+    wswrite_POCalculation[f'A{startrow}']="Average of direct Assessment"
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+    for colind in range(4,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=f'=IFERROR({get_column_letter(colind)}{startrow-2}/{get_column_letter(colind)}{startrow-1},0)'
 
+    startrow+=1
+    wswrite_POCalculation.merge_cells(f'A{startrow}:C{startrow}')
+    wswrite_POCalculation[f'A{startrow}']="Average of Indirect Assessment"
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+    for colind in range(4,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=f'={get_column_letter(colind)}{startrow-7}'
+
+    startrow+=1
+    wswrite_POCalculation.merge_cells(f'A{startrow}:C{startrow}')
+    wswrite_POCalculation[f'A{startrow}']="PO Attainment for the Program"
+    wswrite_POCalculation[f'A{startrow}'].font = Font(bold=True, size=14)
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+    
+
+    #set column width for second column to be 12
+    wswrite_POCalculation.column_dimensions['B'].width = 12
+    wswrite_POCalculation.column_dimensions['C'].width = 16
 
 
     # lastrow=[]

@@ -194,6 +194,11 @@ def driver_part3(input_dir_path, output_dir_path):
             
     final_po_table=final_po_table.replace(0, np.nan)
     final_po_table.reset_index(drop=True, inplace=True)
+
+    #mappedpo is a copy of final_po_table
+    mappedpo=final_po_table.copy()
+    mappedpo.drop(['Academic Year', 'Semester','Course Name','Course Code'], axis=1, inplace=True)
+    mappedpo['nonnull_count'] = mappedpo.count(axis=0)
     
     semester_sort = {'Odd': 1, 'Even': 2}
     final_po_table['Semester code'] = final_po_table['Semester'].map(semester_sort)
@@ -221,12 +226,13 @@ def driver_part3(input_dir_path, output_dir_path):
         wswrite_POCalculation.cell(row=startrow, column=startcol).font = Font(bold=True)
         wswrite_POCalculation.cell(row=startrow, column=startcol).alignment = Alignment(horizontal='center', vertical='center')
         wswrite_POCalculation.cell(row=startrow, column=startcol).fill = PatternFill(start_color='b7dee8', end_color='b7dee8', fill_type='solid')
+        #set row height to 16
+        wswrite_POCalculation.row_dimensions[startrow]=16
         for row in wswrite_POCalculation.iter_rows(min_row=startrow, max_row=startrow, min_col=startcol, max_col=startcol+19):
             for cell in row:
                 cell.border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
         startrow+=1
         ridex=0
-        merged=False
         for _ in dataframe_to_rows(value, index=False, header=False):
             cindex = 0
             for c in range(2, startcol+20):
@@ -254,8 +260,6 @@ def driver_part3(input_dir_path, output_dir_path):
             startrow+=1
             sno+=1
             ridex+=1
-        startrow+=1
-    startrow-=1
 
     wswrite_POCalculation.merge_cells(f'A{startrow}:T{startrow}')
     wswrite_POCalculation[f"A{startrow}"]="Indirect Assessment At PO Level"
@@ -309,12 +313,71 @@ def driver_part3(input_dir_path, output_dir_path):
     wswrite_POCalculation[f'A{startrow}'].font = Font(bold=True)
 
     for colind in range(4,21):
-        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}']=f'=AVERAGE({get_column_letter(colind)}{startrow-2}:{get_column_letter(colind)}{startrow-1})'
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}']=f'=IFERROR(AVERAGE({get_column_letter(colind)}{startrow-2}:{get_column_letter(colind)}{startrow-1}),0)'
 
     for colind in range(1,21):
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].fill = PatternFill(start_color='fcd5b4', end_color='fcd5b4', fill_type='solid')
+
+    #================================================================================================
+        
+    startrow+=2
+    wswrite_POCalculation.merge_cells(f'A{startrow}:T{startrow}')
+    wswrite_POCalculation[f"A{startrow}"].font = Font(bold=True, size=18)
+    wswrite_POCalculation[f"A{startrow}"].alignment = Alignment(horizontal='center', vertical='center')
+    wswrite_POCalculation[f"A{startrow}"].fill = PatternFill(start_color='95b3d7', end_color='95b3d7', fill_type='solid')
+    for row in wswrite_POCalculation.iter_rows(min_row=startrow, max_row=startrow, min_col=1, max_col=20):
+        for cell in row:
+            cell.border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+
+    startrow+=1
+    wswrite_POCalculation.cell(row=startrow, column=1).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+    wswrite_POCalculation.cell(row=startrow, column=2).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+    wswrite_POCalculation.cell(row=startrow, column=3).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+
+    for po in range(1, 13):
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).value=f"PO{po}"
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).font = Font(bold=True, color="ffffff")
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation.cell(row=startrow, column=po+po_data_col).border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+
+    for pso in range(1, 6):
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).value=f"PSO{pso}"
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).font = Font(bold=True, color="ffffff")
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation.cell(row=startrow, column=pso+12+po_data_col).border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+
+    startrow+=1
+    wswrite_POCalculation.merge_cells(f'A{startrow}:C{startrow}')
+    wswrite_POCalculation[f'A{startrow}']="Total Direct Assessment"
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+
+    
+    for colind in range(4,21):
+        formula=f'=SUM('
+        for trow in trows:
+            formula+=f'{colind}{trow},'
+        formula=formula[:-1]
+        formula+=')'
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=formula
+
+    startrow+=1
+    wswrite_POCalculation.merge_cells(f'A{startrow}:C{startrow}')
+    wswrite_POCalculation[f'A{startrow}']="Total courses through PO mapped"
+    for colind in range(1,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
+    for colind in range(4,21):
+        wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=mappedpo.iloc[-1, colind-4]
+
+
+
+
     # lastrow=[]
     # # Calculate average, excluding NaN values
     # for col in final_po_table.columns:

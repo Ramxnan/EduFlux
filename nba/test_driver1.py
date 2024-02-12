@@ -37,7 +37,7 @@ if __name__ == "__main__":
     # Component_Details={"P1_I":{"Number_of_questions":3},
     #                     "EndSem_E":{"Number_of_questions":3}}
 
-    file_name=driver_part1(data,Component_Details, os.getcwd())
+    file_name=driver_part1(data,Component_Details, "C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_1\\TestFiles")
     #open file
     os.system(f"start excel.exe {file_name}")
     

@@ -144,3 +144,59 @@ def adjust_width(aw):
             cell.alignment = Alignment(horizontal='center', vertical='center')
         adjusted_width = (max_length + 2) * 1
         aw.column_dimensions[get_column_letter(column)].width = adjusted_width
+
+
+def cellstyle(cell, bold=None, size=None, font_color=None, alignment=False, fill=None, border=None):
+    """
+    Apply style to a cell with simplified alignment handling.
+    If alignment is True, both horizontal and vertical alignments are set to 'center'.
+
+    Parameters:
+    - cell: The cell to apply styles to.
+    - bold: Boolean indicating if the font should be bold.
+    - size: Font size.
+    - font_color: Font color.
+    - alignment: If True, sets text alignment to 'center' horizontally and vertically.
+    - fill_color: Background fill color of the cell.
+    - border: If not None, applies a thin border around the cell.
+    """
+    if bold is not None or size is not None or font_color is not None:
+        cell.font = Font(bold=bold, size=size, color=font_color)
+
+    if alignment:
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+
+    if fill is not None:
+        cell.fill = PatternFill(start_color=fill, end_color=fill, fill_type='solid')
+
+    if border is not None:
+        cell.border = Border(left=Side(border_style='thin', color='000000'),
+                             right=Side(border_style='thin', color='000000'),
+                             top=Side(border_style='thin', color='000000'),
+                             bottom=Side(border_style='thin', color='000000'))
+
+def cellstyle_range(cell_range, bold=None, size=None, font_color=None, alignment=False, fill=None, border=None, alternate=None):
+    """
+    Apply style to a range of cells by extracting the sheet from the range itself.
+
+    Parameters:
+    - cell_range: The range of cells to apply styles to (e.g., ws['A1:B2']).
+    - bold: Boolean indicating if the font should be bold.
+    - size: Font size.
+    - font_color: Font color.
+    - alignment: If True, sets text alignment to 'center' horizontally and vertically.
+    - fill_color: Background fill color of the cell.
+    - border: If not None, applies a thin border around the cell.
+    - alternate: If not None, applies a different fill color to every other row. takes a list of two colors.
+    """
+    for row in cell_range:
+        for cell in row:
+            cellstyle(cell, bold=bold, size=size, font_color=font_color, alignment=alignment, fill=fill, border=border)
+
+    if alternate is not None:
+        for row in cell_range:
+            for cell in row:
+                if cell.row % 2 == 0:
+                    cellstyle(cell, fill=alternate[1])
+                else:
+                    cellstyle(cell, fill=alternate[0])

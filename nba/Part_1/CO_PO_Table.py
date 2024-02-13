@@ -6,73 +6,33 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.styles import PatternFill
 from openpyxl.styles import Border, Side
 from openpyxl.formatting.rule import FormulaRule
+from .utils import cellstyle, cellstyle_range
 
 
 def CO_PO_Table(data,aw):
     #merge cells depending on number of POs
     aw.merge_cells(start_row=1, start_column=4, end_row=1, end_column=12+5+1+3)
     aw['D1']="CO-PO Mapping"
-    aw['D1'].font = Font(bold=True)
-    aw['D1'].alignment = Alignment(horizontal='center', vertical='center')
-    aw['D1'].border = Border(top=Side(border_style='thin', color='000000'),
-                            bottom=Side(border_style='thin', color='000000'),
-                            left=Side(border_style='thin', color='000000'),
-                            right=Side(border_style='thin', color='000000'))
-    aw['D1'].fill = PatternFill(start_color='ffe74e', end_color='ffe74e', fill_type='solid')
-
+    cellstyle(aw['D1'], bold=True, alignment=True, border=True, fill="ffe74e")
+   
     aw["D2"]="COs\\POs"
-    aw["D2"].font = Font(bold=True)
-    aw["D2"].alignment = Alignment(horizontal='center', vertical='center')
-    aw["D2"].border = Border(top=Side(border_style='thin', color='000000'),
-                            bottom=Side(border_style='thin', color='000000'),
-                            left=Side(border_style='thin', color='000000'),
-                            right=Side(border_style='thin', color='000000'))
-    aw["D2"].fill = PatternFill(start_color='9bbb59', end_color='9bbb59', fill_type='solid')
+    cellstyle(aw["D2"], bold=True, alignment=True, border=True, fill="9bbb59")
 
 
-    for co in range(1,data["Number_of_COs"]+1):
-        aw[f"D{co+2}"]=f"CO{co}"
-        aw[f"D{co+2}"].font = Font(bold=True)
+    for nco in range(1,data["Number_of_COs"]+1):
+        aw[f"D{nco+2}"]=f"CO{nco}"
+        cellstyle(aw[f"D{nco+2}"], bold=True, alignment=True, border=True)
 
-    for po in range(1,12+1):
-        aw[f"{get_column_letter(po+4)}2"]=f"PO{po}   "
-        aw[f"{get_column_letter(po+4)}2"].font = Font(bold=True)
-        aw[f"{get_column_letter(po+4)}2"].alignment = Alignment(horizontal='center', vertical='center')
-        aw[f"{get_column_letter(po+4)}2"].border = Border(top=Side(border_style='thin', color='000000'),
-                                    bottom=Side(border_style='thin', color='000000'),
-                                    left=Side(border_style='thin', color='000000'),
-                                    right=Side(border_style='thin', color='000000'))
-        aw[f"{get_column_letter(po+4)}2"].fill = PatternFill(start_color='9bbb59', end_color='9bbb59', fill_type='solid')
-    for pso in range(1,6):
-        aw[f"{get_column_letter(12+4+pso)}2"]=f"PSO{pso}"
-        aw[f"{get_column_letter(12+4+pso)}2"].font = Font(bold=True)
-        aw[f"{get_column_letter(12+4+pso)}2"].alignment = Alignment(horizontal='center', vertical='center')
-        aw[f"{get_column_letter(12+4+pso)}2"].border = Border(top=Side(border_style='thin', color='000000'),
-                                    bottom=Side(border_style='thin', color='000000'),
-                                    left=Side(border_style='thin', color='000000'),
-                                    right=Side(border_style='thin', color='000000'))
-        aw[f"{get_column_letter(12+4+pso)}2"].fill = PatternFill(start_color='9bbb59', end_color='9bbb59', fill_type='solid')
-    
-    for co in range(1,data["Number_of_COs"]+1):
-        for po in range(12+1):
-            aw[f"{get_column_letter(po+4)}{co+2}"].border = Border(top=Side(border_style='thin', color='000000'),
-                                    bottom=Side(border_style='thin', color='000000'),
-                                    left=Side(border_style='thin', color='000000'),
-                                    right=Side(border_style='thin', color='000000'))
-            if co%2==0:
-                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
-            else:
-                aw[f"{get_column_letter(po+4)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
+    for popso in range(1,12+5+1):
+        if popso<=12:
+            aw[f"{get_column_letter(popso+4)}2"]=f"PO{popso}   "
+        else:
+            aw[f"{get_column_letter(popso+4)}2"]=f"PSO{popso-12}"
+        cellstyle(aw[f"{get_column_letter(popso+4)}2"], bold=True, alignment=True, border=True, fill="9bbb59")
 
-        for pso in range(1,6):
-            aw[f"{get_column_letter(12+4+pso)}{co+2}"].border = Border(top=Side(border_style='thin', color='000000'),
-                                    bottom=Side(border_style='thin', color='000000'),
-                                    left=Side(border_style='thin', color='000000'),
-                                    right=Side(border_style='thin', color='000000'))
-            if co%2==0:
-                aw[f"{get_column_letter(12+4+pso)}{co+2}"].fill = PatternFill(start_color='ffffff', end_color='ffffff', fill_type='solid')
-            else:
-                aw[f"{get_column_letter(12+4+pso)}{co+2}"].fill = PatternFill(start_color='ebf1de', end_color='ebf1de', fill_type='solid')
+    cellstyle_range(aw[f"D3:U{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'])
+            
+        
     #for columns 4 to 4+12+5 set width to 13
     for col in range(4,4+12+5):
         aw.column_dimensions[f"{get_column_letter(col)}"].width = 13
@@ -83,65 +43,15 @@ def CO_PO_Table(data,aw):
     #set conditional formatting for empty cells
         
     pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
-    for co in range(1,data["Number_of_COs"]+1):
-        for po in range(1,12+1):
-            cell_coordinate = f"{get_column_letter(po+4)}{co+2}"
+    red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
+    for nco in range(1,data["Number_of_COs"]+1):
+        for popso in range(1,12+5+1):
             aw.conditional_formatting.add(
-                cell_coordinate,
-                FormulaRule(formula=[f'ISBLANK({cell_coordinate})'], stopIfTrue=False, fill=pink_fill)
-            )
-            
-        for pso in range(1,6):
-            cell_coordinate = f"{get_column_letter(12+4+pso)}{co+2}"
+                f"{get_column_letter(popso+4)}{nco+2}",
+                FormulaRule(formula=[f'ISBLANK({get_column_letter(popso+4)}{nco+2})'], stopIfTrue=False, fill=pink_fill))
             aw.conditional_formatting.add(
-                cell_coordinate,
-                FormulaRule(formula=[f'ISBLANK({cell_coordinate})'], stopIfTrue=False, fill=pink_fill)
-            )
+                f"{get_column_letter(popso+4)}{nco+2}",
+                #greater than 100 or less than 0
+                FormulaRule(formula=[f'OR({get_column_letter(popso+4)}{nco+2}>3,{get_column_letter(popso+4)}{nco+2}<0)'], stopIfTrue=False, fill=red_fill))
          
-     # Create a data validation object for numbers between 0 and 100
-    number_validation = DataValidation(type="whole", operator="between", formula1=0, formula2=3)
-    number_validation.error = 'You must enter a number 1, 2 or 3'
-    number_validation.errorTitle = 'Invalid Entry'
-    number_validation.showErrorMessage = True
-
-    # Apply this validation to the specified cells
-    for co in range(1,data["Number_of_COs"]+1):
-        for po in range(1,12+1):
-            cell_coordinate = f"{get_column_letter(po+4)}{co+2}"
-            aw.add_data_validation(number_validation)
-            number_validation.add(aw[cell_coordinate])
-        for pso in range(1,6):
-            cell_coordinate = f"{get_column_letter(12+4+pso)}{co+2}"
-            aw.add_data_validation(number_validation)
-            number_validation.add(aw[cell_coordinate])
-
-
-
-
-    green_fill=PatternFill(start_color="5e9955", end_color="5e9955", fill_type='solid')                                                                                                                     #add table to workshee
-    # Lock all cells by default
-    for row in aw.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-
-    aw.protection.sheet = True
-    #unlocked cells B9 to B19
-    for i in range(9,20):
-        if i!=16 and i!=18:
-            aw[f'B{i}'].protection = Protection(locked=False)
-            #aw[f'B{i}'].fill = green_fill
-
-    #unlocked cells E3 to U[2+Number_of_COs]
-    for row in range(3,3+data['Number_of_COs']):
-        for col in range(5,22):
-            aw.cell(row=row,column=col).protection = Protection(locked=False)
-            #aw.cell(row=row,column=col).fill = green_fill
-
-    #unlocked cells E[2+Number_of_COs+4] to E[2+Number_of_COs+4+Number_of_COs]
-    for row in range(2+data['Number_of_COs']+5, 2+data['Number_of_COs']+5+data['Number_of_COs']):
-        aw.cell(row=row,column=5).protection = Protection(locked=False)
-        #aw.cell(row=row,column=5).fill = green_fill
-
-
-
     return aw

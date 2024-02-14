@@ -10,6 +10,7 @@ import numpy as np
 import uuid
 from openpyxl.utils import get_column_letter
 from .printout_p3 import printout
+from Part_1.utils import cellstyle_range
 #from printout import printout_template
 
 
@@ -30,15 +31,11 @@ def driver_part3(input_dir_path, output_dir_path):
                     ws_printout=ws
             wsread_printout=wbread[ws_printout]
             Number_of_COs=wsread_printout["B11"].value
+
             wswrite_printouts.merge_cells(f"D{startrow}:R{startrow}")
             wswrite_printouts[f"D{startrow}"]=file
-            wswrite_printouts[f"D{startrow}"].font = Font(bold=True, size=14)
-            wswrite_printouts[f"D{startrow}"].alignment = Alignment(horizontal='center', vertical='center')
-            wswrite_printouts[f"D{startrow}"].fill = PatternFill(start_color='ce875c', end_color='ce875c', fill_type='solid')
-            for row in wswrite_printouts.iter_rows(min_row=startrow, max_row=startrow, min_col=4, max_col=18):
-                for cell in row:
-                    cell.border = Border(left=Side(border_style='thin', color='000000'), right=Side(border_style='thin', color='000000'), top=Side(border_style='thin', color='000000'), bottom=Side(border_style='thin', color='000000'))
-
+            cellstyle_range(wswrite_printouts[f"D{startrow}:R{startrow}"], size=14, bold=True, alignment=True, fill='ce875c', border=True)
+            
             startrow+=1
             wswrite_printouts=printout(wswrite_printouts, Number_of_COs, startrow)
             

@@ -6,6 +6,17 @@ from openpyxl.formatting.rule import FormulaRule
 from openpyxl.utils import get_column_letter                                  #import get_column_letter from openpyxl
 
 def input_detail(data,Component_Details,aw):  #function to input details
+    """ Function to input details
+    
+    Args:
+    data (dict): Dictionary containing the data
+    Component_Details (dict): Dictionary containing the component details
+    aw (openpyxl.worksheet.worksheet.Worksheet): Worksheet object
+
+    Returns:
+    openpyxl.worksheet.worksheet.Worksheet: Worksheet object
+    """
+
     aw.merge_cells('A1:B1')
     aw['A1']="Constants"
     cellstyle_range(aw['A1:B1'], bold=True, alignment=True, border=True, fill="ffe74e")
@@ -73,6 +84,16 @@ def input_detail(data,Component_Details,aw):  #function to input details
 
 
 def CO_PO_Table(data,aw):
+    """
+    Function to create CO-PO Table
+
+    Args:
+    data (dict): Dictionary containing the data
+    aw (openpyxl.worksheet.worksheet.Worksheet): Worksheet object
+
+    Returns:
+    openpyxl.worksheet.worksheet.Worksheet: Worksheet object
+    """
     #merge cells depending on number of POs
     aw.merge_cells(start_row=1, start_column=4, end_row=1, end_column=12+5+1+3)
     aw['D1']="CO-PO Mapping"
@@ -114,6 +135,16 @@ def CO_PO_Table(data,aw):
 
 
 def indirect_co_assessment(data,aw):
+    """
+    Function to create Indirect CO Assessment
+
+    Args:
+    data (dict): Dictionary containing the data
+    aw (openpyxl.worksheet.worksheet.Worksheet): Worksheet object
+
+    Returns:
+    openpyxl.worksheet.worksheet.Worksheet: Worksheet object
+    """
     #merge cells depending on number of POs
     aw.merge_cells(start_row=data["Number_of_COs"]+5, start_column=4, end_row=data["Number_of_COs"]+5, end_column=5)
     aw[f'D{data["Number_of_COs"]+5}']="Indirect CO Assessment"

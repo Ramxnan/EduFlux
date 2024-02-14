@@ -1,8 +1,6 @@
 from openpyxl import Workbook                                                         #import workbook from openpyxl
 from .utils import adjust_width
-from .Input_detail_table import input_detail
-from .CO_PO_Table import CO_PO_Table
-from .Indirect_co_assessment import indirect_co_assessment
+from .Input_Details import input_detail, indirect_co_assessment, CO_PO_Table
 from .qn_co_mm_btl import qn_co_mm_btl
 from .studentmarks import studentmarks
 from .cummulative_co_mm_btl import cummulative_co_mm_btl
@@ -30,12 +28,6 @@ def driver_part1(data, Component_Details, file_path):
     ws = indirect_co_assessment(data,ws)
     adjust_width(ws)
     ws = CO_PO_Table(data,ws)
-
-
-
-    
-    #get number of components
-    number_of_components = len(Component_Details.keys())
 
     #iterate throught Keys of Component_Details and make a worksheet for each key
     for key in Component_Details.keys():

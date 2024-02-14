@@ -146,7 +146,7 @@ def adjust_width(aw):
         aw.column_dimensions[get_column_letter(column)].width = adjusted_width
 
 
-def cellstyle(cell, bold=None, size=None, font_color=None, alignment=False, fill=None, border=None):
+def cellstyle(cell, bold=None, size=None, font_color=None, alignment=False, fill=None, border=None, wrap_text=False, text_rotation=0):
     """
     Apply style to a cell with simplified alignment handling.
     If alignment is True, both horizontal and vertical alignments are set to 'center'.
@@ -166,6 +166,9 @@ def cellstyle(cell, bold=None, size=None, font_color=None, alignment=False, fill
     if alignment:
         cell.alignment = Alignment(horizontal='center', vertical='center')
 
+    if wrap_text:
+        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True, textRotation=text_rotation)
+
     if fill is not None:
         cell.fill = PatternFill(start_color=fill, end_color=fill, fill_type='solid')
 
@@ -175,7 +178,7 @@ def cellstyle(cell, bold=None, size=None, font_color=None, alignment=False, fill
                              top=Side(border_style='thin', color='000000'),
                              bottom=Side(border_style='thin', color='000000'))
 
-def cellstyle_range(cell_range, bold=None, size=None, font_color=None, alignment=False, fill=None, border=None, alternate=None):
+def cellstyle_range(cell_range, bold=None, size=None, font_color=None, alignment=False, fill=None, border=None, alternate=None, wrap_text=False):
     """
     Apply style to a range of cells by extracting the sheet from the range itself.
 
@@ -191,7 +194,7 @@ def cellstyle_range(cell_range, bold=None, size=None, font_color=None, alignment
     """
     for row in cell_range:
         for cell in row:
-            cellstyle(cell, bold=bold, size=size, font_color=font_color, alignment=alignment, fill=fill, border=border)
+            cellstyle(cell, bold=bold, size=size, font_color=font_color, alignment=alignment, fill=fill, border=border, wrap_text=wrap_text)
 
     if alternate is not None:
         for row in cell_range:

@@ -22,10 +22,10 @@ def driver_part1(data, Component_Details, file_path):
 
     wb.create_sheet(f"{data['Section']}_Input_Details")
     ws = wb[f"{data['Section']}_Input_Details"]
-    ws = input_detail(data,Component_Details,ws)
-    ws = indirect_co_assessment(data,ws)
+    ws = input_detail(data,Component_Details,ws,conditional=True)
+    ws = indirect_co_assessment(data,ws,conditional=True)
     adjust_width(ws)
-    ws = CO_PO_Table(data,ws)
+    ws = CO_PO_Table(data,ws,conditional=True)
 
     #iterate throught Keys of Component_Details and make a worksheet for each key
     for key in Component_Details.keys():

@@ -5,9 +5,9 @@ from openpyxl.worksheet.table import Table, TableStyleInfo          #import tabl
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.utils import get_column_letter                                  #import get_column_letter from openpyxl
 
-def input_detail(data,Component_Details,aw):  #function to input details
+def input_detail(data,Component_Details,aw,conditional=False):
     """ Function to input details
-    
+
     Args:
     data (dict): Dictionary containing the data
     Component_Details (dict): Dictionary containing the component details
@@ -46,44 +46,45 @@ def input_detail(data,Component_Details,aw):  #function to input details
     cellstyle_range(aw[f'A14:B19'], border=True, alignment=True, bold=True, alternate=['b7dee8', 'daeef3'])
 
     # =================================================================================================================================================================
-    aw['A22']="Component Details"
-    aw['B22']="Number of Questions"
-    cellstyle_range(aw['A22:B22'], bold=True, alignment=True, border=True, font_color="FFFFFF")
+    if conditional:
+        aw['A22']="Component Details"
+        aw['B22']="Number of Questions"
+        cellstyle_range(aw['A22:B22'], bold=True, alignment=True, border=True, font_color="FFFFFF")
 
-    startrow=23
-    for key, value in Component_Details.items():
-        aw[f'A{startrow}']=key
-        aw[f'B{startrow}']=value
-        cellstyle_range(aw[f'A{startrow}:B{startrow}'], alignment=True, border=True, bold=True)
-        startrow+=1
-      
-    #make a table
-    tab = Table(displayName=f"{data['Section']}_Component_Details", ref=f"A22:B{aw.max_row}")
-    style = TableStyleInfo(name="TableStyleMedium15", showFirstColumn=False,
-                        showLastColumn=False, showRowStripes=True, showColumnStripes=False)
-    tab.tableStyleInfo = style
-    aw.add_table(tab)
+        startrow=23
+        for key, value in Component_Details.items():
+            aw[f'A{startrow}']=key
+            aw[f'B{startrow}']=value
+            cellstyle_range(aw[f'A{startrow}:B{startrow}'], alignment=True, border=True, bold=True)
+            startrow+=1
+        
+        #make a table
+        tab = Table(displayName=f"{data['Section']}_Component_Details", ref=f"A22:B{aw.max_row}")
+        style = TableStyleInfo(name="TableStyleMedium15", showFirstColumn=False,
+                            showLastColumn=False, showRowStripes=True, showColumnStripes=False)
+        tab.tableStyleInfo = style
+        aw.add_table(tab)
     
-    pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
-    red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
-    #set conditional formatting for B9 to B19 such that if its empty, it will be highlighted pink
-    for startrow in range(14,20):
-        if startrow!=16 and startrow!=18:
-            aw.conditional_formatting.add(
-                f'B{startrow}',
-                FormulaRule(formula=[f'ISBLANK(B{startrow})'], stopIfTrue=False, fill=pink_fill))
-            aw.conditional_formatting.add(
-                f'B{startrow}',
-                #greater than 100 or less than 0
-                FormulaRule(formula=[f'OR(B{startrow}>100,B{startrow}<0)'], stopIfTrue=False, fill=red_fill))
+        pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
+        red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
+        #set conditional formatting for B9 to B19 such that if its empty, it will be highlighted pink
+        for startrow in range(14,20):
+            if startrow!=16 and startrow!=18:
+                aw.conditional_formatting.add(
+                    f'B{startrow}',
+                    FormulaRule(formula=[f'ISBLANK(B{startrow})'], stopIfTrue=False, fill=pink_fill))
+                aw.conditional_formatting.add(
+                    f'B{startrow}',
+                    #greater than 100 or less than 0
+                    FormulaRule(formula=[f'OR(B{startrow}>100,B{startrow}<0)'], stopIfTrue=False, fill=red_fill))
 
-    colour_table_Input_Details(aw)
+        colour_table_Input_Details(aw)
     
     return aw  
 
 
 
-def CO_PO_Table(data,aw):
+def CO_PO_Table(data,aw,conditional=False):
     """
     Function to create CO-PO Table
 
@@ -117,24 +118,25 @@ def CO_PO_Table(data,aw):
         aw.column_dimensions[f"{get_column_letter(popso+4)}"].width = 13
 
     cellstyle_range(aw[f"D3:U{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'])
-      
-    #set conditional formatting for empty cells   
-    pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
-    red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
-    for nco in range(1,data["Number_of_COs"]+1):
-        for popso in range(1,12+5+1):
-            aw.conditional_formatting.add(
-                f"{get_column_letter(popso+4)}{nco+2}",
-                FormulaRule(formula=[f'ISBLANK({get_column_letter(popso+4)}{nco+2})'], stopIfTrue=False, fill=pink_fill))
-            aw.conditional_formatting.add(
-                f"{get_column_letter(popso+4)}{nco+2}",
-                FormulaRule(formula=[f'OR({get_column_letter(popso+4)}{nco+2}>3,{get_column_letter(popso+4)}{nco+2}<0)'], stopIfTrue=False, fill=red_fill))
-         
+    
+    if conditional:
+        #set conditional formatting for empty cells   
+        pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
+        red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
+        for nco in range(1,data["Number_of_COs"]+1):
+            for popso in range(1,12+5+1):
+                aw.conditional_formatting.add(
+                    f"{get_column_letter(popso+4)}{nco+2}",
+                    FormulaRule(formula=[f'ISBLANK({get_column_letter(popso+4)}{nco+2})'], stopIfTrue=False, fill=pink_fill))
+                aw.conditional_formatting.add(
+                    f"{get_column_letter(popso+4)}{nco+2}",
+                    FormulaRule(formula=[f'OR({get_column_letter(popso+4)}{nco+2}>3,{get_column_letter(popso+4)}{nco+2}<0)'], stopIfTrue=False, fill=red_fill))
+            
     return aw
 
 
 
-def indirect_co_assessment(data,aw):
+def indirect_co_assessment(data,aw,conditional=False):
     """
     Function to create Indirect CO Assessment
 
@@ -164,18 +166,18 @@ def indirect_co_assessment(data,aw):
     endrow = startrow + data["Number_of_COs"]-1
     cellstyle_range(aw[f"D{startrow}:E{endrow}"], alignment=True, border=True, alternate=['fcd5b4', 'fde9d9'])
 
-
-    pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
-    red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
-    for row in range(startrow, endrow+1):
-        cell_coordinate = f'E{row}'
-        aw.conditional_formatting.add(
-            cell_coordinate,
-            FormulaRule(formula=[f'ISBLANK({cell_coordinate})'], stopIfTrue=False, fill=pink_fill))
-        aw.conditional_formatting.add(
-            cell_coordinate,
-            #greater than 100 or less than 0
-            FormulaRule(formula=[f'OR({cell_coordinate}>100,{cell_coordinate}<0)'], stopIfTrue=False, fill=red_fill))
-            
+    if conditional:
+        pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
+        red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
+        for row in range(startrow, endrow+1):
+            cell_coordinate = f'E{row}'
+            aw.conditional_formatting.add(
+                cell_coordinate,
+                FormulaRule(formula=[f'ISBLANK({cell_coordinate})'], stopIfTrue=False, fill=pink_fill))
+            aw.conditional_formatting.add(
+                cell_coordinate,
+                #greater than 100 or less than 0
+                FormulaRule(formula=[f'OR({cell_coordinate}>100,{cell_coordinate}<0)'], stopIfTrue=False, fill=red_fill))
+                
 
     return aw

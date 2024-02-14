@@ -1,10 +1,8 @@
 from openpyxl import Workbook                                                         #import workbook from openpyxl
 from .utils import adjust_width
 from .Input_Details import input_detail, indirect_co_assessment, CO_PO_Table
-from .qn_co_mm_btl import qn_co_mm_btl
-from .studentmarks import studentmarks
-from .cummulative_co_mm_btl import cummulative_co_mm_btl
-from .cummulative_studentsmarks import cummulative_studentmarks
+from .Component_values import qn_co_mm_btl, studentmarks
+from .Cummulative_Component_Values import cummulative_qn_co_mm_btl, cummulative_studentmarks
 from .Component_calculation import Component_calculation
 from .write_course_attainment import write_course_attainment
 from .printout import printout
@@ -38,7 +36,7 @@ def driver_part1(data, Component_Details, file_path):
         ws = qn_co_mm_btl(data, key, Component_Details[key], ws)
         ws = studentmarks(data, key, Component_Details[key], ws)
 
-        ws = cummulative_co_mm_btl(data, key, Component_Details[key], ws)   
+        ws = cummulative_qn_co_mm_btl(data, key, Component_Details[key], ws)   
         ws = cummulative_studentmarks(data, key, Component_Details[key], ws)
 
     wb.create_sheet(f"{data['Section']}_Internal_Components")

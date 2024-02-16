@@ -1,4 +1,4 @@
-from openpyxl import Workbook                                                         #import workbook from openpyxl
+from openpyxl import Workbook
 from .utils import adjust_width
 from .Input_Details import input_detail, indirect_co_assessment, CO_PO_Table
 from .Component_values import qn_co_mm_btl, studentmarks
@@ -10,15 +10,14 @@ import os
 import uuid
 
 def driver_part1(data, Component_Details, file_path):
-    #create openpyxl workbook
     wb = Workbook()
     wb.remove(wb.active)
 
-    #replace spaces in component details keys with underscore
-    Component_Details = {key.replace(" ","_"):value for key,value in Component_Details.items()}
-
-    #prefix all the keys with the section name
-    Component_Details = {f"{data['Section']}_{key}":value for key,value in Component_Details.items()}
+    #prefix all the keys with the section name and replace spaces with underscore
+    component_details = {
+        f"{data['Section']}_{key.replace(' ', '_')}": value
+        for key, value in component_details.items()
+    }
 
     wb.create_sheet(f"{data['Section']}_Input_Details")
     ws = wb[f"{data['Section']}_Input_Details"]
@@ -29,7 +28,6 @@ def driver_part1(data, Component_Details, file_path):
 
     #iterate throught Keys of Component_Details and make a worksheet for each key
     for key in Component_Details.keys():
-        key.replace(" ","_")
         wb.create_sheet(key)
         ws = wb[key]
         ws.title = key
@@ -56,7 +54,7 @@ def driver_part1(data, Component_Details, file_path):
     ws=printout(ws,data,2)
 
     #save workbook
-    unique_id = str(uuid.uuid4()).split("-")[0]
+    unique_id = uuid.uuid4().hex[:8]
     excel_file_name = f"{data['Section']}_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
     excel_file_name.replace(" ","_")
     full_path = os.path.join(file_path, excel_file_name)

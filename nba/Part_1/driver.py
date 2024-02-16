@@ -14,9 +14,9 @@ def driver_part1(data, Component_Details, file_path):
     wb.remove(wb.active)
 
     #prefix all the keys with the section name and replace spaces with underscore
-    component_details = {
+    Component_Details = {
         f"{data['Section']}_{key.replace(' ', '_')}": value
-        for key, value in component_details.items()
+        for key, value in Component_Details.items()
     }
 
     wb.create_sheet(f"{data['Section']}_Input_Details")

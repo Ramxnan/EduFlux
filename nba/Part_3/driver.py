@@ -21,7 +21,11 @@ def driver_part3(input_dir_path, output_dir_path):
     wbwrite.create_sheet("PO_calculations",1)
     
     wswrite_printouts=wbwrite["Printouts"]
-    startrow=2
+    wswrite_printouts.merge_cells('D1:R1')
+    wswrite_printouts["D1"]="Summary of Printouts"
+    cellstyle_range(wswrite_printouts['D1:R1'], size=18, bold=True, alignment=True, fill='ffe74e', border=True)
+
+    startrow=3
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("final"):
             wbread=load_workbook(input_dir_path+"\\"+file, data_only=True) 
@@ -32,17 +36,12 @@ def driver_part3(input_dir_path, output_dir_path):
             wsread_printout=wbread[ws_printout]
             Number_of_COs=wsread_printout["B11"].value
 
-            wswrite_printouts.merge_cells(f"D{startrow}:R{startrow}")
-            wswrite_printouts[f"D{startrow}"]=file
-            cellstyle_range(wswrite_printouts[f"D{startrow}:R{startrow}"], size=14, bold=True, alignment=True, fill='ce875c', border=True)
-            
-            startrow+=1
             wswrite_printouts=printout(wswrite_printouts,{},startrow,numco=Number_of_COs,copy=True)
             
 
             min_row=1
             min_col=4
-            max_row=3+Number_of_COs
+            max_row=1+3+Number_of_COs
             max_col=18
             for row in range(min_row, max_row+1):
                 for col in range(min_col, max_col+1):

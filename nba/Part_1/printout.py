@@ -16,7 +16,13 @@ def printout(aw, data,start_row,copy=False,numco=None):
     if numco is None:
         numco = data['Number_of_COs']
     # ===========================================================================================================     
-            
+    headingrow=start_row-1
+    aw.merge_cells(f'D{headingrow}:R{headingrow}')
+    if len(data) > 0:
+        aw[f'D{headingrow}'] = f"{data['Section']}_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}"
+    cellstyle(aw[f'D{headingrow}'], bold=True, alignment=True, border=True, fill="ce875c",size=14)
+    #============================================================================================================
+
     start_column=4
 
     column=start_column
@@ -207,7 +213,7 @@ def printout(aw, data,start_row,copy=False,numco=None):
         start_row_ca_data=numco+8+numco+3+4
         start_col_ca_data=4+3
         start_column=4
-        row=4
+        row=start_row+3
         aw[f"{get_column_letter(start_column)}{row}"] = data['Subject_Code']
         aw[f"{get_column_letter(start_column+1)}{row}"] = data['Subject_Name']
         for nco in range(numco):

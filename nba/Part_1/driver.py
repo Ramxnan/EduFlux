@@ -53,7 +53,7 @@ def driver_part1(data, Component_Details, file_path):
 
     wb.create_sheet(f"{data['Section']}_Printout")
     ws = wb[f"{data['Section']}_Printout"]
-    ws=printout(ws,data,1)
+    ws=printout(ws,data,2)
 
     #save workbook
     unique_id = str(uuid.uuid4()).split("-")[0]

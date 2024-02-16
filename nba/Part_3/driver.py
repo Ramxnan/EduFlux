@@ -9,7 +9,7 @@ import os
 import numpy as np
 import uuid
 from openpyxl.utils import get_column_letter
-from .printout_p3 import printout
+from Part_1.printout import printout
 from Part_1.utils import cellstyle_range
 #from printout import printout_template
 
@@ -37,8 +37,9 @@ def driver_part3(input_dir_path, output_dir_path):
             cellstyle_range(wswrite_printouts[f"D{startrow}:R{startrow}"], size=14, bold=True, alignment=True, fill='ce875c', border=True)
             
             startrow+=1
-            wswrite_printouts=printout(wswrite_printouts, Number_of_COs, startrow)
+            wswrite_printouts=printout(wswrite_printouts,{},startrow,numco=Number_of_COs,copy=True)
             
+
             min_row=1
             min_col=4
             max_row=3+Number_of_COs

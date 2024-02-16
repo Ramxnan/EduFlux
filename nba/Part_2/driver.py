@@ -1,15 +1,13 @@
 from openpyxl import Workbook                                                         #import workbook from openpyxl
-from .utils import adjust_width
-from .Input_detail_table import input_detail
-from .CO_PO_Table import CO_PO_Table
-from .Indirect_co_assessment import indirect_co_assessment
-from .qn_co_mm_btl import qn_co_mm_btl
-from .studentmarks import studentmarks
-from .cummulative_co_mm_btl import cummulative_co_mm_btl
-from .cummulative_studentsmarks import cummulative_studentmarks
-from .Component_calculation import Component_calculation
-from .write_course_level_attainment import write_course_level_attainment
-from .printout import printout
+
+from Part_1.Input_Details import input_detail,CO_PO_Table,indirect_co_assessment
+from Part_1.Component_values import qn_co_mm_btl,studentmarks
+from Part_1.Cummulative_Component_Values import cummulative_qn_co_mm_btl,cummulative_studentmarks
+from Part_1.Component_calculation import Component_calculation
+from Part_1.write_course_attainment import write_course_attainment
+from Part_1.printout import printout
+from Part_1.utils import adjust_width
+
 import os
 import uuid
 from openpyxl import load_workbook

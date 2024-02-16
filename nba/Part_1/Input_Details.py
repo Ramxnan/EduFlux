@@ -5,7 +5,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo          #import tabl
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.utils import get_column_letter                                  #import get_column_letter from openpyxl
 
-def input_detail(data,Component_Details,aw,conditional=False):
+def input_detail(data,Component_Details,aw,conditional=False, copy=False):
     """ Function to input details
 
     Args:
@@ -44,6 +44,15 @@ def input_detail(data,Component_Details,aw,conditional=False):
     aw['A19']="Target CO Attainment %"
 
     cellstyle_range(aw[f'A14:B19'], border=True, alignment=True, bold=True, alternate=['b7dee8', 'daeef3'])
+
+    if copy:
+        #copy the values from the previous sheet
+        aw['B14']=f"='{data['Section']}_Input_Details'!B14"
+        aw['B15']=f"='{data['Section']}_Input_Details'!B15"
+        aw['B16']=f"='{data['Section']}_Input_Details'!B16"
+        aw['B17']=f"='{data['Section']}_Input_Details'!B17"
+        aw['B18']=f"='{data['Section']}_Input_Details'!B18"
+        aw['B19']=f"='{data['Section']}_Input_Details'!B19"
 
     # =================================================================================================================================================================
     if conditional:
@@ -84,7 +93,7 @@ def input_detail(data,Component_Details,aw,conditional=False):
 
 
 
-def CO_PO_Table(data,aw,conditional=False):
+def CO_PO_Table(data,aw,conditional=False, copy=False):
     """
     Function to create CO-PO Table
 
@@ -131,12 +140,18 @@ def CO_PO_Table(data,aw,conditional=False):
                 aw.conditional_formatting.add(
                     f"{get_column_letter(popso+4)}{nco+2}",
                     FormulaRule(formula=[f'OR({get_column_letter(popso+4)}{nco+2}>3,{get_column_letter(popso+4)}{nco+2}<0)'], stopIfTrue=False, fill=red_fill))
+                
+    if copy:
+        for nco in range(1,data["Number_of_COs"]+1):
+            for popso in range(1,12+5+1):
+                aw[f"{get_column_letter(popso+4)}{nco+2}"]=f"='{data['Section']}_Input_Details'!{get_column_letter(popso+4)}{nco+2}"
+                cellstyle(aw[f"{get_column_letter(popso+4)}{nco+2}"], alignment=True, bold=True)
             
     return aw
 
 
 
-def indirect_co_assessment(data,aw,conditional=False):
+def indirect_co_assessment(data,aw,conditional=False,copy=False):
     """
     Function to create Indirect CO Assessment
 
@@ -178,6 +193,11 @@ def indirect_co_assessment(data,aw,conditional=False):
                 cell_coordinate,
                 #greater than 100 or less than 0
                 FormulaRule(formula=[f'OR({cell_coordinate}>100,{cell_coordinate}<0)'], stopIfTrue=False, fill=red_fill))
+    
+    if copy:
+        for nco in range(1,data["Number_of_COs"]+1):
+            aw[f"E{nco+data['Number_of_COs']+6}"]=f"='{data['Section']}_Input_Details'!E{nco+data['Number_of_COs']+6}"
+            cellstyle(aw[f"E{nco+data['Number_of_COs']+6}"], alignment=True, bold=True)
                 
 
     return aw

@@ -6,17 +6,17 @@ from .utils import adjust_width, cellstyle_range, cellstyle
 from openpyxl.styles import Protection
 from .Input_Details import input_detail
 
-def printout(aw, data):
+def printout(aw, data,start_row,copy=False):
 
     #============================================================================================================
-    aw = input_detail(data, {}, aw, conditional=False)
-    adjust_width(aw)
+    if not copy:
+        aw = input_detail(data, {}, aw, copy=True)
+        adjust_width(aw)
 
 
     # ===========================================================================================================     
             
     start_column=4
-    start_row=1
 
     column=start_column
     row=start_row

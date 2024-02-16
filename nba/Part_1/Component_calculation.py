@@ -62,7 +62,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
 
     for nco in range(1,data['Number_of_COs']+1):
         aw[f'{get_column_letter(start_column+nco-1)}2']=f"CO{nco}"
-        cellstyle(aw[f'{get_column_letter(start_column+nco-1)}2'],bold=True,fill="000000",font_color="FFFFFF")
+        cellstyle(aw[f'{get_column_letter(start_column+nco-1)}2'],bold=True,fill="000000",font_color="FFFFFF",alignment=True)
         
         corr_co_column=nco
         formula="=SUM("
@@ -83,13 +83,13 @@ def Component_calculation(data,Component_Details,aw,component_type):
         aw[f'{get_column_letter(start_column+nco-1)}4']=formula
 
 
-    cellstyle_range(aw[f'{get_column_letter(start_column-1)}3:{get_column_letter(start_column+nco-1)}4'], alignment=True, border=True, bold=True)
+    cellstyle_range(aw[f'{get_column_letter(start_column)}3:{get_column_letter(start_column+data['Number_of_COs']-1)}4'], alignment=True, border=True, bold=True)
 
 
     #Combined Marks
     for nco in range(1,data['Number_of_COs']+1):
         aw[f'{get_column_letter(start_column+nco-1)}6']=f"CO{nco}"
-        cellstyle(aw[f'{get_column_letter(start_column+nco-1)}6'],bold=True,fill="000000",font_color="FFFFFF")
+        cellstyle(aw[f'{get_column_letter(start_column+nco-1)}6'],bold=True,fill="000000",font_color="FFFFFF",alignment=True)
 
         for nstudents in range(1,data['Number_of_Students']+1):
             corr_co_column=nco
@@ -102,7 +102,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
 
             aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}']=formula
             
-    cellstyle_range(aw[f'{get_column_letter(start_column-1)}7:{get_column_letter(start_column+nco-1)}{6+data["Number_of_Students"]}'], alignment=True, border=True, bold=True)
+    cellstyle_range(aw[f'{get_column_letter(start_column)}7:{get_column_letter(start_column+data['Number_of_COs']-1)}{6+data["Number_of_Students"]}'], alignment=True, border=True, bold=True)
 
     #Total final calculation
     aw.column_dimensions[f'{get_column_letter(start_column-1)}'].width = 14.3
@@ -118,7 +118,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
 
     for nco in range(1,data['Number_of_COs']+1):
         aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}']=f"CO{nco}"
-        cellstyle(aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}'],bold=True,fill="000000",font_color="FFFFFF")
+        cellstyle(aw[f'{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+8}'],bold=True,fill="000000",font_color="FFFFFF",alignment=True)
 
         range_start = f"{get_column_letter(start_column-1+nco)}7"
         range_end = f"{get_column_letter(start_column-1+nco)}{6+data['Number_of_Students']}"
@@ -143,7 +143,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
         formula = f'=IF(SUM({range_string}) > 0, {cell_position_1}/{cell_position_2}*100, "0")'
         aw[target_cell_position] = formula
 
-    cellstyle_range(aw[f'{get_column_letter(start_column-1)}{data["Number_of_Students"]+9}:{get_column_letter(start_column-1+nco)}{data["Number_of_Students"]+11}'], alignment=True, border=True, bold=True, alternate=['ffffff','d9d9d9'])
+    cellstyle_range(aw[f'{get_column_letter(start_column)}{data["Number_of_Students"]+9}:{get_column_letter(start_column+data['Number_of_COs']-1)}{data["Number_of_Students"]+11}'], alignment=True, border=True, bold=True, alternate=['ffffff','d9d9d9'])
 
     return aw
 

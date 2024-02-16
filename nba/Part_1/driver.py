@@ -53,7 +53,7 @@ def driver_part1(data, Component_Details, file_path):
 
     wb.create_sheet(f"{data['Section']}_Printout")
     ws = wb[f"{data['Section']}_Printout"]
-    ws=printout(ws,data)
+    ws=printout(ws,data,1)
 
     #save workbook
     unique_id = str(uuid.uuid4()).split("-")[0]
@@ -63,44 +63,3 @@ def driver_part1(data, Component_Details, file_path):
     wb.save(full_path)
     return excel_file_name    
 
-
-if __name__ == "__main__":
-
-    
-    data={
-        "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
-        "Academic_year":"2022-2023",  
-        "Batch":2019,
-        "Branch":"CSE",                                                                          #set branch
-        "Subject_Name":"Computer system and architecture",
-        "Subject_Code":"19CSE345",
-        "Section":"A",
-        "Semester":"Even",
-        "Number_of_Students":47,
-        "Number_of_COs":4}
-    
-    # data={
-    #     "Teacher":"Dr. S. S. Patil",                                                              #set teacher name
-    #     "Academic_year":"2022-2023",  
-    #     "Batch":2019,
-    #     "Branch":"CSE",                                                                          #set branch
-    #     "Subject_Name":"PCE",
-    #     "Subject_Code":"19MEE444",
-    #     "Section":"A",
-    #     "Semester":"Even",
-    #     "Number_of_Students":10,
-    #     "Number_of_COs":4}
-    
-
-    # Component_Details={"P1_I":3,
-    #                     "P2_I":6,
-    #                     "CA_I":6,
-    #                     "EndSem_E":9}
-    
-    Component_Details={"P1_I":7,
-                       "EndSem_E":13}
-    # Component_Details={"P1_I":3,
-    #                     "CA_I":6,
-    #                     "EndSem_E":9}
-
-    driver_part1(data,Component_Details, os.getcwd())

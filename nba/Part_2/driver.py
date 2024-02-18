@@ -25,7 +25,6 @@ def driver_part2(input_dir_path, output_dir_path):
     Warnings = []
 
 
-    Combined_indirect_assessment = pd.DataFrame()
     Combined_co_po_table = pd.DataFrame()
     Combined_qn_co_mm_btl = {}
     Combined_studentmarks = {}
@@ -37,6 +36,8 @@ def driver_part2(input_dir_path, output_dir_path):
     new_qn_co_mm_btl_check = {}
     new_co_po_table_check = None
     new_Component_Details_check = None
+
+    Input_Details_Sheet_Array = []
 
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("Combined"):
@@ -66,13 +67,13 @@ def driver_part2(input_dir_path, output_dir_path):
 
             alldata={}
             Component_Details = {}
-            indirect_assessment = pd.DataFrame()
 
 
             input_details_title=None
             for sheet_name in wbread.sheetnames:
                 if sheet_name.endswith("Input_Details"):
                     input_details_title = sheet_name
+                    Input_Details_Sheet_Array.append(sheet_name)
 
             if input_details_title is None:
                 Warnings.append(f"{file} does not have Input_Details sheet")
@@ -93,7 +94,7 @@ def driver_part2(input_dir_path, output_dir_path):
 
             total_students+=alldata['Number_of_Students']
             data = {key: alldata[key] for key in alldata.keys() & {'Teacher', 'Academic_year', 'Batch', 'Branch', 'Subject_Name', 'Subject_Code', 'Section', 'Semester', 'Number_of_Students', 'Number_of_COs'}}
-            sum_data_all = alldata
+            Combined_data_all = alldata
 
             
                 
@@ -173,7 +174,6 @@ def driver_part2(input_dir_path, output_dir_path):
             po_columns=[f"PO{i}" for i in range(1,13)]
             pso_columns=[f"PSO{i}" for i in range(1,6)]
             df_columns=po_columns+pso_columns
-            print(df_columns)
             
             co_po_table=pd.DataFrame(values, columns=df_columns)
             #replace 0 with NaN
@@ -187,26 +187,14 @@ def driver_part2(input_dir_path, output_dir_path):
                     return Warnings
             prev_co_po_table_check = new_co_po_table_check
             
-            #=================Indirect Assessment=================
-            start_row = 2 + data["Number_of_COs"] + 4 + 1
-            end_row = 2 + data["Number_of_COs"] + 4 + data["Number_of_COs"]
-            cell_range = f'E{start_row}:E{end_row}'
-
-            values = []
-            for row in wsread_input_details[cell_range]:
-                for cell in row:
-                    values.append(cell.value)
-
-            indirect_assessment=pd.DataFrame(values, columns=[f"{data['Section']}"])
-            Combined_indirect_assessment = pd.concat([Combined_indirect_assessment, indirect_assessment], axis=1)
 
             #=================Write to Combined Workbook=================
             wbwrite.create_sheet(f"{data['Section']}_Input_Details")
             wswrite = wbwrite[f"{data['Section']}_Input_Details"]
-            wswrite = input_detail(data,Component_Details,wswrite)
-            wswrite = indirect_co_assessment(data,wswrite)
+            wswrite = input_detail(data,Component_Details,wswrite, conditional=True)
+            wswrite = indirect_co_assessment(data,wswrite, conditional=True)
             adjust_width(wswrite)
-            wswrite = CO_PO_Table(data,wswrite)
+            wswrite = CO_PO_Table(data,wswrite, conditional=True)
 
             for key in Component_Details.keys():
                 wbwrite.create_sheet(key)
@@ -218,21 +206,43 @@ def driver_part2(input_dir_path, output_dir_path):
                 wswrite = cummulative_qn_co_mm_btl(data, key, Component_Details[key], wswrite)   
                 wswrite = cummulative_studentmarks(data, key, Component_Details[key], wswrite)
 
+            internal_components_number = len([key for key in Component_Details.keys() if key.endswith("_I")])
+            external_components_number = len([key for key in Component_Details.keys() if key.endswith("_E")])
+
+            
             wbwrite.create_sheet(f"{data['Section']}_Internal_Components")
             wswrite = wbwrite[f"{data['Section']}_Internal_Components"]
-            wswrite = Component_calculation(data,Component_Details,wswrite,"I")
+            if internal_components_number==0:
+                wswrite.merge_cells('A1:M1')
+                cellstyle_range(wswrite['A1:M1'], bold=True, alignment=True, border=True, fill="ffe74e", size=18)
+                wswrite['A1']="No Internal Components"
+
+                wswrite.merge_cells('A2:M2')
+                cellstyle_range(wswrite['A2:M2'], bold=True, alignment=True, border=True, fill="ffe74e", size=12)
+                wswrite['A2']="Ensure that Internal % is set to 0 since there are no Internal Components"
+            else:
+                wswrite = Component_calculation(data,Component_Details,wswrite,"I")
 
             wbwrite.create_sheet(f"{data['Section']}_External_Components")
             wswrite = wbwrite[f"{data['Section']}_External_Components"]
-            wswrite = Component_calculation(data,Component_Details,wswrite,"E")
+            if external_components_number==0:
+                wswrite.merge_cells('A1:M1')
+                cellstyle_range(wswrite['A1:M1'], bold=True, alignment=True, border=True, fill="ffe74e", size=18)
+                wswrite['A1']="No External Components"
 
-            wbwrite.create_sheet(f"{data['Section']}_Course_level_Attainment")
-            wswrite = wbwrite[f"{data['Section']}_Course_level_Attainment"]
+                wswrite.merge_cells('A2:M2')
+                cellstyle_range(wswrite['A2:M2'], bold=True, alignment=True, border=True, fill="ffe74e", size=12)
+                wswrite['A2']="Ensure that External % is set to 0 since there are no External Components"
+            else:
+                wswrite = Component_calculation(data,Component_Details,wswrite,"E")
+
+            wbwrite.create_sheet(f"{data['Section']}_Course_Attainment")
+            wswrite = wbwrite[f"{data['Section']}_Course_Attainment"]
             wswrite=write_course_attainment(data, Component_Details, wswrite)
 
             wbwrite.create_sheet(f"{data['Section']}_Printout")
             wswrite = wbwrite[f"{data['Section']}_Printout"]
-            wswrite=printout(wswrite,data)
+            wswrite=printout(wswrite,data,2)
 
             #copy data from all the sheets of wbread to wbwrite
             for sheet in wbread.sheetnames:
@@ -246,52 +256,43 @@ def driver_part2(input_dir_path, output_dir_path):
                         except:
                             pass
 
-            
-            
-
-            
-
-            
-
-
-
-
-
 
             wbread.close()
     #save the workbook
     
-    sum_data_all['Section'] = "Sum"
-    sum_data_all['Number_of_Students'] = total_students
-    sum_data = {key: sum_data_all[key] for key in sum_data_all.keys() & {'Teacher', 'Academic_year', 'Batch', 'Branch', 'Subject_Name', 'Subject_Code', 'Section', 'Semester', 'Number_of_Students', 'Number_of_COs'}}
+    Combined_data_all['Section'] = "Combined"
+    Combined_data_all['Number_of_Students'] = total_students
+    Combined_data = {key: Combined_data_all[key] for key in Combined_data_all.keys() & {'Teacher', 'Academic_year', 'Batch', 'Branch', 'Subject_Name', 'Subject_Code', 'Section', 'Semester', 'Number_of_Students', 'Number_of_COs'}}
 
 
-    print(total_students)
-    print(sum_data_all)
-    print(Combined_Component_Details)
-    print(Combined_indirect_assessment)
-    print(Combined_co_po_table)
-    print(Combined_qn_co_mm_btl)
-    print(Combined_studentmarks)
+    # print(total_students)
+    # print(Combined_data_all)
+    # print(Combined_Component_Details)
+    # print(Combined_co_po_table)
+    # print(Combined_qn_co_mm_btl)
+    # print(Combined_studentmarks)
 
-    wbwrite.create_sheet(f"{sum_data['Section']}_Input_Details")
-    wswrite = wbwrite[f"{sum_data['Section']}_Input_Details"]
-    wswrite['B14'] = sum_data_all['Default Threshold %']
-    wswrite['B15'] = sum_data_all['Internal %']
-    wswrite['B17'] = sum_data_all['Direct %']
-    wswrite['B19'] = sum_data_all['Target CO Attainment %']
+    wbwrite.create_sheet(f"{Combined_data['Section']}_Input_Details")
+    wswrite = wbwrite[f"{Combined_data['Section']}_Input_Details"]
+    wswrite['B14'] = Combined_data_all['Default Threshold %']
+    wswrite['B15'] = Combined_data_all['Internal %']
+    wswrite['B17'] = Combined_data_all['Direct %']
+    wswrite['B19'] = Combined_data_all['Target CO Attainment %']
 
     
-            
-    #add a column which is average of all the columns in Combined_indirect_assessment
-    Combined_indirect_assessment['Avg'] = Combined_indirect_assessment.mean(axis=1)
-    for i in range(len(Combined_indirect_assessment)):
-        wswrite[f'E{2+sum_data['Number_of_COs']+4+1+i}'] = Combined_indirect_assessment['Avg'][i]
-    wswrite = input_detail(sum_data,Combined_Component_Details,wswrite)
+    #calculate average of indirect assessment
+    for numco in range(Combined_data['Number_of_COs']):
+        formula="=AVERAGE("
+        for ws in Input_Details_Sheet_Array:
+            formula+=f"{ws}!E{2+Combined_data['Number_of_COs']+4+1+numco},"
+        formula = formula[:-1]
+        formula+=")"
+        wswrite[f'E{2+Combined_data['Number_of_COs']+4+1+numco}'] = formula
+    wswrite = input_detail(Combined_data,Combined_Component_Details,wswrite)
     
     
 
-    wswrite = indirect_co_assessment(sum_data,wswrite)
+    wswrite = indirect_co_assessment(Combined_data,wswrite)
     adjust_width(wswrite)
 
     start_row = 3
@@ -308,7 +309,7 @@ def driver_part2(input_dir_path, output_dir_path):
             col+=1
         row+=1
 
-    wswrite = CO_PO_Table(sum_data,wswrite)
+    wswrite = CO_PO_Table(Combined_data,wswrite)
 
 
 
@@ -318,7 +319,7 @@ def driver_part2(input_dir_path, output_dir_path):
         wbwrite.create_sheet(key)
         wswrite = wbwrite[key]
         wswrite.title = key
-        wswrite = qn_co_mm_btl(sum_data, key, Combined_Component_Details[key], wswrite)
+        wswrite = qn_co_mm_btl(Combined_data, key, Combined_Component_Details[key], wswrite)
         #paste the content of Combined_qn_co_mm_btl to given range in the sheet
         start_row = 3
         end_row = 7
@@ -336,9 +337,9 @@ def driver_part2(input_dir_path, output_dir_path):
         except:
             pass
 
-        wswrite = studentmarks(sum_data, key, Combined_Component_Details[key], wswrite)
+        wswrite = studentmarks(Combined_data, key, Combined_Component_Details[key], wswrite)
         start_row = 11
-        end_row = 10 + sum_data['Number_of_Students']
+        end_row = 10 + Combined_data['Number_of_Students']
         start_col = 1
         end_col = 2 + Combined_Component_Details[key]
         row=0
@@ -353,36 +354,65 @@ def driver_part2(input_dir_path, output_dir_path):
         except:
             pass
 
-        wswrite = cummulative_co_mm_btl(sum_data, key, Combined_Component_Details[key], wswrite)
-        wswrite = cummulative_studentmarks(sum_data, key, Combined_Component_Details[key], wswrite)
+        wswrite = cummulative_qn_co_mm_btl(Combined_data, key, Combined_Component_Details[key], wswrite)
+        wswrite = cummulative_studentmarks(Combined_data, key, Combined_Component_Details[key], wswrite)
 
   
     
 
-    wbwrite.create_sheet("Sum_Internal_Components")
-    wswrite = wbwrite["Sum_Internal_Components"]
-    wswrite = Component_calculation(sum_data,Combined_Component_Details,wswrite,"I")
+    internal_components_number = len([key for key in Combined_Component_Details.keys() if key.endswith("_I")])
+    external_components_number = len([key for key in Combined_Component_Details.keys() if key.endswith("_E")])
 
-    wbwrite.create_sheet("Sum_External_Components")
-    wswrite = wbwrite["Sum_External_Components"]
-    wswrite = Component_calculation(sum_data,Combined_Component_Details,wswrite,"E")
+    
+    wbwrite.create_sheet(f"{Combined_data['Section']}_Internal_Components")
+    wswrite = wbwrite[f"{Combined_data['Section']}_Internal_Components"]
+    if internal_components_number==0:
+        wswrite.merge_cells('A1:M1')
+        cellstyle_range(wswrite['A1:M1'], bold=True, alignment=True, border=True, fill="ffe74e", size=18)
+        wswrite['A1']="No Internal Components"
 
-    wbwrite.create_sheet("Sum_Course_level_Attainment")
-    wswrite = wbwrite["Sum_Course_level_Attainment"]
-    wswrite=write_course_level_attainment(sum_data, Combined_Component_Details, wswrite)
+        wswrite.merge_cells('A2:M2')
+        cellstyle_range(wswrite['A2:M2'], bold=True, alignment=True, border=True, fill="ffe74e", size=12)
+        wswrite['A2']="Ensure that Internal % is set to 0 since there are no Internal Components"
+    else:
+        wswrite = Component_calculation(Combined_data,Combined_Component_Details,wswrite,"I")
 
-    wbwrite.create_sheet("Sum_Printout")
-    wswrite = wbwrite["Sum_Printout"]
-    wswrite=printout(wswrite,sum_data)
+    wbwrite.create_sheet(f"{Combined_data['Section']}_External_Components")
+    wswrite = wbwrite[f"{Combined_data['Section']}_External_Components"]
+    if external_components_number==0:
+        wswrite.merge_cells('A1:M1')
+        cellstyle_range(wswrite['A1:M1'], bold=True, alignment=True, border=True, fill="ffe74e", size=18)
+        wswrite['A1']="No External Components"
+
+        wswrite.merge_cells('A2:M2')
+        cellstyle_range(wswrite['A2:M2'], bold=True, alignment=True, border=True, fill="ffe74e", size=12)
+        wswrite['A2']="Ensure that External % is set to 0 since there are no External Components"
+    else:
+        wswrite = Component_calculation(Combined_data,Combined_Component_Details,wswrite,"E")
+
+    wbwrite.create_sheet("Combined_Course_Attainment")
+    wswrite = wbwrite["Combined_Course_Attainment"]
+    wswrite=write_course_attainment(Combined_data, Combined_Component_Details, wswrite)
+
+    wbwrite.create_sheet("Combined_Printout")
+    wswrite = wbwrite["Combined_Printout"]
+    wswrite=printout(wswrite,Combined_data,2)
 
     unique_id = str(uuid.uuid4()).split("-")[0]
-    excel_file_name=f"Sum_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
+    excel_file_name=f"Combined_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
+    for ws in wbwrite.worksheets:
+        ws.protection.sheet = True
+        for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
+            for cell in row:
+                cell.protection = Protection(locked=True)
+
     wbwrite.save(os.path.join(output_dir_path, excel_file_name))
     if Warnings:
         return Warnings
     else:
         return ["Files successfully merged"]
-
+        #return excel_file_name
+    
 if __name__ == "__main__":
     input_dir_path="C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_2"
     output_dir_path="C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_2"

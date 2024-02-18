@@ -1,9 +1,7 @@
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl import load_workbook
-from openpyxl.utils import range_boundaries                                  #import get_column_letter from openpyxl
-import time
 from openpyxl import Workbook                                                         #import workbook from openpyxl
-from openpyxl.styles import Alignment, PatternFill, Font, Border, Side, NamedStyle, colors, Color, Fill, GradientFill, Font, Border, Side, Alignment, Protection
+from openpyxl.styles import  PatternFill, Font, Protection
 import pandas as pd
 import os
 import numpy as np
@@ -289,6 +287,12 @@ def driver_part3(input_dir_path, output_dir_path):
 
     unique_code = str(uuid.uuid4()).split("-")[0]
     file_name = f"final_{unique_code}.xlsx"
+    for ws in wbwrite.sheetnames:
+        ws.protection.sheet = True
+        for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
+            for cell in row:
+                cell.protection = Protection(locked=True)
+
     wbwrite.save(os.path.join(output_dir_path, file_name))
     return file_name
 

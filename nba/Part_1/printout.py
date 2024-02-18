@@ -217,16 +217,16 @@ def printout(aw, data,start_row,copy=False,numco=None):
         aw[f"{get_column_letter(start_column)}{row}"] = data['Subject_Code']
         aw[f"{get_column_letter(start_column+1)}{row}"] = data['Subject_Name']
         for nco in range(numco):
-            aw[f"{get_column_letter(start_column+3)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+4)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+1)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+5)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+2)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+6)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+3)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+7)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+4)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+8)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+5)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+9)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+6)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+10)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+7)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+11)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+8)}{start_row_ca_data+(numco*interval)}"
-            aw[f"{get_column_letter(start_column+12)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+9)}{start_row_ca_data+(numco*interval)}"
+            aw[f"{get_column_letter(start_column+3)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+4)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+1)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+5)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+2)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+6)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+3)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+7)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+4)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+8)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+5)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+9)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+6)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+10)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+7)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+11)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+8)}{start_row_ca_data+(nco*interval)}"
+            aw[f"{get_column_letter(start_column+12)}{row}"] = f"={data['Section']}_Course_Attainment!{get_column_letter(start_col_ca_data+9)}{start_row_ca_data+(nco*interval)}"
             aw[f"{get_column_letter(start_column+13)}{row}"] = f"=B19"
             aw[f"{get_column_letter(start_column+14)}{row}"] = f'=IF({get_column_letter(start_column+11)}{row}>=B19,"Yes","No")'
             row+=1

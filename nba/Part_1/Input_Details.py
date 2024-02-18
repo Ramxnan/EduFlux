@@ -148,12 +148,9 @@ def CO_PO_Table(data,aw,conditional=False, copy=False):
         #set column width to 13
         aw.column_dimensions[f"{get_column_letter(popso+4)}"].width = 13
 
-    cellstyle_range(aw[f"D3:U{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'])
+    cellstyle_range(aw[f"D3:U{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'], alignment=True)
     
     if conditional:
-        
-
-
         #set conditional formatting for empty cells   
         pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
         red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")

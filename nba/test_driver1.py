@@ -24,10 +24,10 @@ if __name__ == "__main__":
         "Branch":"CSE",                                                                          #set branch
         "Subject_Name":"FLA",
         "Subject_Code":"CSE411",
-        "Section":"A",
+        "Section":"B",
         "Semester":"Odd",
-        "Number_of_Students":47,
-        "Number_of_COs":7}
+        "Number_of_Students":20,
+        "Number_of_COs":4}
     
 
     # Component_Details={"P1_I":7,

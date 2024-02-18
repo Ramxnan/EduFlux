@@ -4,6 +4,8 @@ from openpyxl.styles import PatternFill
 from openpyxl.worksheet.table import Table, TableStyleInfo          #import table from openpyxl
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.utils import get_column_letter                                  #import get_column_letter from openpyxl
+from openpyxl.styles import Protection
+
 
 def input_detail(data,Component_Details,aw,conditional=False, copy=False):
     """ Function to input details
@@ -34,9 +36,16 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
     aw[f'A{startrow}']="Variables"
     cellstyle_range(aw[f'A{startrow}:B{startrow}'], bold=True, alignment=True, border=True, fill="ffe74e")
     
+    internal_components_number = len([key for key in Component_Details.keys() if key.endswith("_I")])
+    external_components_number = len([key for key in Component_Details.keys() if key.endswith("_E")])
+
     aw['A14']="Default Threshold %"
     aw['A15']="Internal %"
     aw['A16']="External %"
+    if internal_components_number==0:
+        aw['B15']=f'0'
+    elif external_components_number==0:
+        aw['B15']=f'100'
     aw['B16']=f'=100-B15'
     aw['A17']="Direct %"
     aw['A18']="Indirect %"
@@ -86,9 +95,22 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
                     f'B{startrow}',
                     #greater than 100 or less than 0
                     FormulaRule(formula=[f'OR(B{startrow}>100,B{startrow}<0)'], stopIfTrue=False, fill=red_fill))
-
+        
         colour_table_Input_Details(aw)
-    
+
+        #unlock the cells
+        purple_fill = PatternFill(start_color="7b83eb", end_color="7b83eb", fill_type="solid")
+        for row in aw.iter_rows(min_row=2, max_row=9, min_col=2, max_col=2):
+            for cell in row:
+                cell.protection = Protection(locked=False)
+                #cell.fill = purple_fill
+
+        for row in aw.iter_rows(min_row=14, max_row=19, min_col=2, max_col=2):
+            for cell in row:
+                if cell.row != 16 and cell.row != 18:
+                    cell.protection = Protection(locked=False)
+                    #cell.fill = purple_fill
+
     return aw  
 
 
@@ -129,6 +151,9 @@ def CO_PO_Table(data,aw,conditional=False, copy=False):
     cellstyle_range(aw[f"D3:U{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'])
     
     if conditional:
+        
+
+
         #set conditional formatting for empty cells   
         pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
         red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
@@ -141,6 +166,12 @@ def CO_PO_Table(data,aw,conditional=False, copy=False):
                     f"{get_column_letter(popso+4)}{nco+2}",
                     FormulaRule(formula=[f'OR({get_column_letter(popso+4)}{nco+2}>3,{get_column_letter(popso+4)}{nco+2}<0)'], stopIfTrue=False, fill=red_fill))
                 
+        #unlock the cells
+        purple_fill = PatternFill(start_color="7b83eb", end_color="7b83eb", fill_type="solid")
+        for row in aw.iter_rows(min_row=3, max_row=2+data["Number_of_COs"], min_col=5, max_col=12+5+1+3):
+            for cell in row:
+                cell.protection = Protection(locked=False)
+                #cell.fill = purple_fill      
     if copy:
         for nco in range(1,data["Number_of_COs"]+1):
             for popso in range(1,12+5+1):
@@ -193,7 +224,13 @@ def indirect_co_assessment(data,aw,conditional=False,copy=False):
                 cell_coordinate,
                 #greater than 100 or less than 0
                 FormulaRule(formula=[f'OR({cell_coordinate}>100,{cell_coordinate}<0)'], stopIfTrue=False, fill=red_fill))
-    
+            
+        #unlock the cells
+        purple_fill = PatternFill(start_color="7b83eb", end_color="7b83eb", fill_type="solid")
+        for row in aw.iter_rows(min_row=data["Number_of_COs"]+7, max_row=data["Number_of_COs"]+6+data["Number_of_COs"], min_col=5, max_col=5):
+            for cell in row:
+                cell.protection = Protection(locked=False)
+                #cell.fill = purple_fil
     if copy:
         for nco in range(1,data["Number_of_COs"]+1):
             aw[f"E{nco+data['Number_of_COs']+6}"]=f"='{data['Section']}_Input_Details'!E{nco+data['Number_of_COs']+6}"

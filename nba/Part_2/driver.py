@@ -3,7 +3,7 @@ from openpyxl import Workbook                                                   
 from Part_1.Input_Details import input_detail,CO_PO_Table,indirect_co_assessment
 from Part_1.Component_values import qn_co_mm_btl,studentmarks
 from Part_1.Cummulative_Component_Values import cummulative_qn_co_mm_btl,cummulative_studentmarks
-from Part_1.Component_calculation import Component_calculation
+from nba.Part_1.InternalExternal_Component_calculation import Component_calculation
 from Part_1.write_course_attainment import write_course_attainment
 from Part_1.printout import printout
 from Part_1.utils import adjust_width

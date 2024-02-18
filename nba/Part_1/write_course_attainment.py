@@ -154,22 +154,17 @@ def write_course_attainment(data,Component_Details,aw):
             else:
                 cellstyle(aw.cell(row=start, column=k), fill="dce6f1")
     
-        internal_components_num=0
-        external_components_num=0
-        for component_name in Component_Details.keys():
-            if component_name[-1]=="I":
-                internal_components_num+=1
-            else:
-                external_components_num+=1
-        col=(data["Number_of_COs"]*internal_components_num) + (1*internal_components_num) + 2 + rowindex
+        internal_components_number = len([key for key in Component_Details.keys() if key.endswith("_I")])
+        external_components_number = len([key for key in Component_Details.keys() if key.endswith("_E")])
+        col=(data["Number_of_COs"]*internal_components_number) + (1*internal_components_number) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
-        aw.cell(row=start, column=start_col_ca+3).value=f'={data["Section"]}_Internal_Components!{get_column_letter(col)}{row}'
+        aw.cell(row=start, column=start_col_ca+3).value=f'={data["Section"]}_External_Components!{get_column_letter(col)}{row}'
 
         aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>0,{get_column_letter(start_col_ca+3)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+3)}{start}>=40,{get_column_letter(start_col_ca+3)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+3)}{start}>=60,{get_column_letter(start_col_ca+3)}{start}<=100),3,"0")))'
 
-        col=(data["Number_of_COs"]*external_components_num) + (1*external_components_num) + 2 + rowindex
+        col=(data["Number_of_COs"]*external_components_number) + (1*external_components_number) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
-        aw.cell(row=start, column=start_col_ca+5).value=f'={data["Section"]}_External_Components!{get_column_letter(col)}{row}'
+        aw.cell(row=start, column=start_col_ca+5).value=f'={data["Section"]}_Internal_Components!{get_column_letter(col)}{row}'
 
         aw.cell(row=start, column=start_col_ca+6).value=f'=IF(AND({get_column_letter(start_col_ca+5)}{start}>0,{get_column_letter(start_col_ca+5)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+5)}{start}>=40,{get_column_letter(start_col_ca+5)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+5)}{start}>=60,{get_column_letter(start_col_ca+5)}{start}<=100),3,"0")))'
 

@@ -1,10 +1,5 @@
 from openpyxl import *
-from .utils import copy_range
 from openpyxl.utils import get_column_letter
-from openpyxl.styles import Font, PatternFill, Border, Side, Alignment 
-from openpyxl.worksheet.table import Table, TableStyleInfo
-from openpyxl.formatting.rule import FormulaRule
-from openpyxl.styles import Protection
 from .utils import cellstyle, cellstyle_range
 
 
@@ -17,7 +12,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
         if component_name[-1]==component_type:
             aw[f'{get_column_letter(start_column)}1']=component_name
             aw.merge_cells(start_row=1, start_column=start_column, end_row=1, end_column=start_column+data['Number_of_COs']-1)
-            cellstyle_range(aw[f'{get_column_letter(start_column)}1:{get_column_letter(start_column+data["Number_of_COs"]-1)}1'], bold=True, alignment=True, border=True)
+            cellstyle_range(aw[f'{get_column_letter(start_column)}1:{get_column_letter(start_column+data["Number_of_COs"]-1)}1'], bold=True, alignment=True, border=True, fill="4f81bd", size=12)
             
 
             #reference a cell from another sheet
@@ -26,10 +21,8 @@ def Component_calculation(data,Component_Details,aw,component_type):
                 cellstyle(aw[f'{get_column_letter(start_column+nco-1)}2'],fill="4f81bd")
 
                 aw[f'{get_column_letter(start_column+nco-1)}3']=f"='{component_name}'!{get_column_letter(2+Component_Details[component_name]+1+nco)}3"
-                aw[f'{get_column_letter(start_column+nco-1)}3'].alignment = Alignment(horizontal='center')
 
                 aw[f'{get_column_letter(start_column+nco-1)}4']=f"='{component_name}'!{get_column_letter(2+Component_Details[component_name]+1+nco)}4"
-                aw[f'{get_column_letter(start_column+nco-1)}4'].alignment = Alignment(horizontal='center')
 
             cellstyle_range(aw[f'{get_column_letter(start_column)}2:{get_column_letter(start_column+data["Number_of_COs"]-1)}4'], alignment=True, border=True, bold=True)
                 
@@ -58,7 +51,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
     #set header to Combined Components
     aw[f'{get_column_letter(start_column)}1']="Combined Components table"
     aw.merge_cells(start_row=1, start_column=start_column, end_row=1, end_column=start_column+data['Number_of_COs']-1)
-    cellstyle_range(aw[f'{get_column_letter(start_column)}1:{get_column_letter(start_column+data["Number_of_COs"]-1)}1'], bold=True, alignment=True, border=True)
+    cellstyle_range(aw[f'{get_column_letter(start_column)}1:{get_column_letter(start_column+data["Number_of_COs"]-1)}1'], bold=True, alignment=True, border=True, fill="000000",font_color="FFFFFF", size=12)
 
     for nco in range(1,data['Number_of_COs']+1):
         aw[f'{get_column_letter(start_column+nco-1)}2']=f"CO{nco}"

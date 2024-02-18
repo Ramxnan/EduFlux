@@ -27,8 +27,12 @@ if __name__ == "__main__":
         "Section":"A",
         "Semester":"Odd",
         "Number_of_Students":47,
-        "Number_of_COs":4}
+        "Number_of_COs":7}
     
+
+    # Component_Details={"P1_I":7,
+    #                     "CA_I":4,
+    #                     "EndSem_E":13}
 
     Component_Details={"P1_I":7,
                         "CA_I":4,

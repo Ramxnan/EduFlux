@@ -2,6 +2,7 @@ from openpyxl.styles import PatternFill                                         
 from openpyxl.utils import get_column_letter                                  #import get_column_letter from openpyxl
 from openpyxl.formatting.rule import FormulaRule
 from .utils import adjust_width, colour_table, cellstyle_range, cellstyle
+from openpyxl.styles import Protection
 
 def qn_co_mm_btl(data,key,value,aw):  #function to create qn_co_mm_btl table
     """ Function to create qn_co_mm_btl table
@@ -81,6 +82,14 @@ def qn_co_mm_btl(data,key,value,aw):  #function to create qn_co_mm_btl table
         aw.conditional_formatting.add(
             btl_cell,
             FormulaRule(formula=[f'ISBLANK({btl_cell})'], stopIfTrue=False, fill=pink_fill))
+        
+    #unprotecting the cells
+    purple_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
+    for row in aw.iter_rows(min_row=3, max_row=7, min_col=3, max_col=value+2):
+        for cell in row:
+            if cell.row != 6:
+                cell.protection = Protection(locked=False)
+                #cell.fill = purple_fill
 
     return aw
 
@@ -154,6 +163,12 @@ def studentmarks(data,key, value,aw):
             FormulaRule(formula=[f'ISBLANK(B11)'], stopIfTrue=False, fill=pink_fill)
         )
 
+    #unprotecting the cells
+    purple_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
+    for row in aw.iter_rows(min_row=11, max_row=10+data['Number_of_Students'], min_col=1, max_col=value+2):
+        for cell in row:
+            cell.protection = Protection(locked=False)
+            #cell.fill = purple_fill
    
     adjust_width(aw)
     aw.column_dimensions['A'].width = 20

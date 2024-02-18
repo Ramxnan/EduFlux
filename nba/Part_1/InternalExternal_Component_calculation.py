@@ -1,9 +1,27 @@
 from openpyxl import *
 from openpyxl.utils import get_column_letter
 from .utils import cellstyle, cellstyle_range
+from openpyxl.styles import Protection
 
 
 def Component_calculation(data,Component_Details,aw,component_type):
+    ''' Function to create the component calculation table
+
+    Args:
+    data (dict): Dictionary containing the data
+    Component_Details (dict): Dictionary containing the component details
+    aw (openpyxl.worksheet.worksheet.Worksheet): Worksheet object
+    component_type (str): Component type
+
+    Returns:
+    openpyxl.worksheet.worksheet.Worksheet: Worksheet object
+    '''
+
+    for row in aw.iter_rows():
+        for cell in row:
+            cell.protection = Protection(locked=True)
+    aw.protection.sheet = True
+
     #get the value from other sheets and put it in this sheet as a formula dynamically by referencing the cell
     start_column=1
     component_num=2

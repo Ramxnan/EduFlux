@@ -1,12 +1,14 @@
-from openpyxl import Workbook                                                         #import workbook from openpyxl
-
-from Part_1.Input_Details import input_detail,CO_PO_Table,indirect_co_assessment
-from Part_1.Component_values import qn_co_mm_btl,studentmarks
-from Part_1.Cummulative_Component_Values import cummulative_qn_co_mm_btl,cummulative_studentmarks
-from nba.Part_1.InternalExternal_Component_calculation import Component_calculation
+from openpyxl import Workbook
+from openpyxl.styles import Protection
+from Part_1.utils import adjust_width, cellstyle_range
+from Part_1.Input_Details import input_detail, indirect_co_assessment, CO_PO_Table
+from Part_1.Component_values import qn_co_mm_btl, studentmarks
+from Part_1.Cummulative_Component_Values import cummulative_qn_co_mm_btl, cummulative_studentmarks
+from Part_1.InternalExternal_Component_calculation import Component_calculation
 from Part_1.write_course_attainment import write_course_attainment
 from Part_1.printout import printout
-from Part_1.utils import adjust_width
+import os
+import uuid
 
 import os
 import uuid
@@ -23,10 +25,10 @@ def driver_part2(input_dir_path, output_dir_path):
     Warnings = []
 
 
-    sum_indirect_assessment = pd.DataFrame()
-    sum_co_po_table = pd.DataFrame()
-    sum_qn_co_mm_btl = {}
-    sum_studentmarks = {}
+    Combined_indirect_assessment = pd.DataFrame()
+    Combined_co_po_table = pd.DataFrame()
+    Combined_qn_co_mm_btl = {}
+    Combined_studentmarks = {}
 
     prev_qn_co_mm_btl_check = {}
     prev_co_po_table_check = None
@@ -37,7 +39,7 @@ def driver_part2(input_dir_path, output_dir_path):
     new_Component_Details_check = None
 
     for file in os.listdir(input_dir_path):
-        if file.endswith(".xlsx") and not file.startswith("Sum"):
+        if file.endswith(".xlsx") and not file.startswith("Combined"):
             excel_files.append(file)
     excel_files.sort()
 
@@ -58,7 +60,7 @@ def driver_part2(input_dir_path, output_dir_path):
 
 
     for file in excel_files:
-        if file.endswith(".xlsx") and not file.startswith("Sum"):
+        if file.endswith(".xlsx") and not file.startswith("Combined"):
             file_path = os.path.join(input_dir_path, file)
             wbread = load_workbook(file_path, data_only=True)
 
@@ -86,7 +88,7 @@ def driver_part2(input_dir_path, output_dir_path):
 
             #if any of the values in alldata is None, return an error
             if None in alldata.values():
-                Warnings.append(f"{file} has missing values in Input_Details sheet")
+                Warnings.append(f"{file} has missing values in Constants or Variables in Input_Details sheet")
                 return Warnings
 
             total_students+=alldata['Number_of_Students']
@@ -100,7 +102,7 @@ def driver_part2(input_dir_path, output_dir_path):
             for row in wsread_input_details[table_range][1:]:
                 Component_Details[row[0].value] = row[1].value
 
-            sum_Component_Details = {f"Sum_{key[2:]}":value for key,value in Component_Details.items()}
+            Combined_Component_Details = {f"Combined_{key[2:]}":value for key,value in Component_Details.items()}
 
             #Check if Component_Details is same as previous file
             new_Component_Details_check = {f"{key[2:]}":value for key,value in Component_Details.items()}
@@ -112,21 +114,22 @@ def driver_part2(input_dir_path, output_dir_path):
             prev_Component_Details_check = new_Component_Details_check
 
             new_qn_co_mm_btl_check = {}         
-            for key, qnum in Component_Details.items():
+            for key, numques in Component_Details.items():
                 comp_ws = wbread[key]
-                
+
+                #=================QN-CO-MM-BTL Table=================
                 # Define the range for QN-CO-MM-BTL details
                 start_row = 2
                 end_row = 7
                 start_col = 3
-                end_col = 3 + qnum - 1
+                end_col = 3 + numques - 1
                 
                 # Extract QN-CO-MM-BTL details
                 data_rows = []
                 for row in comp_ws.iter_rows(min_row=start_row, max_row=end_row, min_col=start_col, max_col=end_col):
                     data_rows.append([cell.value for cell in row])
                 df_qn_co_mm_btl = pd.DataFrame(data_rows[1:], columns=data_rows[0])
-                sum_qn_co_mm_btl["Sum_"+key[2:]] = df_qn_co_mm_btl
+                Combined_qn_co_mm_btl["Combined_"+key[2:]] = df_qn_co_mm_btl
                 
                 new_qn_co_mm_btl_check[key[2:]] = df_qn_co_mm_btl
 
@@ -135,17 +138,17 @@ def driver_part2(input_dir_path, output_dir_path):
                 start_row = 10
                 end_row = 10 + alldata['Number_of_Students']
                 start_col = 1
-                end_col = 2 + qnum
+                end_col = 2 + numques
 
                 # Extract student marks
                 data_rows = []
                 for row in comp_ws.iter_rows(min_row=start_row, max_row=end_row, min_col=start_col, max_col=end_col):
                     data_rows.append([cell.value for cell in row])
                 df_student_marks = pd.DataFrame(data_rows[1:], columns=data_rows[0])
-                if "Sum_"+key[2:] in sum_studentmarks:
-                    sum_studentmarks["Sum_"+key[2:]] = pd.concat([sum_studentmarks["Sum_"+key[2:]], df_student_marks], axis=0)
+                if "Combined_"+key[2:] in Combined_studentmarks:
+                    Combined_studentmarks["Combined_"+key[2:]] = pd.concat([Combined_studentmarks["Combined_"+key[2:]], df_student_marks], axis=0)
                 else:
-                    sum_studentmarks["Sum_"+key[2:]] = df_student_marks
+                    Combined_studentmarks["Combined_"+key[2:]] = df_student_marks
                  
             #Check if QN-CO-MM-BTL is same as previous file
             if prev_qn_co_mm_btl_check:
@@ -155,20 +158,8 @@ def driver_part2(input_dir_path, output_dir_path):
                         return Warnings
             prev_qn_co_mm_btl_check = new_qn_co_mm_btl_check
 
-            #get values from wsread_input_details from cell E{2+number_of_COs+4+1} to E{2+number_of_COs+4+1+number_of_COs} and concat it to sum_indirect_assessment
-
-            start_row = 2 + data["Number_of_COs"] + 4 + 1
-            end_row = 2 + data["Number_of_COs"] + 4 + data["Number_of_COs"]
-            cell_range = f'E{start_row}:E{end_row}'
-
-            values = []
-            for row in wsread_input_details[cell_range]:
-                for cell in row:
-                    values.append(cell.value)
-
-            indirect_assessment=pd.DataFrame(values, columns=[f"{data['Section']}"])
-            sum_indirect_assessment = pd.concat([sum_indirect_assessment, indirect_assessment], axis=1)
-
+            
+            #=================CO-PO Table=================
             start_row = 3
             end_row = 3 + data["Number_of_COs"] - 1
             start_col = 5
@@ -187,7 +178,7 @@ def driver_part2(input_dir_path, output_dir_path):
             co_po_table=pd.DataFrame(values, columns=df_columns)
             #replace 0 with NaN
             co_po_table.replace(0, pd.NA, inplace=True)
-            sum_co_po_table = co_po_table
+            Combined_co_po_table = co_po_table
 
             new_co_po_table_check = co_po_table
             if prev_co_po_table_check is not None:
@@ -196,7 +187,20 @@ def driver_part2(input_dir_path, output_dir_path):
                     return Warnings
             prev_co_po_table_check = new_co_po_table_check
             
-                                                         
+            #=================Indirect Assessment=================
+            start_row = 2 + data["Number_of_COs"] + 4 + 1
+            end_row = 2 + data["Number_of_COs"] + 4 + data["Number_of_COs"]
+            cell_range = f'E{start_row}:E{end_row}'
+
+            values = []
+            for row in wsread_input_details[cell_range]:
+                for cell in row:
+                    values.append(cell.value)
+
+            indirect_assessment=pd.DataFrame(values, columns=[f"{data['Section']}"])
+            Combined_indirect_assessment = pd.concat([Combined_indirect_assessment, indirect_assessment], axis=1)
+
+            #=================Write to Combined Workbook=================
             wbwrite.create_sheet(f"{data['Section']}_Input_Details")
             wswrite = wbwrite[f"{data['Section']}_Input_Details"]
             wswrite = input_detail(data,Component_Details,wswrite)
@@ -211,7 +215,7 @@ def driver_part2(input_dir_path, output_dir_path):
                 wswrite = qn_co_mm_btl(data, key, Component_Details[key], wswrite)
                 wswrite = studentmarks(data, key, Component_Details[key], wswrite)
 
-                wswrite = cummulative_co_mm_btl(data, key, Component_Details[key], wswrite)   
+                wswrite = cummulative_qn_co_mm_btl(data, key, Component_Details[key], wswrite)   
                 wswrite = cummulative_studentmarks(data, key, Component_Details[key], wswrite)
 
             wbwrite.create_sheet(f"{data['Section']}_Internal_Components")
@@ -224,7 +228,7 @@ def driver_part2(input_dir_path, output_dir_path):
 
             wbwrite.create_sheet(f"{data['Section']}_Course_level_Attainment")
             wswrite = wbwrite[f"{data['Section']}_Course_level_Attainment"]
-            wswrite=write_course_level_attainment(data, Component_Details, wswrite)
+            wswrite=write_course_attainment(data, Component_Details, wswrite)
 
             wbwrite.create_sheet(f"{data['Section']}_Printout")
             wswrite = wbwrite[f"{data['Section']}_Printout"]
@@ -264,11 +268,11 @@ def driver_part2(input_dir_path, output_dir_path):
 
     print(total_students)
     print(sum_data_all)
-    print(sum_Component_Details)
-    print(sum_indirect_assessment)
-    print(sum_co_po_table)
-    print(sum_qn_co_mm_btl)
-    print(sum_studentmarks)
+    print(Combined_Component_Details)
+    print(Combined_indirect_assessment)
+    print(Combined_co_po_table)
+    print(Combined_qn_co_mm_btl)
+    print(Combined_studentmarks)
 
     wbwrite.create_sheet(f"{sum_data['Section']}_Input_Details")
     wswrite = wbwrite[f"{sum_data['Section']}_Input_Details"]
@@ -279,11 +283,11 @@ def driver_part2(input_dir_path, output_dir_path):
 
     
             
-    #add a column which is average of all the columns in sum_indirect_assessment
-    sum_indirect_assessment['Avg'] = sum_indirect_assessment.mean(axis=1)
-    for i in range(len(sum_indirect_assessment)):
-        wswrite[f'E{2+sum_data['Number_of_COs']+4+1+i}'] = sum_indirect_assessment['Avg'][i]
-    wswrite = input_detail(sum_data,sum_Component_Details,wswrite)
+    #add a column which is average of all the columns in Combined_indirect_assessment
+    Combined_indirect_assessment['Avg'] = Combined_indirect_assessment.mean(axis=1)
+    for i in range(len(Combined_indirect_assessment)):
+        wswrite[f'E{2+sum_data['Number_of_COs']+4+1+i}'] = Combined_indirect_assessment['Avg'][i]
+    wswrite = input_detail(sum_data,Combined_Component_Details,wswrite)
     
     
 
@@ -294,13 +298,13 @@ def driver_part2(input_dir_path, output_dir_path):
     end_row = 3 + data["Number_of_COs"] - 1
     start_col = 5
     end_col=21
-    #paste the content of sum_co_po_table to given range in the sheet
+    #paste the content of Combined_co_po_table to given range in the sheet
     row=0
     col=0
     for r in range(start_row, end_row+1):
         col=0
         for c in range(start_col, end_col+1):
-            wswrite.cell(row=r, column=c, value=sum_co_po_table.iloc[row,col])
+            wswrite.cell(row=r, column=c, value=Combined_co_po_table.iloc[row,col])
             col+=1
         row+=1
 
@@ -309,63 +313,63 @@ def driver_part2(input_dir_path, output_dir_path):
 
 
 
-    for key in sum_Component_Details.keys():
+    for key in Combined_Component_Details.keys():
         #replace first letter with combined
         wbwrite.create_sheet(key)
         wswrite = wbwrite[key]
         wswrite.title = key
-        wswrite = qn_co_mm_btl(sum_data, key, sum_Component_Details[key], wswrite)
-        #paste the content of sum_qn_co_mm_btl to given range in the sheet
+        wswrite = qn_co_mm_btl(sum_data, key, Combined_Component_Details[key], wswrite)
+        #paste the content of Combined_qn_co_mm_btl to given range in the sheet
         start_row = 3
         end_row = 7
         start_col = 3
-        end_col = 3 + sum_Component_Details[key] - 1
+        end_col = 3 + Combined_Component_Details[key] - 1
         row=0
         col=0
         try:
             for r in range(start_row, end_row+1):
                 col=0
                 for c in range(start_col, end_col+1):
-                    wswrite.cell(row=r, column=c, value=sum_qn_co_mm_btl[key].iloc[row,col])
+                    wswrite.cell(row=r, column=c, value=Combined_qn_co_mm_btl[key].iloc[row,col])
                     col+=1
                 row+=1
         except:
             pass
 
-        wswrite = studentmarks(sum_data, key, sum_Component_Details[key], wswrite)
+        wswrite = studentmarks(sum_data, key, Combined_Component_Details[key], wswrite)
         start_row = 11
         end_row = 10 + sum_data['Number_of_Students']
         start_col = 1
-        end_col = 2 + sum_Component_Details[key]
+        end_col = 2 + Combined_Component_Details[key]
         row=0
         col=0
         try:
             for r in range(start_row, end_row+1):
                 col=0
                 for c in range(start_col, end_col+1):
-                    wswrite.cell(row=r, column=c, value=sum_studentmarks[key].iloc[row,col])
+                    wswrite.cell(row=r, column=c, value=Combined_studentmarks[key].iloc[row,col])
                     col+=1
                 row+=1
         except:
             pass
 
-        wswrite = cummulative_co_mm_btl(sum_data, key, sum_Component_Details[key], wswrite)
-        wswrite = cummulative_studentmarks(sum_data, key, sum_Component_Details[key], wswrite)
+        wswrite = cummulative_co_mm_btl(sum_data, key, Combined_Component_Details[key], wswrite)
+        wswrite = cummulative_studentmarks(sum_data, key, Combined_Component_Details[key], wswrite)
 
   
     
 
     wbwrite.create_sheet("Sum_Internal_Components")
     wswrite = wbwrite["Sum_Internal_Components"]
-    wswrite = Component_calculation(sum_data,sum_Component_Details,wswrite,"I")
+    wswrite = Component_calculation(sum_data,Combined_Component_Details,wswrite,"I")
 
     wbwrite.create_sheet("Sum_External_Components")
     wswrite = wbwrite["Sum_External_Components"]
-    wswrite = Component_calculation(sum_data,sum_Component_Details,wswrite,"E")
+    wswrite = Component_calculation(sum_data,Combined_Component_Details,wswrite,"E")
 
     wbwrite.create_sheet("Sum_Course_level_Attainment")
     wswrite = wbwrite["Sum_Course_level_Attainment"]
-    wswrite=write_course_level_attainment(sum_data, sum_Component_Details, wswrite)
+    wswrite=write_course_level_attainment(sum_data, Combined_Component_Details, wswrite)
 
     wbwrite.create_sheet("Sum_Printout")
     wswrite = wbwrite["Sum_Printout"]

@@ -16,7 +16,11 @@ def qn_co_mm_btl(data,key,value,aw):  #function to create qn_co_mm_btl table
     Returns:
     openpyxl.worksheet.worksheet.Worksheet: Worksheet object
     """
-
+    for row in aw.iter_rows():
+            for cell in row:
+                cell.protection = Protection(locked=True)
+    aw.protection.sheet = True
+        
     aw.merge_cells(f'B1:{get_column_letter(value+2)}1')
     aw[f'B1']=key
     cellstyle_range(aw[f'B1:{get_column_letter(value+2)}1'], bold=True, alignment=True, border=True, fill="ffe74e")

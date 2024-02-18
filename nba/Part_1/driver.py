@@ -22,11 +22,6 @@ def driver_part1(data, Component_Details, file_path):
     
     wb.create_sheet(f"{data['Section']}_Input_Details")
     ws = wb[f"{data['Section']}_Input_Details"]
-    for row in ws.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-    ws.protection.sheet = True
-
     ws = input_detail(data,Component_Details,ws,conditional=True)
     ws = indirect_co_assessment(data,ws,conditional=True)
     adjust_width(ws)
@@ -37,11 +32,6 @@ def driver_part1(data, Component_Details, file_path):
         wb.create_sheet(key)
         ws = wb[key]
         ws.title = key
-
-        for row in ws.iter_rows():
-            for cell in row:
-                cell.protection = Protection(locked=True)
-        ws.protection.sheet = True
 
         ws = qn_co_mm_btl(data, key, Component_Details[key], ws)
         ws = studentmarks(data, key, Component_Details[key], ws)
@@ -55,10 +45,6 @@ def driver_part1(data, Component_Details, file_path):
     
     wb.create_sheet(f"{data['Section']}_Internal_Components")
     ws = wb[f"{data['Section']}_Internal_Components"]
-    for row in ws.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-    ws.protection.sheet = True
     if internal_components_number==0:
         ws.merge_cells('A1:M1')
         cellstyle_range(ws['A1:M1'], bold=True, alignment=True, border=True, fill="ffe74e", size=18)
@@ -72,10 +58,6 @@ def driver_part1(data, Component_Details, file_path):
 
     wb.create_sheet(f"{data['Section']}_External_Components")
     ws = wb[f"{data['Section']}_External_Components"]
-    for row in ws.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-    ws.protection.sheet = True
     if external_components_number==0:
         ws.merge_cells('A1:M1')
         cellstyle_range(ws['A1:M1'], bold=True, alignment=True, border=True, fill="ffe74e", size=18)
@@ -89,18 +71,10 @@ def driver_part1(data, Component_Details, file_path):
 
     wb.create_sheet(f"{data['Section']}_Course_Attainment")
     ws = wb[f"{data['Section']}_Course_Attainment"]
-    for row in ws.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-    ws.protection.sheet = True
     ws=write_course_attainment(data, Component_Details, ws)
 
     wb.create_sheet(f"{data['Section']}_Printout")
     ws = wb[f"{data['Section']}_Printout"]
-    for row in ws.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-    ws.protection.sheet = True
     ws=printout(ws,data,2)
 
     #save workbook

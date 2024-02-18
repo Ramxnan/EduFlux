@@ -1,10 +1,15 @@
 import pandas as pd
-from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+from openpyxl.styles import Alignment, PatternFill, Protection
 from openpyxl.utils import get_column_letter
 from .Input_Details import input_detail, indirect_co_assessment, CO_PO_Table
 from .utils import cellstyle, cellstyle_range, adjust_width
 
 def write_course_attainment(data,Component_Details,aw):
+    for row in aw.iter_rows():
+        for cell in row:
+            cell.protection = Protection(locked=True)
+    aw.protection.sheet = True
+
     #============================================================================================================
     aw=input_detail(data,Component_Details,aw,copy=True)
     adjust_width(aw)

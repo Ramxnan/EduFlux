@@ -8,6 +8,10 @@ from openpyxl.styles import Protection
 
 
 def input_detail(data,Component_Details,aw,conditional=False, copy=False):
+    for row in aw.iter_rows():
+        for cell in row:
+            cell.protection = Protection(locked=True)
+    aw.protection.sheet = True
     """ Function to input details
 
     Args:
@@ -100,11 +104,6 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
 
         #unlock the cells
         purple_fill = PatternFill(start_color="7b83eb", end_color="7b83eb", fill_type="solid")
-        for row in aw.iter_rows(min_row=2, max_row=9, min_col=2, max_col=2):
-            for cell in row:
-                cell.protection = Protection(locked=False)
-                #cell.fill = purple_fill
-
         for row in aw.iter_rows(min_row=14, max_row=19, min_col=2, max_col=2):
             for cell in row:
                 if cell.row != 16 and cell.row != 18:

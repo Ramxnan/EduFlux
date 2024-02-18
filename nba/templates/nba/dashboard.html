@@ -119,7 +119,7 @@
             backdrop-filter: blur(8px); /* Apply a blur effect to the background */
             -webkit-backdrop-filter: blur(8px); /* For Safari */
         }
-        #TemplateLeft, #BranchLeft , #BatchLeft, #TemplateRight, #BranchRight, #BatchRight {
+        #TemplateLeft, #BranchLeft , #BatchLeft, #TemplateRight, #BranchRight, #BatchRight, #TemplateHeader, #BranchHeader, #BatchHeader {
             display: none;
         }
         .custom-submit-btn {
@@ -216,6 +216,13 @@
             color: #000000;
         }
 
+        .header {
+            background-color: #b1096b;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
 
 
 
@@ -241,7 +248,7 @@
     </nav>
     
     <div class="container mt-5">
-        <h1 class="text-center" style="color: rgb(0, 0, 0)">Amrita Course Accreditation System</h1>
+        <h1 id='start' class="text-center" style="color: rgb(0, 0, 0)">Amrita Course Accreditation System</h1>
         <div class="row justify-content-center">
    
                     <div class="col-md-3 text-center">
@@ -259,6 +266,24 @@
         
         <div class="container">
             <div class="row justify-content-center">
+                <div id="TemplateHeader" class="header text-center">
+                    <div class="col-md-12 text-center" style="background-color: #b1096b; color: #ffffff; padding: 10px;">
+                        <h2>Template Generation</h2>
+                    </div>
+                </div>
+                <div id="BranchHeader" class="header text-center">
+                    <div class="col-md-12 text-center" style="background-color: #b1096b; color: #ffffff; padding: 10px;">
+                        <h2>Branch Calcualtion</h2>
+                    </div>
+                </div>
+                <div id="BatchHeader" class="header text-center">
+                    <div class="col-md-12 text-center" style="background-color: #b1096b; color: #ffffff; padding: 10px;">
+                        <h2>Batch Calculation</h2>
+                    </div>
+                </div>
+
+
+
                 {% if messages %}
                         {% for message in messages %}
                             <!-- Check the message tag and apply the corresponding Bootstrap class -->
@@ -273,10 +298,13 @@
                             </div>
                         {% endfor %}
                     {% endif %}
-
+                
+                    
                 <!-- Left Column: Forms -->
                 <div class="col-md-6">
                     <form id="TemplateLeft" name="TemplateLeft" method="POST" action="{% url 'submit' %}">
+                        <br><br><br>
+
                         <div class="form-group">
                             <label for="teacher">Teacher</label>
                             <input type="text" id="teacher" name="teacher" placeholder="Teacher" required class="form-control">
@@ -360,9 +388,23 @@
 
                     <!-- upload multiple files for BranchLeft-->
                     <form id="BranchLeft" name="BranchLeft" method="POST" action="{% url 'upload_multiple_files_branch' %}" enctype="multipart/form-data">
+                        <br><br><br>
+
                         <div class="form-group">
-                            <label for="ExcelFiles">Upload Atleast 2 Sections Excel File For Merging</label>
-                            <input type="file" name="ExcelFiles" id="ExcelFiles" multiple required class="form-control" accept=".xlsx">
+                            <label for="BranchExcelFiles">Upload Atleast 2 Sections Excel File For Merging</label>
+                            <input type="file" name="BranchExcelFiles" id="BranchExcelFiles" multiple required class="form-control" accept=".xlsx">
+                        </div>
+    
+                        <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Upload</button>
+                    </form>
+
+                    <!-- upload multiple files for BatchLeft-->
+                    <form id="BatchLeft" name="BatchLeft" method="POST" action="{% url 'upload_multiple_files_batch' %}" enctype="multipart/form-data">
+                        <br><br><br>
+
+                        <div class="form-group">
+                            <label for="BatchExcelFiles">Upload Atleast 2 Sections Excel File For Batch Calculation</label>
+                            <input type="file" name="BatchExcelFiles" id="BatchExcelFiles" multiple required class="form-control" accept=".xlsx">
                         </div>
     
                         <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Upload</button>
@@ -379,6 +421,7 @@
                 <!-- Right Column: Files -->
                 <div class="col-md-6" name="files" >
                     <div id="TemplateRight" style="display: none">
+                        <br><br><br>
                         <h3>Generated Templates:</h3>
                         {% for file_name, timestamp in Generated_Templates.items %}
                             <div class="file-entry mb-2">
@@ -402,7 +445,9 @@
                     </div>
 
                     <div id="BranchRight" style="display: none">
-                        <h3>Calculated Files</h3>
+                        <br><br><br>
+
+                        <h3>Combined Files</h3>
                         {% for folder_name, data in Branch_Calculation.items %}
                             <div class="folder-entry mb-2">
                                 <div class="d-flex justify-content-between align-items-center toggle-files" data-target="files{{ forloop.counter }}">
@@ -436,7 +481,45 @@
                             <p>No calculated files found.</p>
                         {% endfor %}
                     </div>
+
+
+                    <div id="BatchRight" style="display: none">
+                        <br><br><br>
+
+                        <h3>Combined Batch Files</h3>
+                        {% for folder_name, data in Batch_Calculation.items %}
+                            <div class="folder-entry mb-2">
+                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="files{{ forloop.counter }}">
+                                    <!-- Display Folder Name -->
+                                    <span class="foldername">
+                                            {{ folder_name|split_folder_name }}
+                                    </span>
                     
+                                    <!-- Timestamp -->
+                                    <small class="folder-timestamp">{{ data.1 }}</small>
+                                    
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="{% url 'delete_folder_batch' folder_name %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                    
+                                <!-- Hidden Files List -->
+                                <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
+                                    {% for file in data.0 %}
+                                        &ensp;&ensp; <i class="bi bi-arrow-return-right"></i><a href="{% url 'download_file_batch' folder_name file %}">{{ file|split_file_name }}</a><br>
+                                    {% endfor %}
+                                    <br>
+                                    <a href="{% url 'download_folder_batch' folder_name %}" class="btn btn-success">
+                                        Download Folder
+                                    </a>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No calculated files found.</p>
+                        {% endfor %}
+                    </div>
 
                 </div>
                         
@@ -476,31 +559,89 @@
         const showSection = urlParams.get('show');
 
         if (showSection === 'branch') {
+            document.getElementById("TemplateHeader").style.display = "none";
             document.getElementById("TemplateLeft").style.display = "none";
             document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "block";
             document.getElementById("BranchLeft").style.display = "block";
             document.getElementById("BranchRight").style.display = "block";
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
         } else if (showSection === 'template') {
+            document.getElementById("TemplateHeader").style.display = "block";
             document.getElementById("TemplateLeft").style.display = "block";
             document.getElementById("TemplateRight").style.display = "block";
+
+            document.getElementById("BranchHeader").style.display = "none";
             document.getElementById("BranchLeft").style.display = "none";
             document.getElementById("BranchRight").style.display = "none";
-        }
-        // Add more conditions as needed for other buttons/sections
-    });
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
+            
+        } else if (showSection === 'batch') {
+            document.getElementById("TemplateHeader").style.display = "none";
+            document.getElementById("TemplateLeft").style.display = "none";
+            document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "none";
+            document.getElementById("BranchLeft").style.display = "none";
+            document.getElementById("BranchRight").style.display = "none";
+
+            document.getElementById("BatchHeader").style.display = "block";
+            document.getElementById("BatchLeft").style.display = "block";
+            document.getElementById("BatchRight").style.display = "block";
+        }});
+            
+
         document.getElementById("TemplateBtn").onclick = function() {
+            document.getElementById("TemplateHeader").style.display = "block";
             document.getElementById("TemplateLeft").style.display = "block";
             document.getElementById("TemplateRight").style.display = "block";
+
+            document.getElementById("BranchHeader").style.display = "none";
             document.getElementById("BranchLeft").style.display = "none";
             document.getElementById("BranchRight").style.display = "none";
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
+
         }
 
         document.getElementById("BranchBtn").onclick = function() {
+            document.getElementById("TemplateHeader").style.display = "none";
             document.getElementById("TemplateLeft").style.display = "none";
             document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "block";
             document.getElementById("BranchLeft").style.display = "block";
             document.getElementById("BranchRight").style.display = "block";
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
         }
+
+        document.getElementById("BatchBtn").onclick = function() {
+            document.getElementById("TemplateHeader").style.display = "none";
+            document.getElementById("TemplateLeft").style.display = "none";
+            document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "none";
+            document.getElementById("BranchLeft").style.display = "none";
+            document.getElementById("BranchRight").style.display = "none";
+
+            document.getElementById("BatchHeader").style.display = "block";
+            document.getElementById("BatchLeft").style.display = "block";
+            document.getElementById("BatchRight").style.display = "block";
+        }
+
+
 
     
         $(document).ready(function(){
@@ -541,71 +682,60 @@
             $("#numberOfComponents").change(updateComponentContainer);
             });
 
-    
-            $("#TemplateLeft").on("submit", function(event) {
-                // Prevent default form submission
-                event.preventDefault();
 
-                var form = $(this);
-                if (form[0].checkValidity() === false) {
-                    event.stopPropagation();
-                } else {
-                    // Perform custom validation for components
-                    if (validateComponents()) {
-                        form.addClass('was-validated');
-                        // Submit the form if validation is successful
-                        form.off('submit').submit();
-                    } else {
-                        alert("Please ensure there is at least one internal and one external component.");
-                    }
-                }
-            });
-            // Function to validate components
-            function validateComponents() {
-                var numComponents = $("#numberOfComponents").val();
-                var hasInternal = false;
-                var hasExternal = false;
-
-                for(var i = 1; i <= numComponents; i++) {
-                    var componentType = $('select[name="componentType' + i + '"]').val();
-                    if (componentType === "Internal") {
-                        hasInternal = true;
-                    } else if (componentType === "External") {
-                        hasExternal = true;
-                    }
-                }
-
-                return hasInternal && hasExternal;
-            }
+            
         });
     
 
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const form = document.getElementById("BranchLeft");
-            const fileInput = document.getElementById("ExcelFiles");
-            const submitButton = form.querySelector('button[type="submit"]');
-        
-            form.onsubmit = function(e) {
-                if (fileInput.files.length < 2) {
+            const branchform = document.getElementById("BranchLeft");
+            const batchForm = document.getElementById("BatchLeft");
+            // Ensure unique IDs for each input to correctly reference them
+            const branchfileInput = document.getElementById("BranchExcelFiles"); // Updated ID for branch file input
+            const batchfileInput = document.getElementById("BatchExcelFiles"); // Updated ID for batch file input
+            const branchSubmitButton = branchform.querySelector('button[type="submit"]');
+            const batchSubmitButton = batchForm.querySelector('button[type="submit"]');
+
+            branchform.onsubmit = function(e) {
+                if (branchfileInput.files.length < 2) {
+                    e.preventDefault(); // Prevent branchform submission
+                    alert("You must select at least 2 files."); // Alert or better to use a more user-friendly message display
+                    // Optionally, disable the submit button until the condition is met
+                    branchSubmitButton.disabled = true;
+                }
+            };
+
+            batchForm.onsubmit = function(e) {
+                if (batchfileInput.files.length < 2) {
                     e.preventDefault(); // Prevent form submission
                     alert("You must select at least 2 files."); // Alert or better to use a more user-friendly message display
                     // Optionally, disable the submit button until the condition is met
-                    submitButton.disabled = true;
+                    batchSubmitButton.disabled = true;
                 }
             };
-        
-            fileInput.onchange = function() {
+
+            branchfileInput.onchange = function() {
                 // Re-enable the submit button if the condition is now met
-                if (fileInput.files.length >= 2) {
-                    submitButton.disabled = false;
+                if (branchfileInput.files.length >= 2) {
+                    branchSubmitButton.disabled = false;
                 } else {
-                    submitButton.disabled = true;
+                    branchSubmitButton.disabled = true;
                 }
-            };
+            }; // Added missing semicolon here
+
+            batchfileInput.onchange = function() {
+                // Re-enable the submit button if the condition is now met
+                if (batchfileInput.files.length >= 2) {
+                    batchSubmitButton.disabled = false;
+                } else {
+                    batchSubmitButton.disabled = true;
+                }
+            }; // Added missing semicolon here
         });
-        </script>
+
+    </script>
         
     
     

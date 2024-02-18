@@ -25,7 +25,7 @@ from django.urls import reverse
 
 from .Part_1.driver import driver_part1
 from .Part_2.driver import driver_part2
-#from .Part_3.driver import driver_part3
+from .Part_3.driver import driver_part3
 
 def homepage(request):
     return render(request, 'nba/index.html')
@@ -99,7 +99,7 @@ def dashboard(request):
     file_time_stamp = [datetime.fromtimestamp(i).strftime("%d-%m-%Y %H:%M") for i in file_time_stamp]
     Generated_Templates = dict(zip(Generated_Templates, file_time_stamp))
     # End of Template Generation
-
+    #=======================================================================================================
     #Branch Calculation
     Branch_Calculation_dir = os.path.join(user_directory, 'Branch_Calculation')
     Branch_Calculation = os.listdir(Branch_Calculation_dir)
@@ -114,10 +114,26 @@ def dashboard(request):
     Branch_Calculation = dict(zip(Branch_Calculation, zip(files,file_time_stamp)))
 
     # End of Branch Calculation
+    #=======================================================================================================
+    #Batch Calculation
+    Batch_Calculation_dir = os.path.join(user_directory, 'Batch_Calculation')
+    Batch_Calculation = os.listdir(Batch_Calculation_dir)
+    file_time_stamp = []
+    files=[]
+    for folder in Batch_Calculation:
+        file_time_stamp.append(os.path.getmtime(os.path.join(Batch_Calculation_dir, folder)))
+        files.append(os.listdir(os.path.join(Batch_Calculation_dir, folder)))
+    file_time_stamp = [datetime.fromtimestamp(i).strftime("%d-%m-%Y %H:%M") for i in file_time_stamp]
+
+    #dictionary as {folder_name: [[file_name,file_name],file_time_stamp]}
+    Batch_Calculation = dict(zip(Batch_Calculation, zip(files,file_time_stamp)))
+            
+    # End of Batch Calculation
 
 
     return render(request, 'nba/dashboard.html', {'Generated_Templates': Generated_Templates, 
-                                                  'Branch_Calculation': Branch_Calculation})
+                                                  'Branch_Calculation': Branch_Calculation,
+                                                    'Batch_Calculation': Batch_Calculation})
 
 def logout(request):
     auth.logout(request)
@@ -179,6 +195,7 @@ def submit(request):
     # If the request method is not POST, handle accordingly (redirect to a form, etc.)
     return redirect('/dashboard/?show=template')
 
+#=======================================================================================================
 def download_file_generated(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
@@ -199,7 +216,7 @@ def download_file_generated(request, file_name):
     # If the file does not exist
     raise Http404("File not found")
 
-
+#=======================================================================================================
 def delete_file_generated(request, file_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
@@ -221,7 +238,7 @@ def delete_file_generated(request, file_name):
 @csrf_exempt
 def upload_multiple_files_branch(request):
     if request.method == 'POST':
-        uploaded_files = request.FILES.getlist('ExcelFiles')
+        uploaded_files = request.FILES.getlist('BranchExcelFiles')
         num_files = len(uploaded_files)
         display_name = request.user.username.split('@')[0]
         user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
@@ -237,7 +254,7 @@ def upload_multiple_files_branch(request):
             fs.save(uploaded_file.name, uploaded_file)
         message = driver_part2(unique_folder_path, unique_folder_path)
         message=message[0]
-        if "Files successfully merged" in message:
+        if "success" in message:
             messages.success(request, message)
         else:
             messages.error(request, message)
@@ -250,48 +267,8 @@ def upload_multiple_files_branch(request):
         # If it's not a POST request, handle accordingly
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
-#=======================================================================================================
-#=======================================================================================================
-#============================Template Generation========================================================
-def download_file_generated(request, file_name):
-    # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
-    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
-    # Check which folder contains the file
-    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
-        file_path = os.path.join(Generated_Templates_path, file_name)
-    else:
-        raise Http404("File not found")
-
-    # If the file exists, serve it
-    if os.path.exists(file_path):
-        with open(file_path, 'rb') as fh:
-            response = HttpResponse(fh.read(), content_type="application/octet-stream")
-            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
-            return response
-
-    # If the file does not exist
-    raise Http404("File not found")
-
-
-def delete_file_generated(request, file_name):
-    # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
-    Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
-
-    # Check which folder contains the file
-    if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
-        file_path = os.path.join(Generated_Templates_path, file_name)
-
-    # If the file exists, delete it
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        return redirect('/dashboard/?show=template')
 
 #=======================================================================================================
-#=======================================================================================================
-#============================Branch Calculation========================================================
-
 def download_file_branch(request, file_name, folder_name):
     # Paths to the different folders
     display_name = request.user.username.split('@')[0]
@@ -311,7 +288,7 @@ def download_file_branch(request, file_name, folder_name):
 
     # If the file does not exist
     raise Http404("File not found")
-
+#=======================================================================================================
 def download_folder_branch(request, folder_name):
     display_name = request.user.username.split('@')[0]
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation', folder_name)
@@ -332,7 +309,7 @@ def download_folder_branch(request, folder_name):
     return response
 
 
-
+#=======================================================================================================
 def delete_folder_branch(request, folder_name):
     display_name = request.user.username.split('@')[0]
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation')
@@ -353,32 +330,93 @@ def delete_folder_branch(request, folder_name):
 #=======================================================================================================
 #============================Batch Calculation========================================================
 
-
-
-
-
-# @csrf_exempt   
-# def upload_multiple_files_po(request):
-#     if request.method == 'POST':
-#         uploaded_files = request.FILES.getlist('files')
-#         PO_uploaded = os.path.join(settings.MEDIA_ROOT, 'storage', request.user.username, 'POCalculations')
-#         fs = FileSystemStorage(location=PO_uploaded)
-#         for uploaded_file in uploaded_files:
-#             fs.save(uploaded_file.name, uploaded_file)
-#         po_calc_file_name=driver_part3(PO_uploaded, PO_uploaded)
-#         po_calc_file_path = os.path.join(PO_uploaded, po_calc_file_name)
-#         if os.path.exists(po_calc_file_path):
-#             return FileResponse(open(po_calc_file_path, 'rb'), as_attachment=True, filename=po_calc_file_name)
+@csrf_exempt
+def upload_multiple_files_batch(request):
+    if request.method == 'POST':
+        uploaded_files = request.FILES.getlist('BatchExcelFiles')
+        num_files = len(uploaded_files)
+        display_name = request.user.username.split('@')[0]
+        user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
+        batch_directory = os.path.join(user_directory, 'Batch_Calculation')
         
+        unique_id = str(uuid.uuid4()).split('-')[0]
+        unique_folder_name = f"{num_files}Files_BatchCalculation_{unique_id}"
+        unique_folder_path = os.path.join(batch_directory, unique_folder_name)
+        os.makedirs(unique_folder_path, exist_ok=True)
+        fs = FileSystemStorage(location=unique_folder_path)
+        
+        for uploaded_file in uploaded_files:
+            fs.save(uploaded_file.name, uploaded_file)
+        message = driver_part3(unique_folder_path, unique_folder_path)
+        message=message[0]
+        if "success" in message:
+            messages.success(request, message)
+        else:
+            messages.error(request, message)
+            # Optionally, delete the folder
+            if os.path.exists(unique_folder_path):
+                shutil.rmtree(unique_folder_path)
 
-#         return redirect('dashboard')
+        return redirect('/dashboard/?show=batch')  # This assumes you want to redirect to a new request where the message will be displayed
+    else:
+        # If it's not a POST request, handle accordingly
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
-#         # You can redirect to a success page or do something else after processing files
-#         #return redirect('success_page')  # Redirect to a success page or dashboard
+#=======================================================================================================
+def download_file_batch(request, file_name, folder_name):
+    # Paths to the different folders
+    display_name = request.user.username.split('@')[0]
+    Batch_file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Batch_Calculation', folder_name)
+    # Check which folder contains the file
+    if os.path.isfile(os.path.join(Batch_file_path, file_name)):
+        file_path = os.path.join(Batch_file_path, file_name)
+    else:
+        raise Http404("File not found")
 
-#     else:
-#         # If it's not a POST request, redirect to dashboard or appropriate page
-#         return redirect('dashboard')
+    # If the file exists, serve it
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/octet-stream")
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+
+    # If the file does not exist
+    raise Http404("File not found")
+
+#=======================================================================================================
+def download_folder_batch(request, folder_name):
+    display_name = request.user.username.split('@')[0]
+    batch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Batch_Calculation', folder_name)
+
+    # Create a ZIP file in memory
+    response = HttpResponse(content_type='application/zip')
+    zip_filename = f"{folder_name}.zip"
+    response['Content-Disposition'] = f'attachment; filename={zip_filename}'
+
+    with zipfile.ZipFile(response, 'w') as zip_file:
+        for foldername, subfolders, filenames in os.walk(batch_calculation_path):
+            for filename in filenames:
+                # Create complete filepath of file in directory
+                file_path = os.path.join(foldername, filename)
+                # Add file to zip
+                zip_file.write(file_path, os.path.relpath(file_path, batch_calculation_path))
+
+    return response
+#=======================================================================================================
+def delete_folder_batch(request, folder_name):
+    display_name = request.user.username.split('@')[0]
+    branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Batch_Calculation')
+
+    # Check if the directory exists
+    if os.path.isdir(os.path.join(branch_calculation_path, folder_name)):
+        branch_calculation_path = os.path.join(branch_calculation_path, folder_name)
+
+    # Delete the folder and all its contents
+    if os.path.exists(branch_calculation_path):
+        shutil.rmtree(branch_calculation_path)
+
+    # Redirect to the dashboard or appropriate page
+    return redirect('/dashboard/?show=batch')
 
 
 

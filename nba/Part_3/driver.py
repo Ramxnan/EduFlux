@@ -13,6 +13,15 @@ from Part_1.utils import cellstyle_range, cellstyle
 
 
 def driver_part3(input_dir_path, output_dir_path):
+    warnings = []
+    #check if there are any files in the input directory
+    if not os.listdir(input_dir_path):
+        warnings.append("No files found in the input directory")
+        return warnings
+
+
+
+    
     wbwrite = Workbook()
     wbwrite.remove(wbwrite.active)
     wbwrite.create_sheet("Printouts",0)
@@ -31,6 +40,11 @@ def driver_part3(input_dir_path, output_dir_path):
             for ws in wbread.sheetnames:
                 if ws.endswith("Printout"):
                     ws_printout=ws
+
+            if ws_printout=="":
+                warnings.append(f"Printout sheet not found in {file}")
+                return warnings
+
             wsread_printout=wbread[ws_printout]
             Number_of_COs=wsread_printout["B11"].value
 
@@ -107,6 +121,14 @@ def driver_part3(input_dir_path, output_dir_path):
                     wsname_ID=ws
                 if ws.endswith("Course_Attainment"):
                     wsname_CA=ws
+
+            if wsname_ID=="":
+                warnings.append(f"Input_Details sheet not found in {file}")
+                return warnings
+            if wsname_CA=="":
+                warnings.append(f"Course_Attainment sheet not found in {file}")
+                return warnings
+            
 
 
             wsread_input_detials=wbread[wsname_ID]
@@ -288,13 +310,18 @@ def driver_part3(input_dir_path, output_dir_path):
     unique_code = str(uuid.uuid4()).split("-")[0]
     file_name = f"final_{unique_code}.xlsx"
     for ws in wbwrite.sheetnames:
+        ws = wbwrite[ws]
         ws.protection.sheet = True
         for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
             for cell in row:
                 cell.protection = Protection(locked=True)
 
     wbwrite.save(os.path.join(output_dir_path, file_name))
-    return file_name
+    #return file_name
+    if warnings:
+        return warnings
+    else:
+        return ['Batch processing completed successfully under file name: ' + file_name]
 
 if __name__ == "__main__":
     input_dir_path="C:\\Users\\raman\\OneDrive - Amrita vishwa vidyapeetham\\ASE\\Projects\\NBA\\NBA_v3\\dev_19.1\\flux\\nba\\Part_2"

@@ -11,3 +11,8 @@ def split_folder_name(value):
 def split_file_name(value):
     parts = value.rsplit('_', 1)
     return parts[0]+".xlsx" if parts else value
+
+@register.filter(name='split_user_name')
+def split_user_name(value):
+    parts = value.rsplit('@', 1)
+    return parts[0] if parts else value

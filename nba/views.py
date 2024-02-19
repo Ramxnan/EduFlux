@@ -174,7 +174,7 @@ def submit(request):
             component_value = request.POST.get(component_value_key)
             component_type = request.POST.get(component_type_key)
 
-            full_component_name = f"{component_name}-{component_type[0]}"
+            full_component_name = f"{component_name}-{component_type[0]}".upper()
             Component_Details[full_component_name] = int(component_value)
 
         print(Component_Details)

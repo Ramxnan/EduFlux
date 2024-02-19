@@ -35,18 +35,22 @@ def driver_part3(input_dir_path, output_dir_path):
     startrow=3
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("final"):
-            wbread=load_workbook(input_dir_path+"\\"+file, data_only=True) 
+            wbread=load_workbook(input_dir_path+"\\"+file, data_only=True)           
             ws_printout=""
             for ws in wbread.sheetnames:
-                if ws.endswith("Printout"):
+                if ws.endswith("Printout") and ws.startswith("Combined"):
                     ws_printout=ws
 
             if ws_printout=="":
                 warnings.append(f"Printout sheet not found in {file}")
                 return warnings
 
+
+
             wsread_printout=wbread[ws_printout]
             Number_of_COs=wsread_printout["B11"].value
+            #print('Worksheet name:', ws_printout)
+            #print('File name:', file)
 
             wswrite_printouts=printout(wswrite_printouts,{},startrow,numco=Number_of_COs,copy=True)
             
@@ -58,8 +62,10 @@ def driver_part3(input_dir_path, output_dir_path):
             for row in range(min_row, max_row+1):
                 for col in range(min_col, max_col+1):
                     try:
-                        wswrite_printouts.cell(row=startrow, column=col).value=wsread_printout.cell(row=row, column=col).value
+                        wswrite_printouts.cell(row=startrow-1, column=col).value=wsread_printout.cell(row=row, column=col).value
+                        #print("Row:", startrow-1, "Column:", col, "Value:", wsread_printout.cell(row=row, column=col).value)
                     except:
+                        #print(f"Error in {file} at row {row} and column {col}")
                         pass
                 startrow+=1
           

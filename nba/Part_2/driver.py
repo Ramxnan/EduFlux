@@ -210,8 +210,8 @@ def driver_part2(input_dir_path, output_dir_path):
                 wswrite = cummulative_qn_co_mm_btl(data, key, Component_Details[key], wswrite)   
                 wswrite = cummulative_studentmarks(data, key, Component_Details[key], wswrite)
 
-            internal_components_number = len([key for key in Component_Details.keys() if key.endswith("_I")])
-            external_components_number = len([key for key in Component_Details.keys() if key.endswith("_E")])
+            internal_components_number = len([key for key in Component_Details.keys() if key.endswith("I")])
+            external_components_number = len([key for key in Component_Details.keys() if key.endswith("E")])
 
             
             wbwrite.create_sheet(f"{data['Section']}_Internal_Components")
@@ -266,8 +266,9 @@ def driver_part2(input_dir_path, output_dir_path):
     
     Combined_data_all['Section'] = "Combined"
     Combined_data_all['Number_of_Students'] = total_students
-    Combined_data = {key: Combined_data_all[key] for key in Combined_data_all.keys() & {'Teacher', 'Academic_year', 'Batch', 'Branch', 'Subject_Name', 'Subject_Code', 'Section', 'Semester', 'Number_of_Students', 'Number_of_COs'}}
-
+    Combined_data = {key: Combined_data_all[key] for key in Combined_data_all.keys() & {'Teacher', 'Academic_year', 'Semester', 'Branch', 'Batch', 'Section', 'Subject_Code', 'Subject_Name', 'Number_of_Students', 'Number_of_COs','Default Threshold %','Internal %','Direct %','Target CO Attainment %'}}
+    #order it in the same order as the input details
+    Combined_data = {key: Combined_data_all[key] for key in ['Teacher', 'Academic_year', 'Semester','Branch','Batch','Section','Subject_Code' ,'Subject_Name', 'Number_of_Students', 'Number_of_COs']}
 
     # print(total_students)
     # print(Combined_data_all)
@@ -292,6 +293,7 @@ def driver_part2(input_dir_path, output_dir_path):
         formula = formula[:-1]
         formula+=")"
         wswrite[f'E{2+Combined_data['Number_of_COs']+4+1+numco}'] = formula
+        
     wswrite = input_detail(Combined_data,Combined_Component_Details,wswrite)
     
     
@@ -364,8 +366,8 @@ def driver_part2(input_dir_path, output_dir_path):
   
     
 
-    internal_components_number = len([key for key in Combined_Component_Details.keys() if key.endswith("_I")])
-    external_components_number = len([key for key in Combined_Component_Details.keys() if key.endswith("_E")])
+    internal_components_number = len([key for key in Combined_Component_Details.keys() if key.endswith("I")])
+    external_components_number = len([key for key in Combined_Component_Details.keys() if key.endswith("E")])
 
     
     wbwrite.create_sheet(f"{Combined_data['Section']}_Internal_Components")
@@ -404,11 +406,8 @@ def driver_part2(input_dir_path, output_dir_path):
 
     unique_id = str(uuid.uuid4()).split("-")[0]
     excel_file_name=f"Combined_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
-    for ws in wbwrite.worksheets:
-        ws.protection.sheet = True
-        for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
-            for cell in row:
-                cell.protection = Protection(locked=True)
+    
+        
 
     wbwrite.save(os.path.join(output_dir_path, excel_file_name))
     if Warnings:

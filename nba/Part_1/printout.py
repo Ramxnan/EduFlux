@@ -5,10 +5,7 @@ from openpyxl.styles import Protection
 from .Input_Details import input_detail
 
 def printout(aw, data,start_row,copy=False,numco=None):
-    for row in aw.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-    aw.protection.sheet = True
+
     #============================================================================================================
     if not copy:
         aw = input_detail(data, {}, aw, copy=True)
@@ -34,8 +31,6 @@ def printout(aw, data,start_row,copy=False,numco=None):
     cell_reference = f"{get_column_letter(column)}{row}"
     aw[cell_reference] = "Course Code"
     aw.merge_cells(start_row=row+3, end_row=row+3+numco-1, start_column=column,  end_column=column)
-    Subject_Code_cell_reference = f"{get_column_letter(column)}{row+3}"
-    cellstyle(aw[Subject_Code_cell_reference], text_rotation=90, fill="ffff00")
     
     aw.column_dimensions[f"{get_column_letter(column)}"].width = 8.43
     column+=1
@@ -48,8 +43,6 @@ def printout(aw, data,start_row,copy=False,numco=None):
     aw[cell_reference] = "Course Name"
      
     aw.merge_cells(start_row=row+3, end_row=row+3+numco-1, start_column=column,  end_column=column)
-    Subject_Name_cell_reference = f"{get_column_letter(column)}{row+3}"
-    cellstyle(aw[Subject_Name_cell_reference], text_rotation=90, fill="1ed760")
 
     aw.column_dimensions[f"{get_column_letter(column)}"].width = 8.43
     column+=1
@@ -238,4 +231,6 @@ def printout(aw, data,start_row,copy=False,numco=None):
 
     cellstyle_range(aw[f"D{start_row}:R{3+start_row+numco-1}"],border=True, bold=True, alignment=True, wrap_text=True)
     cellstyle_range(aw[f"G{start_row+2}:R{start_row+2}"],border=True, bold=True, alignment=True, wrap_text=True, fill="8db4e2")
+    cellstyle(aw[f"D{start_row+3}"],border=True, bold=True, alignment=True, wrap_text=True, text_rotation=90, fill="ffff00")
+    cellstyle(aw[f"E{start_row+3}"],border=True, bold=True, alignment=True, wrap_text=True, text_rotation=90, fill="1ed760")
     return aw

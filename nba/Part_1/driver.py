@@ -39,8 +39,8 @@ def driver_part1(data, Component_Details, file_path):
         ws = cummulative_qn_co_mm_btl(data, key, Component_Details[key], ws)   
         ws = cummulative_studentmarks(data, key, Component_Details[key], ws)
 
-    internal_components_number = len([key for key in Component_Details.keys() if key.endswith("_I")])
-    external_components_number = len([key for key in Component_Details.keys() if key.endswith("_E")])
+    internal_components_number = len([key for key in Component_Details.keys() if key.endswith("I")])
+    external_components_number = len([key for key in Component_Details.keys() if key.endswith("E")])
 
     
     wb.create_sheet(f"{data['Section']}_Internal_Components")

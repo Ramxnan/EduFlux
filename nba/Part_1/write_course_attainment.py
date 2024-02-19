@@ -159,8 +159,8 @@ def write_course_attainment(data,Component_Details,aw):
             else:
                 cellstyle(aw.cell(row=start, column=k), fill="dce6f1")
     
-        internal_components_number = len([key for key in Component_Details.keys() if key.endswith("_I")])
-        external_components_number = len([key for key in Component_Details.keys() if key.endswith("_E")])
+        internal_components_number = len([key for key in Component_Details.keys() if key.endswith("I")])
+        external_components_number = len([key for key in Component_Details.keys() if key.endswith("E")])
         col=(data["Number_of_COs"]*external_components_number) + (1*external_components_number) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
         aw.cell(row=start, column=start_col_ca+3).value=f'={data["Section"]}_External_Components!{get_column_letter(col)}{row}'

@@ -358,7 +358,7 @@
                                 <option value="D">D</option>
                                 <option value="E">E</option>
                                 <option value="F">F</option>
-                                <option value="Sum">Sum</option>                            </select>
+                                <option value="Combined">Combined</option>                            </select>
                         </div>
                         <div class="form-group">
                             <label for="subjectCode">Subject Code</label>
@@ -446,11 +446,10 @@
 
                     <div id="BranchRight" style="display: none">
                         <br><br><br>
-
                         <h3>Combined Files</h3>
                         {% for folder_name, data in Branch_Calculation.items %}
                             <div class="folder-entry mb-2">
-                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="files{{ forloop.counter }}">
+                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="filesbranch{{ forloop.counter }}">
                                     <!-- Display Folder Name -->
                                     <span class="foldername">
                                             {{ folder_name|split_folder_name }}
@@ -467,7 +466,7 @@
                                 </div>
                     
                                 <!-- Hidden Files List -->
-                                <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
+                                <div id="filesbranch{{ forloop.counter }}" class="files-list" style="display: none;">
                                     {% for file in data.0 %}
                                         &ensp;&ensp; <i class="bi bi-arrow-return-right"></i><a href="{% url 'download_file_branch' folder_name file %}">{{ file|split_file_name }}</a><br>
                                     {% endfor %}
@@ -489,7 +488,7 @@
                         <h3>Combined Batch Files</h3>
                         {% for folder_name, data in Batch_Calculation.items %}
                             <div class="folder-entry mb-2">
-                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="files{{ forloop.counter }}">
+                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="filesbatch{{ forloop.counter }}">
                                     <!-- Display Folder Name -->
                                     <span class="foldername">
                                             {{ folder_name|split_folder_name }}
@@ -506,7 +505,7 @@
                                 </div>
                     
                                 <!-- Hidden Files List -->
-                                <div id="files{{ forloop.counter }}" class="files-list" style="display: none;">
+                                <div id="filesbatch{{ forloop.counter }}" class="files-list" style="display: none;">
                                     {% for file in data.0 %}
                                         &ensp;&ensp; <i class="bi bi-arrow-return-right"></i><a href="{% url 'download_file_batch' folder_name file %}">{{ file|split_file_name }}</a><br>
                                     {% endfor %}

@@ -40,8 +40,8 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
     aw[f'A{startrow}']="Variables"
     cellstyle_range(aw[f'A{startrow}:B{startrow}'], bold=True, alignment=True, border=True, fill="ffe74e")
     
-    internal_components_number = len([key for key in Component_Details.keys() if key.endswith("_I")])
-    external_components_number = len([key for key in Component_Details.keys() if key.endswith("_E")])
+    internal_components_number = len([key for key in Component_Details.keys() if key.endswith("I")])
+    external_components_number = len([key for key in Component_Details.keys() if key.endswith("E")])
 
     aw['A14']="Default Threshold %"
     aw['A15']="Internal %"

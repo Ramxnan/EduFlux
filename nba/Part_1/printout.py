@@ -1,7 +1,6 @@
 from openpyxl.styles import Font                                          #import font and alignment from openpyxl
 from openpyxl.utils import  get_column_letter
 from .utils import adjust_width, cellstyle_range, cellstyle
-from openpyxl.styles import Protection
 from .Input_Details import input_detail
 
 def printout(aw, data,start_row,copy=False,numco=None):

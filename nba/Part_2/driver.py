@@ -407,7 +407,11 @@ def driver_part2(input_dir_path, output_dir_path):
     unique_id = str(uuid.uuid4()).split("-")[0]
     excel_file_name=f"Combined_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
     
-        
+    #Remove all Protection from the workbook
+    for sheet in wbwrite.sheetnames:
+        wswrite = wbwrite[sheet]
+        if sheet.endswith("Printout"):
+            wswrite.protection.sheet = False
 
     wbwrite.save(os.path.join(output_dir_path, excel_file_name))
     if Warnings:

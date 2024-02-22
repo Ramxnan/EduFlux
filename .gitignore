@@ -3,3 +3,7 @@ db.sqlite3
 media
 eduflux_venv
 TestFiles
+test_driver1.py
+test_driver2.py
+test_driver3.py
+folder_structure.py

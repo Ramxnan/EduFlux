@@ -118,7 +118,7 @@ def driver_part3(input_dir_path, output_dir_path):
     for file in os.listdir(input_dir_path):
         #file shouldnt start with final
         if file.endswith(".xlsx") and not file.startswith("final"):
-            wbread=load_workbook(input_dir_path+"\\"+file, data_only=True)
+            wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
             #find the name of worksheet which ends with Input_Details
             wsname_ID=""
             wsname_CA=""

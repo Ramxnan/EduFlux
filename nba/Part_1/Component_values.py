@@ -121,7 +121,7 @@ def studentmarks(data,key, value,aw):
         aw[get_column_letter(qno+2)+'10']=f"Q{qno}"
         
     cellstyle_range(aw[f'A10:{get_column_letter(value+2)}10'], bold=True, alignment=True, border=True, fill="4bacc6")
-    cellstyle_range(aw[f'A11:{get_column_letter(value+2)}{10+data['Number_of_Students']}'], border=True, alignment=True, alternate=['daeef3', 'b7dee8'])
+    cellstyle_range(aw[f'A11:{get_column_letter(value+2)}{10+data["Number_of_Students"]}'], border=True, alignment=True, alternate=['daeef3', 'b7dee8'])
 
 
     #conditional formatting

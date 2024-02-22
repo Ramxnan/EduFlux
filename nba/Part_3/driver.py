@@ -35,7 +35,7 @@ def driver_part3(input_dir_path, output_dir_path):
     startrow=3
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("final"):
-            wbread=load_workbook(input_dir_path+"\\"+file, data_only=True)           
+            wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
             ws_printout=""
             for ws in wbread.sheetnames:
                 if ws.endswith("Printout") and ws.startswith("Combined"):

@@ -94,7 +94,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
         aw[f'{get_column_letter(start_column+nco-1)}4']=formula
 
 
-    cellstyle_range(aw[f'{get_column_letter(start_column)}3:{get_column_letter(start_column+data['Number_of_COs']-1)}4'], alignment=True, border=True, bold=True)
+    cellstyle_range(aw[f'{get_column_letter(start_column)}3:{get_column_letter(start_column+data["Number_of_COs"]-1)}4'], alignment=True, border=True, bold=True)
 
 
     #Combined Marks
@@ -113,7 +113,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
 
             aw[f'{get_column_letter(start_column+nco-1)}{6+nstudents}']=formula
             
-    cellstyle_range(aw[f'{get_column_letter(start_column)}7:{get_column_letter(start_column+data['Number_of_COs']-1)}{6+data["Number_of_Students"]}'], alignment=True, border=True, bold=True)
+    cellstyle_range(aw[f'{get_column_letter(start_column)}7:{get_column_letter(start_column+data["Number_of_COs"]-1)}{6+data["Number_of_Students"]}'], alignment=True, border=True, bold=True)
 
     #Total final calculation
     aw.column_dimensions[f'{get_column_letter(start_column-1)}'].width = 14.3
@@ -154,7 +154,7 @@ def Component_calculation(data,Component_Details,aw,component_type):
         formula = f'=IF(SUM({range_string}) > 0, {cell_position_1}/{cell_position_2}*100, "0")'
         aw[target_cell_position] = formula
 
-    cellstyle_range(aw[f'{get_column_letter(start_column)}{data["Number_of_Students"]+9}:{get_column_letter(start_column+data['Number_of_COs']-1)}{data["Number_of_Students"]+11}'], alignment=True, border=True, bold=True, alternate=['ffffff','d9d9d9'])
+    cellstyle_range(aw[f'{get_column_letter(start_column)}{data["Number_of_Students"]+9}:{get_column_letter(start_column+data["Number_of_COs"]-1)}{data["Number_of_Students"]+11}'], alignment=True, border=True, bold=True, alternate=['ffffff','d9d9d9'])
 
     return aw
 

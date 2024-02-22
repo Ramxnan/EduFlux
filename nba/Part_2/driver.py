@@ -292,7 +292,7 @@ def driver_part2(input_dir_path, output_dir_path):
             formula+=f"{ws}!E{2+Combined_data['Number_of_COs']+4+1+numco},"
         formula = formula[:-1]
         formula+=")"
-        wswrite[f'E{2+Combined_data['Number_of_COs']+4+1+numco}'] = formula
+        wswrite[f'E{2+Combined_data["Number_of_COs"]+4+1+numco}'] = formula
         
     wswrite = input_detail(Combined_data,Combined_Component_Details,wswrite)
     

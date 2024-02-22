@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
-
-
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>FLUX.ai</title>
+  <title>EduFlux</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -23,65 +22,73 @@
   <meta name="twitter:description" content="">
   <meta name="twitter:image" content="">
 
-  <!-- Set favicon -->
-  <link rel="shortcut icon" href="{% static 'assets/img/favicon.png' %}" type="image/x-icon">
-  <link rel="icon" href="{% static 'assets/img/favicon.png' %}" type="image/x-icon">
 
+  <!-- Set favicon -->
+  <link rel="shortcut icon" href="{% static 'assets\EduFlux_Assets\eduflux-favicon-color.png' %}" type="image/x-icon">
+  <link rel="icon" href="{% static 'assets\EduFlux_Assets\eduflux-favicon-color.png' %}" type="image/x-icon">
 
   <link href="https://fonts.googleapis.com/css?family=Raleway:400,500,700|Roboto:400,900" rel="stylesheet">
 
-  <link href="{%static 'assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
-  <link href="{%static 'assets/vendor/bootstrap-icons/bootstrap-icons.css'%}" rel="stylesheet">
-  <link href="{%static 'assets/vendor/glightbox/css/glightbox.min.css'%}" rel="stylesheet">
-  
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css'%}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css'%}" rel="stylesheet">
 
-  <link href="{%static 'assets/css/style.css'%}" rel="stylesheet">
+  <link href="{% static 'assets/css/style.css'%}" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: Bell - v4.8.1
-  * Template URL: https://bootstrapmade.com/bell-free-bootstrap-4-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
   <style>
     html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-}
+      max-width: 100%;
+      overflow-x: hidden;
+    }
 
+    .hero .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .tagline img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 50px;
+    }
+
+    .tagline, .stl {
+      text-align: center;      
+    }
+
+    .stl {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 3rem;
+      color: #6bb3f3;
+      padding: 0 20px;
+    }
+
+    @media (max-width: 768px) {
+      .stl {
+        font-size: 2rem;
+      }
+    }
   </style>
 </head>
-
 <body>
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="hero">
     <div class="container text-center">
-      <!-- <div class="row">
-        <div class="col-md-12">
-          <a class="hero-brand" href="index.html" title="Home"><img alt="Team2 Logo" src="static/assets/img/TRADE.AI2.png"></a>
-        </div>
-      </div> -->
-
       <div>
         <div class="tagline">
-          <img style="height: 40px;" src="{% static 'assets/img/fluxai-high-resolution-logo-transparent.png'%}" alt="">
-        <br>
-        <br> <!-- Added space here -->
-        <br> <!-- Added space here -->
-          <h1>
-            Empowering Excellence & Accrediting Success!
-          </h1>
-          
+          <img style="height: 80px;" src="{% static 'assets\EduFlux_Assets\eduflux-high-resolution-logo-transparent-v2.png'%}" alt="EduFlux Logo">
+          <h1>Empowering Excellence & Accrediting Success!</h1>
         </div>
-        <p class="subtagline">
+        <h2 class="stl">
           Unlock Opportunities and Enhance Credibility with Our Accreditation System
-        <p>
-
+        </h2>
         <a class="btn btn-full scrollto" href="{% url 'login' %}">Start Accrediting!</a>
       </div>
     </div>
-
   </section><!-- End Hero -->
 
   <!-- ======= Header ======= -->
@@ -89,7 +96,7 @@
     <div class="container d-flex align-items-center">
 
       <div id="logo" class="me-auto">
-        <a href=""><img src="{% static 'assets/img/fluxai-high-resolution-logo-transparent.png'%}" alt=""></a>
+        <a href=""><img src="{% static 'assets\EduFlux_Assets\eduflux-high-resolution-logo-transparent-v2.png'%}" alt=""></a>
       </div>
 
       <nav id="navbar" class="navbar order-last order-lg-0">

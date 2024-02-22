@@ -1,6 +1,12 @@
 import sys
 sys.path.append('nba')
 
+import sys
+import os
+
+# path = os.path.expanduser('~/NBA/nba')
+# if path not in sys.path:
+#     sys.path.append(path)
 
 from openpyxl import Workbook
 from openpyxl.styles import Protection

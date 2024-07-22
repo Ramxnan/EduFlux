@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EduFlux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    {% load static %}
+    <link rel="icon" href="{% static 'assets/EduFlux_Assets/favicon.ico' %}"> <!-- Add this line -->
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url("{% static 'assets/img/Amritaa.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            width: 300px;
+        }
+
+        .login-container h2 {
+            color: #b1096b;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .form-input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-input {
+            width: 80%;
+            padding: 15px;
+            padding-right: 40px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .login-button {
+            background-color: #b1096b;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .login-button:hover {
+            background-color: #9e0852;
+        }
+
+        .footer {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer a {
+            color: #b1096b;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+   
+    <div id="preloader">
+        <img src="{% static 'assets/EduFlux_Assets/eduflux-favicon-color.png' %}" alt="Preloader Logo" id="preloader-logo">
+    </div>
+
+
+    <div class="login-container">
+        <h2>Login to EduFlux</h2>
+        <div class="error-message">
+            {% if messages %}
+                {% for message in messages %}
+                    <ul{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</ul>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="form-input-container">
+                <input type="text" class="form-input" id="username" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-input-container">
+                <input type="password" class="form-input" id="password" name="password" placeholder="Password" required>
+                <i class="bi bi-eye eye-icon" id="togglePassword"></i>
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </form>
+        <div class="footer">
+            Don't have an account? <a href="{% url 'register' %}">Register</a>
+        </div>
+    </div>
+    
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePassword');
+            const passwordType = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', passwordType);
+
+            // Toggle the icon class between eye and eye-slash
+            toggleIcon.classList.toggle('bi-eye');
+            toggleIcon.classList.toggle('bi-eye-slash');
+        }
+
+        document.getElementById('togglePassword').addEventListener('click', togglePassword);
+
+        window.addEventListener('load', function() 
+        {
+            document.getElementById('preloader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        });
+
+
+</script>
+</body>
+</html>

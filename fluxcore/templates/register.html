@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Eduflux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    {% load static %}
+    <link rel="icon" href="{% static 'assets/EduFlux_Assets/favicon.ico' %}"> <!-- Add this line -->
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url("{% static 'assets/img/Amritaa.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .register-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            width: 300px;
+        }
+
+        .register-container h2 {
+            color: #b1096b;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative; /* Added to position the eye icon */
+        }
+
+        .form-input {
+            width: calc(100% - 20px);
+            padding: 15px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background-color: #fff;
+            color: #333;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .register-button {
+            background-color: #b1096b;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .register-button.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .register-button:hover:enabled {
+            background-color: #9e0852;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .footer a {
+            color: #b1096b;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 65%;
+            right: 5px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .message-message {
+            margin-bottom: 20px;
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="preloader">
+        <img src="{% static 'assets/EduFlux_Assets/eduflux-favicon-color.png' %}" alt="Preloader Logo" id="preloader-logo">
+    </div>
+    <div id="content" class="register-container" style="display: none;">
+        <h2>Register for Eduflux</h2>
+        <div class="message-message">
+            {% if messages %}
+                {% for message in messages %}
+                    <ul{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</ul>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <form id="registrationform" method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-input" required oninput="checkEmail()">
+                <div id="emailError" class="error-message">Email already registered. Please login</div>
+            </div>
+            <div class="form-group">
+                <label for="password1" class="form-label">Password:</label>
+                <input type="password" id="password1" name="password1" class="form-input" required>
+                <i class="bi bi-eye eye-icon" onclick="togglePassword('password1', 'togglePassword1')"></i>
+            </div>
+            <div class="form-group">
+                <label for="password2" class="form-label">Confirm Password:</label>
+                <input type="password" id="password2" name="password2" class="form-input" required>
+                <i class="bi bi-eye eye-icon" onclick="togglePassword('password2', 'togglePassword2')"></i>
+            </div>
+            <div class="form-group">
+                <label for="college_code" class="form-label">Unique Code:</label>
+                <input type="text" id="college_code" name="college_code" class="form-input" required oninput="validateCollegeCode()">
+                <div id="collegeCodeError" class="error-message">Invalid code</div>
+            </div>
+            <button type="submit" id="registerButton" class="register-button" disabled>Register</button>
+        </form>
+        
+        <div class="footer">
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        
+    <script>
+        function togglePassword(passwordFieldId, toggleIconId) {
+            const passwordInput = document.getElementById(passwordFieldId);
+            const toggleIcon = document.getElementById(toggleIconId);
+            const passwordType = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', passwordType);
+
+            // Toggle the icon class between eye and eye-slash
+            toggleIcon.classList.toggle('bi-eye');
+            toggleIcon.classList.toggle('bi-eye-slash');
+        }
+
+        function validateCollegeCode() {
+            const collegeCode = document.getElementById('college_code').value;
+            const validCollegeCodes = ['560035']; // Replace with your actual valid codes
+            const registerButton = document.getElementById('registerButton');
+
+            if (validCollegeCodes.includes(collegeCode)) {
+                document.getElementById('collegeCodeError').style.display = 'none';
+                registerButton.classList.add('enabled');
+                registerButton.disabled = false;
+            } else {
+                document.getElementById('collegeCodeError').style.display = 'block';
+                registerButton.classList.remove('enabled');
+                registerButton.disabled = true;
+            }
+        }
+
+        function checkEmail() {
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('emailError');
+
+            if (email) {
+                fetch(`/ajax/check_email/?email=${email}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.is_taken) {
+                            emailError.style.display = 'block';
+                        } else {
+                            emailError.style.display = 'none';
+                        }
+                    });
+            }
+        }
+
+        window.addEventListener('load', function() {
+            document.getElementById('preloader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        });
+
+        // Show modal with errors
+        function showErrorModal(errors) {
+            const errorList = document.getElementById('errorList');
+            errorList.innerHTML = '';
+            errors.forEach(error => {
+                const li = document.createElement('li');
+                li.textContent = error;
+                errorList.appendChild(li);
+            });
+            $('#errorModal').modal('show');
+        }
+    </script>
+    {% if form.errors %}
+    <script type="text/javascript">
+        const formErrors = JSON.parse('{{ form.errors.as_json }}');
+        const errorMessages = [];
+        for (const field in formErrors) {
+            formErrors[field].forEach(error => {
+                errorMessages.push(`${field}: ${error.message}`);
+            });
+        }
+        showErrorModal(errorMessages);
+    </script>
+    {% endif %}
+</body>
+</html>

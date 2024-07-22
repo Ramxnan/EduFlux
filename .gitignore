@@ -1,9 +1,14 @@
 __pycache__
 db.sqlite3
-media
-eduflux_venv
-TestFiles
+media/
+eduflux_venv/
+Test/
 test_driver1.py
 test_driver2.py
 test_driver3.py
 folder_structure.py
+create_zip.py
+LocalFluxSetup.zip
+fluxdownload/
+setupv2.bat
+fluxtest/

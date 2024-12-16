@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-#ueahxb^vuel)x=1lnl3nzrzcqa2)+5yw8sp$v2(41qn^amh*%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.30.25.98','flux.blr.amrita.edu','web-blr.amrita.edu','ramxnan.pythonanywhere.com','127.0.0.1']
+ALLOWED_HOSTS = ['172.30.25.98','flux.blr.amrita.edu','web-blr.amrita.edu','ramxnan.pythonanywhere.com','127.0.0.1','.vercel.app']
 
 
 # Application definition
